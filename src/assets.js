@@ -13,9 +13,10 @@ function tex(file, { srgb = false, repeat = [1, 1], onLoad } = {}) {
   return t;
 }
 
-export function pbrSet(name, repeat) {
+// diffuse: false skips the colour map for surfaces that keep their own paint colour and only take relief + roughness.
+export function pbrSet(name, repeat, { diffuse = true } = {}) {
   return {
-    map: tex(`${name}_diff_1k.jpg`, { srgb: true, repeat }),
+    map: diffuse ? tex(`${name}_diff_1k.jpg`, { srgb: true, repeat }) : undefined,
     normalMap: tex(`${name}_nor_gl_1k.jpg`, { repeat }),
     roughnessMap: tex(`${name}_rough_1k.jpg`, { repeat }),
   };

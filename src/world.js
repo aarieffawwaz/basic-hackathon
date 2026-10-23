@@ -14,6 +14,19 @@ const C = { line: 0xf5c518, walk: 0x2f9e5b, white: 0xf2f2f2, steel: 0x2f4fd6, st
 
 let SCENE, STD;
 const std = (opts) => new THREE.MeshStandardMaterial({ roughness: 0.75, metalness: 0.15, ...opts });
+// Poly Haven 1k sets (public/tex). Relief-only sets keep the mesh's own paint colour.
+const N = (x, y = x) => new THREE.Vector2(x, y);
+let PLATE, SCRATCH, SHUTTER, HULL, QUAYC, OFFICE, DRUM;
+function sets() {
+  if (PLATE) return;
+  PLATE = pbrSet('metal_plate', [1, 3], { diffuse: false });            // crane steel: riveted plate relief
+  SCRATCH = pbrSet('blue_metal_plate', [3, 1], { diffuse: false });     // truck chassis, trolley: scuffed paint
+  SHUTTER = pbrSet('painted_metal_shutter', [1, 1], { diffuse: false }); // container doors: corrugation + hinges
+  HULL = pbrSet('rusty_metal_sheet', [12, 1.5]);                        // ship hull
+  QUAYC = pbrSet('concrete_floor_painted', [40, 1]);                    // quay edge
+  OFFICE = pbrSet('corrugated_iron_02', [4, 1.5], { diffuse: false });  // site office, warehouses: cladding relief, own paint
+  DRUM = pbrSet('green_metal_rust', [2, 1]);                            // gangway, bollards
+}
 function box(w, h, d, mat, x, y, z, { shadow = true, parent } = {}) {
   const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), typeof mat === 'number' ? std({ color: mat }) : mat);
   m.position.set(x, y, z); m.castShadow = shadow; m.receiveShadow = true;
@@ -34,7 +47,8 @@ function containerMaterial(idx) {
     const side = containerMaps(color, idx), door = containerDoorMaps(color);
     CORR ||= pbrSet('corrugated_iron', [5.6, 1]);
     const sideMat = std({ map: side.map, normalMap: CORR.normalMap, normalScale: new THREE.Vector2(0.9, 0.9), roughnessMap: CORR.roughnessMap, roughness: 0.95, metalness: 0.45, envMapIntensity: 0.9 });
-    const endMat = std({ map: door.map, roughness: 0.55, metalness: 0.4, envMapIntensity: 0.9 });
+    sets();
+    const endMat = std({ map: door.map, normalMap: SHUTTER.normalMap, normalScale: N(0.6), roughnessMap: SHUTTER.roughnessMap, roughness: 0.7, metalness: 0.4, envMapIntensity: 0.9 });
     const topMat = std({ map: side.map, normalMap: CORR.normalMap, normalScale: new THREE.Vector2(0.7, 0.7), roughnessMap: CORR.roughnessMap, roughness: 1.0, metalness: 0.35 });
     // BoxGeometry material order: +x, -x, +y, -y, +z, -z
     containerMats[idx] = [endMat, endMat, topMat, topMat, sideMat, sideMat];
@@ -129,7 +143,8 @@ export function animateWorker(w, t, amount = 1) {
 // ---- Trucks -----------------------------------------------------------------------
 export function makeTruck(color) {
   const g = new THREE.Group();
-  box(9.5, 0.45, 2.5, std({ color: 0x1b2340, metalness: 0.4 }), 0, 0.8, 0, { parent: g });
+  sets();
+  box(9.5, 0.45, 2.5, std({ color: 0x1b2340, normalMap: SCRATCH.normalMap, normalScale: N(0.5), roughnessMap: SCRATCH.roughnessMap, roughness: 0.8, metalness: 0.4 }), 0, 0.8, 0, { parent: g });
   const cab = new THREE.Mesh(new RoundedBoxGeometry(2.4, 2.3, 2.5, 3, 0.18), std({ color: C.cabin, roughness: 0.35, metalness: 0.35, envMapIntensity: 1.0 })); cab.position.set(3.7, 2.15, 0); cab.castShadow = true; g.add(cab);
   for (const z of [-0.9, 0.9]) { const hl = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.25, 0.4), new THREE.MeshStandardMaterial({ color: 0xfff6d5, emissive: 0xfff2c0, emissiveIntensity: 1.6 })); hl.position.set(4.92, 1.6, z); g.add(hl); }
   box(1.2, 0.9, 2.3, std({ color: 0x0f1a2e, roughness: 0.1, metalness: 0.6 }), 4.35, 2.55, 0, { parent: g });   // windscreen
@@ -157,7 +172,7 @@ function contact(w, d, x, z, parent, opacity = 0.75) {
 }
 
 export function buildWorld(scene, renderer) {
-  SCENE = scene; castings = null;
+  SCENE = scene; castings = null; sets();
   const world = {};
   const colliders = [];
   const addCollider = (minX, maxX, minZ, maxZ) => colliders.push({ minX, maxX, minZ, maxZ });
@@ -214,11 +229,11 @@ export function buildWorld(scene, renderer) {
   const hatch = std({ map: paintedMaps('#c0392b', 0.5).map, roughness: 0.9 });
   plane(16, 10, std({ color: 0x7a1f1f, transparent: true, opacity: 0.35 }), 4, -102, 0.025);
   for (let i = -7; i <= 7; i += 2) { const h = plane(0.4, 10, hatch, 4 + i, -102, 0.03); h.rotation.z = 0.5; }
-  for (const x of [-8, 6, 20, 34, -22]) { const b = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.6, 1.1, 14), std({ color: 0x1a1a1a, metalness: 0.6, roughness: 0.5 })); b.position.set(x, 0.55, -110); b.castShadow = true; scene.add(b); addCollider(x - 0.7, x + 0.7, -110.7, -109.3); }
+  for (const x of [-8, 6, 20, 34, -22]) { const b = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.6, 1.1, 14), std({ color: 0x2a2a2a, normalMap: DRUM.normalMap, normalScale: N(0.8), roughnessMap: DRUM.roughnessMap, roughness: 0.6, metalness: 0.6 })); b.position.set(x, 0.55, -110); b.castShadow = true; scene.add(b); addCollider(x - 0.7, x + 0.7, -110.7, -109.3); }
   const rope = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 46, 6), std({ color: 0xd8cfae, roughness: 0.9 })); rope.position.set(10, 4.5, -133); rope.rotation.set(Math.PI / 2 - 0.37, 0, 0.3); scene.add(rope);
   // gangway from quay up to the ship
   const gang = new THREE.Group(); gang.position.set(-2, 0, -112); gang.rotation.x = -0.62;
-  box(1.6, 0.12, 22, std({ color: 0xb8bcc2, metalness: 0.6, roughness: 0.4 }), 0, 0, -11, { parent: gang });
+  box(1.6, 0.12, 22, std({ map: DRUM.map, normalMap: DRUM.normalMap, normalScale: N(0.8), roughnessMap: DRUM.roughnessMap, roughness: 0.7, metalness: 0.5 }), 0, 0, -11, { parent: gang });
   for (const sx of [-0.8, 0.8]) { box(0.05, 1.0, 22, 0x9aa3ad, sx, 0.55, -11, { parent: gang }); for (let z = -1; z > -22; z -= 2) box(0.05, 1.0, 0.05, 0x9aa3ad, sx, 0.5, z, { parent: gang }); }
   scene.add(gang);
   const yellow = std({ map: paintedMaps('#f5c518', 0.4).map, roughness: 0.85 });
@@ -291,7 +306,7 @@ export function buildWorld(scene, renderer) {
 
   // RTG crane (rubber-tyred gantry) straddling the corridor at z=-12
   const rtg = new THREE.Group();
-  const steel = std({ color: C.steel, roughness: 0.45, metalness: 0.5 });
+  const steel = std({ color: C.steel, normalMap: PLATE.normalMap, normalScale: N(0.7), roughnessMap: PLATE.roughnessMap, roughness: 0.6, metalness: 0.5 });
   for (const [x, z] of [[-7, -15.5], [-7, -8.5], [7, -15.5], [7, -8.5]]) {
     box(1, 13, 1, steel, x, 7.5, z, { parent: rtg });
     box(1.1, 1.6, 1.1, stripe, x, 1.8, z, { parent: rtg });
@@ -301,7 +316,7 @@ export function buildWorld(scene, renderer) {
   for (const x of [-7, 7]) { box(1, 1, 8, steel, x, 14.3, -12, { parent: rtg }); box(0.6, 5, 0.6, steel, x, 11.5, -12, { parent: rtg }); }
   for (const z of [-15.5, -8.5]) { box(16, 1, 1, steel, 0, 14.3, z, { parent: rtg }); box(14, 0.5, 0.3, steel, 0, 12.3, z, { parent: rtg }); }
   for (const x of [-5, 0, 5]) { const br = box(0.3, 0.3, 7.6, steel, x, 13.6, -12, { parent: rtg }); br.rotation.x = 0; }
-  const trolley = box(3.2, 1.3, 7.2, std({ color: C.steelDark, metalness: 0.5 }), 0, 13.2, -12, { parent: rtg });
+  const trolley = box(3.2, 1.3, 7.2, std({ color: C.steelDark, normalMap: SCRATCH.normalMap, normalScale: N(0.5), roughnessMap: SCRATCH.roughnessMap, roughness: 0.8, metalness: 0.5 }), 0, 13.2, -12, { parent: rtg });
   const cableMat = std({ color: 0x1a1a1a, metalness: 0.7, roughness: 0.4 });
   const hang = new THREE.Group();
   for (const [x, z] of [[-5.5, -13.2], [-5.5, -10.8], [5.5, -13.2], [5.5, -10.8]]) { const c = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 4.6, 6), cableMat); c.position.set(x, 10.3, z); hang.add(c); }
@@ -317,7 +332,7 @@ export function buildWorld(scene, renderer) {
   loadSign.position.set(-4.5, 2.6, -5.5); scene.add(loadSign); box(0.12, 2.8, 0.12, 0x6b7280, -4.5, 1.4, -5.6);
 
   // Site office
-  box(12, 4, 7, std({ color: 0xe8e4dc, roughness: 0.9 }), 0, 2, -46); box(13, 0.4, 8, 0x3b3f45, 0, 4.2, -46);
+  box(12, 4, 7, std({ color: 0xe8e4dc, normalMap: OFFICE.normalMap, normalScale: N(0.8), roughnessMap: OFFICE.roughnessMap, roughness: 0.9, metalness: 0.2 }), 0, 2, -46); box(13, 0.4, 8, 0x3b3f45, 0, 4.2, -46);
   box(2, 2.6, 0.2, 0x1f2a44, 0, 1.3, -42.4);
   for (const x of [-4, 4]) box(2.2, 1.4, 0.1, std({ color: 0x0f1a2e, roughness: 0.1, metalness: 0.6 }), x, 2.4, -42.4);
   const officeSign = new THREE.Mesh(new THREE.PlaneGeometry(5, 1.4), std({ map: signText(['KANTOR K3', 'Site Office · Near-miss reports'], { w: 640, h: 180 }), roughness: 0.6 }));
@@ -335,20 +350,21 @@ export function buildWorld(scene, renderer) {
   // Quay: STS cranes, ship, water — horizon depth
   const waterN = waterNormal();
   const water = plane(400, 120, std({ color: 0x24465c, roughness: 0.12, metalness: 0.7, normalMap: waterN, normalScale: new THREE.Vector2(0.35, 0.35) }), 0, -170, -0.2);
-  box(400, 2, 6, std({ color: 0x6f7378 }), 0, 0.5, -112);   // quay edge
+  box(400, 2, 6, std({ map: QUAYC.map, normalMap: QUAYC.normalMap, normalScale: N(0.6), roughnessMap: QUAYC.roughnessMap, roughness: 1 }), 0, 0.5, -112);   // quay edge
   for (const x of [-60, -20, 20, 60]) {
-    const g = new THREE.Group(); const m = std({ color: 0x1f6f78, roughness: 0.5, metalness: 0.5 });
+    const g = new THREE.Group(); const m = std({ color: 0x1f6f78, normalMap: PLATE.normalMap, normalScale: N(0.7), roughnessMap: PLATE.roughnessMap, roughness: 0.6, metalness: 0.5 });
     for (const [lx, lz] of [[-9, -116], [9, -116], [-9, -130], [9, -130]]) box(1.4, 48, 1.4, m, x + lx, 24, lz, { parent: g, shadow: false });
     box(20, 1.6, 1.6, m, x, 48, -116, { parent: g, shadow: false }); box(20, 1.6, 1.6, m, x, 48, -130, { parent: g, shadow: false });
     box(1.6, 1.6, 90, m, x, 46, -150, { parent: g, shadow: false });  // boom over the ship
     box(4, 3, 4, std({ color: C.cabin }), x, 42, -150, { parent: g, shadow: false });
     scene.add(g);
   }
-  box(180, 14, 32, std({ color: 0x14243a, roughness: 0.6 }), 10, 6, -165, { shadow: false });  // hull
+  box(180, 14, 32, std({ map: HULL.map, color: 0x6a7f99, normalMap: HULL.normalMap, normalScale: N(0.8), roughnessMap: HULL.roughnessMap, roughness: 0.8, metalness: 0.4 }), 10, 6, -165, { shadow: false });  // hull, rusty sheet tinted navy
   box(170, 10, 28, std({ color: 0xcfd3d8 }), 10, 14, -165, { shadow: false });                    // stacked boxes, hinted
   box(14, 20, 12, std({ color: 0xf2f2f2 }), -70, 24, -165, { shadow: false });                     // bridge
   // distant skyline/warehouses
-  for (let i = 0; i < 10; i++) box(30, 10 + (i % 3) * 4, 18, std({ color: 0x8e949b }), -140 + i * 32, 5 + (i % 3) * 2, -95, { shadow: false });
+  const shed = std({ color: 0x8e949b, normalMap: OFFICE.normalMap, normalScale: N(0.6), roughnessMap: OFFICE.roughnessMap, roughness: 0.9, metalness: 0.3 });
+  for (let i = 0; i < 10; i++) box(30, 10 + (i % 3) * 4, 18, shed, -140 + i * 32, 5 + (i % 3) * 2, -95, { shadow: false });
 
   // Trucks + NPCs
   const trucks = [
