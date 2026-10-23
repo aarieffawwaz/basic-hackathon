@@ -17,8 +17,8 @@ export function setupPost(renderer, scene, camera, { bloom = 0.18 } = {}) {
   composer.addPass(new RenderPass(scene, camera));
   const gtao = new GTAOPass(scene, camera, size.x, size.y);
   gtao.output = GTAOPass.OUTPUT.Default;
-  gtao.updateGtaoMaterial({ radius: 0.9, distanceExponent: 1.2, thickness: 1.0, scale: 1.4, samples: 12, distanceFallOff: 1.0, screenSpaceRadius: false });
-  gtao.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 4, radiusExponent: 1, rings: 2, samples: 16 });
+  gtao.updateGtaoMaterial({ radius: 0.8, distanceExponent: 1.2, thickness: 1.0, scale: 1.3, samples: 16, distanceFallOff: 1.0, screenSpaceRadius: false });
+  gtao.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 8, radiusExponent: 1, rings: 3, samples: 16 });
   gtao.blendIntensity = 0.85;
   composer.addPass(gtao);
   // Bloom only on request: the Sky shader and the sun sprite sit far above 1.0 in linear light,

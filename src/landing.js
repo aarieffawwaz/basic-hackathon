@@ -15,6 +15,7 @@ const camera = new THREE.PerspectiveCamera(46, 1, 0.1, 1200);
 const world = buildWorld(scene, renderer);
 const post = setupPost(renderer, scene, camera, { bloom: 0.22 });
 world.setBeacon(0, 0, false);
+world.setShadowCenter(0, -6);
 
 function size() { const w = canvas.clientWidth, h = canvas.clientHeight; renderer.setSize(w, h, false); post.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix(); }
 size(); addEventListener('resize', size);

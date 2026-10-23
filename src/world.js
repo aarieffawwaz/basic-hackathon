@@ -106,7 +106,7 @@ export function makeWorker(vest = 0xff8c1a, helmet = true) {
     arms.push(sh);
   }
   const head = mk(new THREE.SphereGeometry(0.19, 16, 12), std({ map: FACE, roughness: 0.9 }), 0, 1.72, 0);
-  head.rotation.y = Math.PI; // face toward -z (walking direction)
+  // body front is +z (boots point +z); the face texture is centred on +z via its offset, so no head rotation
   if (helmet) {
     mk(new THREE.SphereGeometry(0.225, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2), std({ color: 0xf5c518, roughness: 0.4 }), 0, 1.74, 0);
     mk(new THREE.CylinderGeometry(0.26, 0.26, 0.02, 14), std({ color: 0xf5c518, roughness: 0.4 }), 0, 1.74, 0.02);
@@ -176,8 +176,18 @@ export function buildWorld(scene, renderer) {
   const sun = new THREE.DirectionalLight(0xffe7c4, 1.7);
   sun.position.copy(sunDir).multiplyScalar(90); sun.castShadow = true;
   sun.shadow.mapSize.set(4096, 4096); sun.shadow.bias = -0.0002; sun.shadow.normalBias = 0.04; 
-  Object.assign(sun.shadow.camera, { left: -90, right: 90, top: 90, bottom: -90, near: 10, far: 260 });
-  scene.add(sun);
+  // Tight shadow box that follows the player; its position is snapped to the shadow texel grid
+  // so the shadow edges do not swim ("jitter") while walking.
+  Object.assign(sun.shadow.camera, { left: -55, right: 55, top: 55, bottom: -55, near: 1, far: 320 });
+  scene.add(sun); scene.add(sun.target);
+  const shadowTexel = 110 / 4096;
+  const setShadowCenter = (x, z) => {
+    const sx = Math.round(x / shadowTexel) * shadowTexel, sz = Math.round(z / shadowTexel) * shadowTexel;
+    sun.target.position.set(sx, 0, sz);
+    sun.position.copy(sunDir).multiplyScalar(140).add(sun.target.position);
+    sun.target.updateMatrixWorld();
+  };
+  setShadowCenter(0, 10);
 
   // Ground + markings
   const asphalt = asphaltMaps();
@@ -370,6 +380,7 @@ export function buildWorld(scene, renderer) {
     scene, colliders, trucks, hang, beacon, rtg, npcs, paused: false,
     setBeacon(x, z, visible = true) { beacon.position.set(x, 0, z); beacon.visible = visible; },
     setTrucksVisible(v) { for (const tr of trucks) tr.g.visible = v; },
+    setShadowCenter,
     update(dt) {
       t += dt;
       ring.scale.setScalar(1 + Math.sin(t * 3) * 0.08);

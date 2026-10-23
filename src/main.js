@@ -63,6 +63,7 @@ const clock = new THREE.Clock();
 function frame() {
   const dt = Math.min(0.05, clock.getDelta());
   world.update(dt); player.update(dt); runner.update(dt);
+  world.setShadowCenter(camera.position.x, camera.position.z);
   ui.setHeading(player.yaw);
   post.render();
   requestAnimationFrame(frame);
