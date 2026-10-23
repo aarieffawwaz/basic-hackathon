@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { Sky } from 'three/examples/jsm/objects/Sky.js';
-import { containerMaps, containerDoorMaps, asphaltMaps, concreteMaps, paintedMaps, hazardStripe, signText, vestMaps } from './textures.js';
+import { containerMaps, containerDoorMaps, asphaltMaps, concreteMaps, paintedMaps, hazardStripe, signText, vestMaps, paintText, contactShadow, waterNormal } from './textures.js';
 
 // Container terminal built from primitives + procedural textures. No model files.
 // Layout (metres): spawn z=48 facing -z. Gate z=40. Truck lane z 14..22.
@@ -8,7 +8,7 @@ import { containerMaps, containerDoorMaps, asphaltMaps, concreteMaps, paintedMap
 // RTG straddles the corridor at z=-12 holding a container. Site office z=-46. Quay + STS cranes z≈-120.
 
 const C = { line: 0xf5c518, walk: 0x2f9e5b, white: 0xf2f2f2, steel: 0x2f4fd6, steelDark: 0x1b2340, cabin: 0xe4e8ee, tyre: 0x15171a,
-  containers: [0xb03a2e, 0x2a6fb0, 0x2e8b57, 0xd9a520, 0x6e7781, 0xd2691e, 0x6b3fa0, 0x1f6f78] };
+  containers: [0x9e3a30, 0x2f5f8f, 0x3a7d5c, 0xb8912a, 0x6b7177, 0xb5652a, 0x5c4a86, 0x2c6a70] };
 
 let SCENE, STD;
 const std = (opts) => new THREE.MeshStandardMaterial({ roughness: 0.75, metalness: 0.15, ...opts });
@@ -123,10 +123,19 @@ export function makeTruck(color) {
   }
   const b = new THREE.Mesh(new THREE.SphereGeometry(0.14, 8, 6), new THREE.MeshBasicMaterial({ color: 0xffb000 })); b.position.set(3.7, 3.4, 0); g.add(b);
   g.userData.beacon = b;
+  g.userData.wheels = g.children.filter((m) => m.geometry?.type === 'CylinderGeometry');
+  contact(12, 3.6, 0.5, 0, g, 0.6);
   return g;
 }
 
 // ---- World ------------------------------------------------------------------------
+let SHADOW_TEX;
+function contact(w, d, x, z, parent, opacity = 0.75) {
+  SHADOW_TEX ||= contactShadow();
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), new THREE.MeshBasicMaterial({ map: SHADOW_TEX, transparent: true, opacity, depthWrite: false }));
+  m.rotation.x = -Math.PI / 2; m.position.set(x, 0.045, z); m.renderOrder = 1; (parent || SCENE).add(m); return m;
+}
+
 export function buildWorld(scene, renderer) {
   SCENE = scene; castings = null;
   const colliders = [];
@@ -149,7 +158,7 @@ export function buildWorld(scene, renderer) {
   scene.add(new THREE.HemisphereLight(0xbfd3ea, 0x3a3f45, 0.35));
   const sun = new THREE.DirectionalLight(0xffe7c4, 1.7);
   sun.position.copy(sunDir).multiplyScalar(90); sun.castShadow = true;
-  sun.shadow.mapSize.set(4096, 4096); sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.03;
+  sun.shadow.mapSize.set(4096, 4096); sun.shadow.bias = -0.0002; sun.shadow.normalBias = 0.04; 
   Object.assign(sun.shadow.camera, { left: -90, right: 90, top: 90, bottom: -90, near: 10, far: 260 });
   scene.add(sun);
 
@@ -158,7 +167,7 @@ export function buildWorld(scene, renderer) {
   plane(300, 300, std({ map: asphalt.map, roughnessMap: asphalt.rough, roughness: 1, metalness: 0, envMapIntensity: 0.15 }), 0, -20, 0);
   const concrete = concreteMaps();
   plane(40, 14, std({ map: concrete.map, roughness: 0.95 }), 0, 45, 0.015);                      // gate apron
-  const walkMat = std({ map: paintedMaps('#2f9e5b', 0.3).map, roughness: 0.9 });
+  const walkMat = std({ map: paintedMaps('#2c8a52', 0.45).map, roughness: 0.9 });
   plane(2.2, 104, walkMat, 0, -4, 0.02);
   plane(2.2, 60, walkMat, 0, -80, 0.02);                                                        // on to the quay
   for (let z = -108; z < 50; z += 2) if (z < -50 || z > -44) plane(1.8, 0.25, C.white, 0, z, 0.03);
@@ -176,6 +185,8 @@ export function buildWorld(scene, renderer) {
   const yellow = std({ map: paintedMaps('#f5c518', 0.4).map, roughness: 0.85 });
   plane(140, 0.3, yellow, 0, 14, 0.03); plane(140, 0.3, yellow, 0, 22, 0.03);
   plane(3.4, 0.4, yellow, 0, 23.4, 0.04);
+  const stop = plane(3.0, 0.95, new THREE.MeshStandardMaterial({ map: paintText('STOP'), transparent: true, roughness: 0.9 }), 0, 24.6, 0.045);
+  for (const [x, dir] of [[-20, 1], [20, -1]]) { const a = plane(2.4, 0.8, new THREE.MeshStandardMaterial({ map: paintText(dir > 0 ? '→' : '←', { size: 120 }), transparent: true }), x, dir > 0 ? 16 : 20, 0.04); a.rotation.z = Math.PI; }
   for (let x = -1.2; x <= 1.2; x += 0.8) plane(0.4, 8, std({ map: paintedMaps('#f2f2f2', 0.45).map }), x, 18, 0.03);
   // tyre wear on the lane
   const wear = std({ color: 0x2b2e33, transparent: true, opacity: 0.35, roughness: 1 });
@@ -218,6 +229,7 @@ export function buildWorld(scene, renderer) {
       const forced = { '10.5,-23.4': 2, '10.5,-20.5': 1, '10.5,-26.3': 1 }[key];
       const h = forced ?? 1 + Math.floor(rnd() * 3);
       for (let i = 0; i < h; i++) makeContainer(12.19, C.containers[Math.floor(rnd() * C.containers.length)], cx, i * 2.6, z);
+      contact(15, 4.4, cx, z);
       addCollider(cx - 6.1, cx + 6.1, z - 1.22, z + 1.22);
     }
   }
@@ -265,6 +277,7 @@ export function buildWorld(scene, renderer) {
   for (const x of [-4, 4]) box(2.2, 1.4, 0.1, std({ color: 0x0f1a2e, roughness: 0.1, metalness: 0.6 }), x, 2.4, -42.4);
   const officeSign = new THREE.Mesh(new THREE.PlaneGeometry(5, 1.4), std({ map: signText(['KANTOR K3', 'Site Office · Near-miss reports'], { w: 640, h: 180 }), roughness: 0.6 }));
   officeSign.position.set(0, 3.3, -42.3); scene.add(officeSign);
+  contact(16, 10, 0, -46);
   addCollider(-6.2, 6.2, -49.6, -42.4);
 
   // Light masts with lamp heads
@@ -275,7 +288,8 @@ export function buildWorld(scene, renderer) {
   }
 
   // Quay: STS cranes, ship, water — horizon depth
-  const water = plane(400, 120, std({ color: 0x2c4f66, roughness: 0.15, metalness: 0.6 }), 0, -170, -0.2);
+  const waterN = waterNormal();
+  const water = plane(400, 120, std({ color: 0x24465c, roughness: 0.12, metalness: 0.7, normalMap: waterN, normalScale: new THREE.Vector2(0.35, 0.35) }), 0, -170, -0.2);
   box(400, 2, 6, std({ color: 0x6f7378 }), 0, 0.5, -112);   // quay edge
   for (const x of [-60, -20, 20, 60]) {
     const g = new THREE.Group(); const m = std({ color: 0x1f6f78, roughness: 0.5, metalness: 0.5 });
@@ -337,7 +351,7 @@ export function buildWorld(scene, renderer) {
       t += dt;
       ring.scale.setScalar(1 + Math.sin(t * 3) * 0.08);
       pillar.material.opacity = 0.25 + Math.sin(t * 3) * 0.1;
-      water.material.roughness = 0.15 + Math.sin(t * 0.8) * 0.05;
+      waterN.offset.set(t * 0.012, t * 0.008);
       for (const b of birds) {
         const u = b.userData; const a = t * u.sp + u.ph;
         b.position.set(u.cx + Math.cos(a) * u.r, u.y + Math.sin(a * 2) * 1.5, u.cz + Math.sin(a) * u.r);
@@ -349,6 +363,7 @@ export function buildWorld(scene, renderer) {
         tr.x += tr.dir * tr.speed * dt;
         if (tr.x > 75) tr.x = -75; if (tr.x < -75) tr.x = 75;
         tr.g.position.x = tr.x;
+        for (const w of tr.g.userData.wheels) w.rotation.y += tr.speed * dt / 0.52;
         tr.g.userData.beacon.material.color.setHex(Math.floor(t * 2) % 2 ? 0xffb000 : 0x7a4f00);
       }
       hang.position.x = Math.sin(t * 0.7) * 0.25; hang.rotation.z = Math.sin(t * 0.7) * 0.01; trolley.position.x = hang.position.x;

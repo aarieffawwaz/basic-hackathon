@@ -36,8 +36,12 @@ export function containerMaps(color, idx) {
     g.addColorStop(0, 'rgba(0,0,0,0.22)'); g.addColorStop(0.35, 'rgba(255,255,255,0.08)'); g.addColorStop(0.65, 'rgba(255,255,255,0.08)'); g.addColorStop(1, 'rgba(0,0,0,0.22)');
     ctx.fillStyle = g; ctx.fillRect(x, 0, 16, h);
   }
-  // top/bottom rails
+  // top/bottom rails + road grime creeping up from the bottom
   ctx.fillStyle = 'rgba(0,0,0,0.35)'; ctx.fillRect(0, 0, w, 10); ctx.fillRect(0, h - 12, w, 12);
+  const gg = ctx.createLinearGradient(0, h * 0.6, 0, h); gg.addColorStop(0, 'rgba(40,30,20,0)'); gg.addColorStop(1, 'rgba(40,30,20,0.45)');
+  ctx.fillStyle = gg; ctx.fillRect(0, 0, w, h);
+  const tg = ctx.createLinearGradient(0, 0, 0, h * 0.25); tg.addColorStop(0, 'rgba(255,255,255,0.10)'); tg.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = tg; ctx.fillRect(0, 0, w, h);
   grime(ctx, w, h, 50, 0.25);
   // rust streaks
   for (let i = 0; i < 25; i++) { ctx.fillStyle = `rgba(110,55,20,${0.12 + rnd() * 0.2})`; const x = rnd() * w; ctx.fillRect(x, rnd() * h * 0.3, 2 + rnd() * 3, 40 + rnd() * 120); }
@@ -94,7 +98,7 @@ export function asphaltMaps() {
 export function concreteMaps() {
   const w = 256, h = 256;
   const c = canvas(w, h), ctx = c.getContext('2d');
-  ctx.fillStyle = '#7d7e7a'; ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = '#6a6b67'; ctx.fillRect(0, 0, w, h);
   const img = ctx.getImageData(0, 0, w, h), d = img.data;
   for (let i = 0; i < d.length; i += 4) { const n = (rnd() - 0.5) * 22; d[i] += n; d[i + 1] += n; d[i + 2] += n; }
   ctx.putImageData(img, 0, 0);
@@ -131,4 +135,35 @@ export function vestMaps(color) {
   ctx.fillStyle = `#${new THREE.Color(color).getHexString()}`; ctx.fillRect(0, 0, 64, 64);
   ctx.fillStyle = '#d9d9d9'; ctx.fillRect(0, 20, 64, 8); ctx.fillRect(0, 40, 64, 8);
   return { map: tex(c) };
+}
+
+// Transparent canvas with painted text, for road markings.
+export function paintText(text, { fg = '#f2f2f2', w = 512, h = 160, size = 110 } = {}) {
+  const c = canvas(w, h), ctx = c.getContext('2d');
+  ctx.clearRect(0, 0, w, h); ctx.fillStyle = fg; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.font = `bold ${size}px ui-sans-serif, Helvetica, Arial`; ctx.fillText(text, w / 2, h / 2);
+  for (let i = 0; i < 90; i++) { ctx.clearRect(rnd() * w, rnd() * h, 2 + rnd() * 6, 2 + rnd() * 4); }   // wear
+  const t = tex(c); t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping; return t;
+}
+
+// Soft radial shadow blob for contact shadows under heavy things.
+export function contactShadow() {
+  const c = canvas(256, 256), ctx = c.getContext('2d');
+  const g = ctx.createRadialGradient(128, 128, 20, 128, 128, 128); g.addColorStop(0, 'rgba(0,0,0,0.6)'); g.addColorStop(0.6, 'rgba(0,0,0,0.3)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, 256, 256);
+  const t = tex(c, [1, 1], false); t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping; return t;
+}
+
+// Tileable ripple normal map for water.
+export function waterNormal() {
+  const w = 256, h = 256, c = canvas(w, h), ctx = c.getContext('2d');
+  const img = ctx.createImageData(w, h), d = img.data;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const i = (y * w + x) * 4;
+    const nx = Math.sin(x * 0.12 + y * 0.05) * 0.35 + Math.sin(y * 0.09 - x * 0.03) * 0.25;
+    const ny = Math.cos(y * 0.11 + x * 0.04) * 0.35 + Math.cos(x * 0.07 + y * 0.02) * 0.25;
+    d[i] = 128 + nx * 90; d[i + 1] = 128 + ny * 90; d[i + 2] = 255; d[i + 3] = 255;
+  }
+  ctx.putImageData(img, 0, 0);
+  return tex(c, [24, 8], false);
 }

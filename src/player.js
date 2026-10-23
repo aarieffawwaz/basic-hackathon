@@ -40,6 +40,7 @@ export class Player {
   unlock() { if (this.locked) document.exitPointerLock(); }
 
   setPosition(x, z, yaw = 0) {
+    this._snap = true;
     this.pos.set(x, 1.7, z);
     this.yaw = yaw;
     this.pitch = 0;
@@ -53,7 +54,8 @@ export class Player {
       const tx = this.pos.x, ty = 1.3, tz = this.pos.z;
       const cx = tx + Math.sin(this.yaw) * cp * r, cz = tz + Math.cos(this.yaw) * cp * r;
       const cy = Math.max(0.5, ty - sp * r + 0.6);
-      this.camera.position.set(cx, cy, cz);
+      const k = this._snap ? 1 : 0.16; this._snap = false;
+      this.camera.position.lerp(new THREE.Vector3(cx, cy, cz), k);
       this.camera.lookAt(tx, ty + 0.2, tz);
       return;
     }

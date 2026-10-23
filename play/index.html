@@ -6,6 +6,8 @@
     <title>ShiftReplay — First Shift</title>
     <meta name="description" content="Browser-only 3D safety sim. Make the call, see the consequence, learn the rule." />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
@@ -26,6 +28,7 @@
         <div class="row"><span id="near-count">0</span><span class="lbl" id="near-lbl"></span></div>
         <div class="row ctl"><button id="view" type="button" title="View (V)">3rd</button><button id="sound" type="button">♪</button><button id="lang" type="button">ID</button></div>
       </aside>
+      <div id="compass"><div id="compass-track"><span>S</span><span>W</span><span>N</span><span>E</span><span>S</span><span>W</span><span>N</span><span>E</span><span>S</span><span>W</span><span>N</span><span>E</span></div><div class="tick"></div></div>
       <div id="crosshair"></div>
       <div id="hint"></div>
     </div>
@@ -43,6 +46,11 @@
         <p id="start-lead"></p>
         <h3 id="role-title"></h3>
         <div id="roles"></div>
+        <svg width="0" height="0" style="position:absolute"><defs>
+          <symbol id="ic-hat" viewBox="0 0 24 24"><path d="M3 15h18v2H3zM5 14a7 7 0 0 1 14 0H5z" fill="currentColor"/><path d="M11 5h2v5h-2z" fill="currentColor"/></symbol>
+          <symbol id="ic-truck" viewBox="0 0 24 24"><path d="M2 6h11v9H2zM13 9h5l3 3v3h-8z" fill="currentColor"/><circle cx="6" cy="17" r="2" fill="currentColor"/><circle cx="17" cy="17" r="2" fill="currentColor"/></symbol>
+          <symbol id="ic-ship" viewBox="0 0 24 24"><path d="M3 14l2 5h14l2-5zM5 13V8h14v5zM11 4h2v4h-2z" fill="currentColor"/></symbol>
+        </defs></svg>
         <p class="fine" id="start-fine"></p>
         <a class="back" href="/">← shiftreplay.vercel.app</a>
       </div>

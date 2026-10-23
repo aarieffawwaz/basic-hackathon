@@ -24,7 +24,8 @@ export class UI {
     $('start-lead').textContent = this.t(STRINGS.startLead);
     $('role-title').textContent = this.t(STRINGS.roleTitle);
     $('start-fine').textContent = this.t(STRINGS.startFine) + ' · ' + STRINGS.startList[this.lang].join(' · ');
-    $('roles').innerHTML = ROLES.map((r, i) => `<button class="role" data-i="${i}"><div class="n">${this.t(r.name)}</div><div class="t">${this.t(r.tag)}</div><div class="b">${this.t(r.blurb)}</div><div class="go">${this.t(STRINGS.startBtn)} →</div></button>`).join('');
+    const icons = ['ic-hat', 'ic-truck', 'ic-ship'];
+    $('roles').innerHTML = ROLES.map((r, i) => `<button class="role" data-i="${i}"><svg class="ic"><use href="#${icons[i]}"/></svg><div class="n">${this.t(r.name)}</div><div class="t">${this.t(r.tag)}</div><div class="b">${this.t(r.blurb)}</div><div class="go">${this.t(STRINGS.startBtn)} →</div></button>`).join('');
     $('roles').querySelectorAll('.role').forEach((b) => b.addEventListener('click', () => this.onRole?.(ROLES[Number(b.dataset.i)])));
   }
   showRoles() { this.hideEnd(); $('overlay-start').classList.remove('hidden'); $('hud').classList.add('hidden'); }
@@ -40,6 +41,7 @@ export class UI {
     $('near-count').textContent = results.filter((r) => r === 'near').length;
   }
   setDistance(d, elapsed) { $('distance').textContent = `${d.toFixed(0)} m ${this.t(STRINGS.distance)}`; $('timer').textContent = fmt(elapsed); }
+  setHeading(yaw) { const px = ((yaw * 180 / Math.PI) % 360) / 90 * 120; const t = $('compass-track'); if (t) t.style.transform = `translateX(${px}px)`; }
   setHint(kind) { $('hint').textContent = this.t(kind === 'click' ? STRINGS.hintClick : STRINGS.hint); }
 
   showPrompt(h, disabled, onChoose) {

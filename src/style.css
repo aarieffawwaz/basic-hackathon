@@ -7,7 +7,7 @@
   --ok: #38c172;
   --bad: #ef4444;
   --line: rgba(255, 255, 255, 0.12);
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); overflow: hidden; }
@@ -144,3 +144,11 @@ button.primary:hover { filter: brightness(1.08); }
 #roles .role .go { margin-top: 12px; font-weight: 800; color: var(--accent); }
 .back { color: var(--muted); font-size: 13px; text-decoration: none; display: inline-block; margin-top: 12px; }
 .report .row small { font-size: 12px; }
+
+/* compass */
+#compass { position: absolute; top: 16px; left: 50%; transform: translateX(-50%); width: 240px; height: 28px; overflow: hidden; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; -webkit-mask: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent); mask: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent); }
+#compass-track { position: absolute; left: 50%; top: 0; height: 28px; display: flex; margin-left: -720px; }
+#compass-track span { width: 120px; text-align: center; line-height: 28px; font-size: 12px; font-weight: 800; letter-spacing: 0.2em; color: var(--muted); }
+#compass-track span:nth-child(4n+3) { color: var(--accent); }
+#compass .tick { position: absolute; left: 50%; top: 0; width: 2px; height: 28px; background: var(--accent); margin-left: -1px; }
+#roles .role .ic { width: 28px; height: 28px; color: var(--accent); display: block; margin-bottom: 8px; }

@@ -1,7 +1,7 @@
 :root { --bg: #050607; --ink: #f3f4f6; --muted: #8b949e; --accent: #f5c518; --ok: #38c172; --bad: #ef4444; --line: rgba(255,255,255,0.1); --panel: rgba(255,255,255,0.03); }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; background: var(--bg); color: var(--ink); font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
 a { color: inherit; }
 .mark { display: inline-block; width: 14px; height: 14px; background: var(--accent); clip-path: polygon(0 0, 100% 50%, 0 100%); margin-right: 8px; vertical-align: -1px; }
 .tag { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 11px; letter-spacing: 0.14em; color: #c9d1d9; background: rgba(255,255,255,0.06); border: 1px solid var(--line); display: inline-block; padding: 6px 10px; border-radius: 6px; }
@@ -112,3 +112,10 @@ footer .small { color: var(--muted); font-size: 13px; max-width: 720px; }
 .step:hover, .docs a:hover, .stats div:hover { border-color: rgba(245,197,24,0.5); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.35); }
 .stats b { background: linear-gradient(90deg, #ffd84a, #f5c518 60%, #38c172); -webkit-background-clip: text; background-clip: text; color: transparent; }
 @media (prefers-reduced-motion: reduce) { .btn.primary, .cta, .btn:not(.primary)::before { animation: none !important; } }
+
+/* grain + grid */
+.grain { position: fixed; inset: 0; pointer-events: none; z-index: 30; opacity: 0.07; mix-blend-mode: overlay; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+section::before { content: ""; position: absolute; left: 0; right: 0; height: 100%; pointer-events: none; z-index: -1; background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px); background-size: 48px 48px; -webkit-mask: radial-gradient(ellipse at center, #000 20%, transparent 70%); mask: radial-gradient(ellipse at center, #000 20%, transparent 70%); }
+section { position: relative; }
+.hero h1 { font-weight: 600; text-shadow: 0 10px 60px rgba(0,0,0,0.6); }
+.tag { backdrop-filter: blur(6px); box-shadow: 0 0 0 1px rgba(245,197,24,0.12), inset 0 0 20px rgba(245,197,24,0.06); }
