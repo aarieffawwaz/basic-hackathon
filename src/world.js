@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { Sky } from 'three/examples/jsm/objects/Sky.js';
+import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 import { containerMaps, containerDoorMaps, asphaltMaps, concreteMaps, paintedMaps, hazardStripe, signText, vestMaps, paintText, contactShadow, waterNormal } from './textures.js';
 
 // Container terminal built from primitives + procedural textures. No model files.
@@ -29,9 +30,9 @@ function containerMaterial(idx) {
   if (!containerMats[idx]) {
     const color = C.containers[idx % C.containers.length];
     const side = containerMaps(color, idx), door = containerDoorMaps(color);
-    const sideMat = std({ map: side.map, bumpMap: side.bump, bumpScale: 0.6, roughness: 0.65, metalness: 0.25 });
-    const endMat = std({ map: door.map, roughness: 0.65, metalness: 0.25 });
-    const topMat = std({ map: side.map, bumpMap: side.bump, bumpScale: 0.4, roughness: 0.8, metalness: 0.2 });
+    const sideMat = std({ map: side.map, bumpMap: side.bump, bumpScale: 0.35, roughness: 0.52, metalness: 0.4, envMapIntensity: 0.9 });
+    const endMat = std({ map: door.map, roughness: 0.55, metalness: 0.4, envMapIntensity: 0.9 });
+    const topMat = std({ map: side.map, bumpMap: side.bump, bumpScale: 0.3, roughness: 0.7, metalness: 0.3 });
     // BoxGeometry material order: +x, -x, +y, -y, +z, -z
     containerMats[idx] = [endMat, endMat, topMat, topMat, sideMat, sideMat];
   }
@@ -40,6 +41,17 @@ function containerMaterial(idx) {
 const castingGeo = new THREE.BoxGeometry(0.3, 0.3, 0.3);
 const castingMat = std({ color: 0x2a2a2a, roughness: 0.6, metalness: 0.5 });
 let castings; const castingPos = [];
+// frame members (corner posts, long rails, end rails) — darkened steel that catches AO and edge light
+const frameMat = std({ color: 0x1e2126, roughness: 0.5, metalness: 0.6 });
+const postGeo = new THREE.BoxGeometry(0.2, 2.6, 0.2), railLGeo = new THREE.BoxGeometry(12.19, 0.16, 0.16), railSGeo = new THREE.BoxGeometry(0.16, 0.16, 2.44);
+const framePos = { post: [], railL: [], railS: [] };
+function frameParts(len) {
+  const parts = [];
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) parts.push(['post', sx * (len / 2 - 0.1), 1.3, sz * 1.12]);
+  for (const sy of [0.08, 2.52]) for (const sz of [-1, 1]) parts.push(['railL', 0, sy, sz * 1.14]);
+  for (const sy of [0.08, 2.52]) for (const sx of [-1, 1]) parts.push(['railS', sx * (len / 2 - 0.08), sy, 0]);
+  return parts;
+}
 export function makeContainer(len, color, x, y, z, parent) {
   const idx = Math.max(0, C.containers.indexOf(color)) || (typeof color === 'number' ? Math.abs(color) % C.containers.length : 0);
   const g = new THREE.Group();
@@ -50,6 +62,10 @@ export function makeContainer(len, color, x, y, z, parent) {
     const p = [sx * (len / 2 - 0.15), sy * 2.45 + 0.15, sz * 1.07];
     if (parent === undefined && castings === null) castingPos.push([x + p[0], y + p[1], z + p[2]]);
     else { const m = new THREE.Mesh(castingGeo, castingMat); m.position.set(...p); g.add(m); }
+  }
+  for (const [kind, px, py, pz] of frameParts(len)) {
+    if (parent === undefined && castings === null) framePos[kind].push([x + px, y + py, z + pz]);
+    else if (Math.abs(len - 12.19) < 0.01) { const geo = { post: postGeo, railL: railLGeo, railS: railSGeo }[kind]; const m = new THREE.Mesh(geo, frameMat); m.position.set(px, py, pz); g.add(m); }
   }
   g.position.set(x, y, z); (parent || SCENE).add(g); return g;
 }
@@ -76,16 +92,16 @@ export function makeWorker(vest = 0xff8c1a, helmet = true) {
   const legs = [];
   for (const sx of [-0.12, 0.12]) {
     const hip = new THREE.Group(); hip.position.set(sx, 0.85, 0); g.add(hip);
-    mk(new THREE.BoxGeometry(0.17, 0.8, 0.2), legMat, 0, -0.4, 0, hip);
+    mk(new THREE.CapsuleGeometry(0.095, 0.62, 4, 10), legMat, 0, -0.4, 0, hip);
     mk(new THREE.BoxGeometry(0.19, 0.12, 0.3), std({ color: 0x1a1a1a }), 0, -0.78, 0.04, hip);   // boot
     legs.push(hip);
   }
-  const torso = mk(new THREE.BoxGeometry(0.44, 0.62, 0.26), vestMat, 0, 1.18, 0);
+  const torso = mk(new THREE.CapsuleGeometry(0.21, 0.34, 4, 12), vestMat, 0, 1.18, 0); torso.scale.set(1, 1, 0.68);
   mk(new THREE.BoxGeometry(0.46, 0.08, 0.28), std({ color: 0xd9d9d9, emissive: 0x9a9a9a, emissiveIntensity: 0.25 }), 0, 1.3, 0);  // reflective band
   const arms = [];
   for (const sx of [-0.3, 0.3]) {
     const sh = new THREE.Group(); sh.position.set(sx, 1.42, 0); g.add(sh);
-    mk(new THREE.BoxGeometry(0.13, 0.55, 0.13), std({ color: 0x3a4a78 }), 0, -0.27, 0, sh);
+    mk(new THREE.CapsuleGeometry(0.065, 0.42, 4, 10), std({ color: 0x3a4a78 }), 0, -0.27, 0, sh);
     mk(new THREE.SphereGeometry(0.07, 8, 6), skinMat, 0, -0.57, 0, sh);                           // hand
     arms.push(sh);
   }
@@ -111,7 +127,8 @@ export function animateWorker(w, t, amount = 1) {
 export function makeTruck(color) {
   const g = new THREE.Group();
   box(9.5, 0.45, 2.5, std({ color: 0x1b2340, metalness: 0.4 }), 0, 0.8, 0, { parent: g });
-  box(2.4, 2.3, 2.5, std({ color: C.cabin, roughness: 0.4, metalness: 0.3 }), 3.7, 2.15, 0, { parent: g });
+  const cab = new THREE.Mesh(new RoundedBoxGeometry(2.4, 2.3, 2.5, 3, 0.18), std({ color: C.cabin, roughness: 0.35, metalness: 0.35, envMapIntensity: 1.0 })); cab.position.set(3.7, 2.15, 0); cab.castShadow = true; g.add(cab);
+  for (const z of [-0.9, 0.9]) { const hl = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.25, 0.4), new THREE.MeshStandardMaterial({ color: 0xfff6d5, emissive: 0xfff2c0, emissiveIntensity: 1.6 })); hl.position.set(4.92, 1.6, z); g.add(hl); }
   box(1.2, 0.9, 2.3, std({ color: 0x0f1a2e, roughness: 0.1, metalness: 0.6 }), 4.35, 2.55, 0, { parent: g });   // windscreen
   box(0.2, 0.3, 0.4, 0x222, 4.9, 2.3, 1.35, { parent: g }); box(0.2, 0.3, 0.4, 0x222, 4.9, 2.3, -1.35, { parent: g }); // mirrors
   box(1.0, 0.4, 2.3, 0xd9d9d9, 4.6, 1.3, 0, { parent: g });   // bumper
@@ -144,7 +161,7 @@ export function buildWorld(scene, renderer) {
   // Sky + environment lighting
   const sky = new Sky(); sky.scale.setScalar(2000); scene.add(sky);
   const u = sky.material.uniforms;
-  u.turbidity.value = 7; u.rayleigh.value = 2.2; u.mieCoefficient.value = 0.008; u.mieDirectionalG.value = 0.9;
+  u.turbidity.value = 9; u.rayleigh.value = 2.6; u.mieCoefficient.value = 0.012; u.mieDirectionalG.value = 0.93;
   const sunDir = new THREE.Vector3().setFromSphericalCoords(1, THREE.MathUtils.degToRad(90 - 24), THREE.MathUtils.degToRad(150));
   u.sunPosition.value.copy(sunDir);
   if (renderer) {
@@ -164,7 +181,7 @@ export function buildWorld(scene, renderer) {
 
   // Ground + markings
   const asphalt = asphaltMaps();
-  plane(300, 300, std({ map: asphalt.map, roughnessMap: asphalt.rough, roughness: 1, metalness: 0, envMapIntensity: 0.15 }), 0, -20, 0);
+  plane(300, 300, std({ map: asphalt.map, normalMap: asphalt.normal, normalScale: new THREE.Vector2(0.6, 0.6), roughnessMap: asphalt.rough, roughness: 1, metalness: 0, envMapIntensity: 0.15 }), 0, -20, 0);
   const concrete = concreteMaps();
   plane(40, 14, std({ map: concrete.map, roughness: 0.95 }), 0, 45, 0.015);                      // gate apron
   const walkMat = std({ map: paintedMaps('#2c8a52', 0.45).map, roughness: 0.9 });
@@ -243,6 +260,12 @@ export function buildWorld(scene, renderer) {
   const m4 = new THREE.Matrix4();
   castingPos.forEach((p, i) => { m4.setPosition(p[0], p[1], p[2]); castings.setMatrixAt(i, m4); });
   castings.castShadow = true; scene.add(castings);
+  for (const [kind, geo] of [['post', postGeo], ['railL', railLGeo], ['railS', railSGeo]]) {
+    const list = framePos[kind]; if (!list.length) continue;
+    const im = new THREE.InstancedMesh(geo, frameMat, list.length);
+    list.forEach((p, i) => { m4.setPosition(p[0], p[1], p[2]); im.setMatrixAt(i, m4); });
+    im.castShadow = true; im.receiveShadow = true; scene.add(im);
+  }
 
   // RTG crane (rubber-tyred gantry) straddling the corridor at z=-12
   const rtg = new THREE.Group();
@@ -284,7 +307,7 @@ export function buildWorld(scene, renderer) {
   for (const [x, z] of [[-24, 36], [24, 36], [-24, -40], [24, -40], [0, -80]]) {
     box(0.6, 28, 0.6, std({ color: 0x8a9099, metalness: 0.6, roughness: 0.4 }), x, 14, z, { shadow: false });
     const head = box(3, 0.6, 1.2, 0x2a2e33, x, 28, z, { shadow: false });
-    const lamp = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 0.5), new THREE.MeshBasicMaterial({ color: 0xfff1c0 })); lamp.rotation.x = Math.PI / 2; lamp.position.set(x, 27.65, z); scene.add(lamp);
+    const lamp = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 0.5), new THREE.MeshStandardMaterial({ color: 0xfff1c0, emissive: 0xfff1c0, emissiveIntensity: 2.5 })); lamp.rotation.x = Math.PI / 2; lamp.position.set(x, 27.65, z); scene.add(lamp);
   }
 
   // Quay: STS cranes, ship, water — horizon depth

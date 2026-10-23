@@ -5,10 +5,11 @@ import { ROLES } from './scenario.js';
 import { HazardRunner } from './hazards.js';
 import { UI } from './ui.js';
 import { PortAudio } from './audio.js';
+import { setupPost } from './post.js';
 
 const app = document.getElementById('app');
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
-renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+renderer.setPixelRatio(Math.min(devicePixelRatio, 1.25));
 renderer.setSize(innerWidth, innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFShadowMap;
@@ -17,8 +18,9 @@ renderer.toneMappingExposure = 0.72;
 app.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(72, innerWidth / innerHeight, 0.1, 1200);
+const camera = new THREE.PerspectiveCamera(64, innerWidth / innerHeight, 0.1, 1200);
 const world = buildWorld(scene, renderer);
+const post = setupPost(renderer, scene, camera, { bloom: 0.16 });
 const player = new Player(camera, renderer.domElement, world.colliders);
 const body = makeWorker(0xff8c1a); scene.add(body); player.setBody(body);
 const ui = new UI();
@@ -32,7 +34,7 @@ ui.onView = () => player.toggleView();
 player.onView = (v) => ui.setView(v);
 ui.setView(player.view);
 renderer.domElement.addEventListener('click', () => { if (runner.state === 'walk' || runner.state === 'action') player.lock(); });
-addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); post.setSize(innerWidth, innerHeight); });
 
 // Recording / debug helpers.
 //   ?role=checker|operator|lashing   pick a role without the start screen
@@ -62,7 +64,7 @@ function frame() {
   const dt = Math.min(0.05, clock.getDelta());
   world.update(dt); player.update(dt); runner.update(dt);
   ui.setHeading(player.yaw);
-  renderer.render(scene, camera);
+  post.render();
   requestAnimationFrame(frame);
 }
 frame();

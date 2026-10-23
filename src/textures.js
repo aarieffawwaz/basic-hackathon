@@ -90,9 +90,19 @@ export function asphaltMaps() {
   ctx.strokeStyle = 'rgba(20,20,22,0.6)'; ctx.lineWidth = 1.5;
   for (let i = 0; i < 14; i++) { ctx.beginPath(); let x = rnd() * w, y = rnd() * h; ctx.moveTo(x, y); for (let k = 0; k < 10; k++) { x += (rnd() - 0.5) * 50; y += (rnd() - 0.5) * 50; ctx.lineTo(x, y); } ctx.stroke(); }
   const map = tex(c, [40, 40]);
+  // normal map from the same noise (Sobel on luminance) — micro relief under the sun
+  const src = ctx.getImageData(0, 0, w, h).data;
+  const nimg = ctx.createImageData(w, h), nd = nimg.data;
+  const lum = (x, y) => { const i = (((y + h) % h) * w + ((x + w) % w)) * 4; return src[i]; };
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const dx = (lum(x + 1, y) - lum(x - 1, y)) / 255, dy = (lum(x, y + 1) - lum(x, y - 1)) / 255;
+    const i = (y * w + x) * 4; nd[i] = 128 - dx * 220; nd[i + 1] = 128 - dy * 220; nd[i + 2] = 255; nd[i + 3] = 255;
+  }
+  const nc = canvas(w, h); nc.getContext('2d').putImageData(nimg, 0, 0);
+  const normal = tex(nc, [40, 40], false);
   const r = canvas(w, h), rc = r.getContext('2d');
   rc.fillStyle = '#e6e6e6'; rc.fillRect(0, 0, w, h); grime(rc, w, h, 60, 0.08, true, 10);
-  return { map, rough: tex(r, [40, 40], false) };
+  return { map, normal, rough: tex(r, [40, 40], false) };
 }
 
 export function concreteMaps() {
