@@ -122,3 +122,5 @@ section::before { content: ""; position: absolute; left: 0; right: 0; height: 10
 section { position: relative; }
 .hero h1 { font-weight: 600; text-shadow: 0 10px 60px rgba(0,0,0,0.6); }
 .tag { backdrop-filter: blur(6px); box-shadow: 0 0 0 1px rgba(245,197,24,0.12), inset 0 0 20px rgba(245,197,24,0.06); }
+
+footer .brand .sep { margin-left: 8px; font-weight: 500; color: var(--muted); }
