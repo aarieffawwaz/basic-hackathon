@@ -2,6 +2,7 @@
   <img src="public/screenshots/replay-cross.jpg" alt="ShiftReplay — consequence replay at the truck lane" width="100%" />
 </p>
 
+<p align="center"><img src="public/logo.svg" width="84" alt="ShiftReplay logo" /></p>
 <h1 align="center">ShiftReplay</h1>
 <p align="center"><b>See the accident before it happens.</b><br>
 Browser-only 3D safety training (K3) for ports and yards. Make the call, watch the consequence replay, learn the rule. No headset, no account, no server.</p>

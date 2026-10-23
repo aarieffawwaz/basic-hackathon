@@ -152,3 +152,6 @@ button.primary:hover { filter: brightness(1.08); }
 #compass-track span:nth-child(4n+3) { color: var(--accent); }
 #compass .tick { position: absolute; left: 50%; top: 0; width: 2px; height: 28px; background: var(--accent); margin-left: -1px; }
 #roles .role .ic { width: 28px; height: 28px; color: var(--accent); display: block; margin-bottom: 8px; }
+
+.brand-row { display: flex; align-items: center; gap: 10px; }
+.brand-row .mark { width: 30px; height: 30px; border-radius: 8px; }
