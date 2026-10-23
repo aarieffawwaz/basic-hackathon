@@ -3,24 +3,27 @@ doc: prd
 status: approved
 ---
 
-# K3 Sim — First Shift — Product Requirements
+# ShiftReplay — First Shift — Product Requirements
 
 One line: a browser 3D sim where a new container-terminal worker walks a shift, decides at five checkpoints, and watches the consequence of each wrong call before learning the rule. Source: `scope.md > The Unique Kernel`, `scope.md > The Core Loop`.
 
 ## The Core Journey
-1. Open the URL. A start panel explains the controls in four bullets. Click **Start shift**; the mouse locks to the sim.
+1. Open the URL. The landing page explains the idea; **Start shift** opens `/play/`. A start panel shows three role cards (yard checker, reach stacker operator, lashing crew). Click one; the mouse locks to the sim and the ambience starts.
 2. You are standing on the green walkway outside the gate. The HUD shows the objective ("Walk to the gate and clear the PPE check") and a yellow beacon marks the checkpoint.
 3. Walk into the beacon. The sim pauses, releases the mouse, and a decision card appears: situation text and three choices.
-4. Pick a choice.
+4. Pick a choice — click a card or press 1/2/3 (A/B/C). The decision fills the screen.
    - Safe call: a green **SAFE CALL** card with one paragraph of why and the regulation name + one-line summary. **Continue** re-locks the mouse and sets the next objective.
    - Wrong call: the card disappears, the camera cuts to a third-person angle, a red **REPLAY** banner narrates in two or three captions while the accident plays in slow motion, the screen flashes at impact. Then a red **NEAR MISS** card with the why + regulation, and **Choose again** returns to the card with the wrong option struck out.
-5. Repeat across five checkpoints: gate PPE → truck-lane crossing → suspended load under the RTG → seal check at height → near-miss report at the site office.
-6. **Shift report**: clean calls out of five, near misses replayed, shift time, one row per checkpoint with the regulation, and **Run the shift again**. (`scope.md > What "Working" Looks Like`)
+5. After a safe call, an **action step**: hold **E** for a physical task (put on PPE, walkaround, clip in, file the form) or press **SPACE** inside a timing window (the driver's wave, the winch easing). Then the next milestone.
+6. Repeat across the role's checkpoints (checker: gate PPE → lane → suspended load → height → report; operator: pre-start → blind spot → wind; lashing: gangway → snap-back → top tier).
+7. **Shift report**: clean calls out of five, near misses replayed, shift time, one row per checkpoint with the regulation, and **Run the shift again**. (`scope.md > What "Working" Looks Like`)
 
 ## Screens and Layout
-- **Start overlay** — title, four-bullet how-to, Start button, EN/ID toggle (top right, visible on every screen).
-- **Yard (main surface)** — full-screen 3D. HUD: objective (top left), progress dots + near-miss count (top right), crosshair, hint pill (bottom).
-- **Decision card** — bottom-centre glass card over the paused yard.
+- **Landing page (`/`)** — hero over a live orbit of the same yard, how it works, the replay, roles, why-not-VR table, planning docs, footer.
+- **Start overlay (`/play/`)** — title, three role cards, controls line.
+- **Yard (main surface)** — full-screen 3D. **Mission panel** top-left: role, objective, distance to checkpoint, milestone list with pass/near/current markers. **Status** top-right: shift timer, near-miss count, sound and language toggles. Crosshair, hint pill, vignette.
+- **Decision** — full-screen overlay with the headline, situation, and three large A/B/C cards.
+- **Action bar** — bottom-centre: key, label, progress fill (hold) or sweeping marker with a green window (timing).
 - **Replay** — HUD hidden, red banner top-centre with the caption.
 - **Shift report overlay** — same panel style as start.
 
@@ -48,6 +51,13 @@ Each checkpoint has: a trigger zone, an objective line, a title, situation text,
 - [ ] `height` — a worker steps off a wet container roof from 5.2 m.
 - [ ] `report` — the `cross` replay with a different worker and "seven days later" captions.
 - Each replay: ~5 s at 0.55× speed, fixed cinematic camera with slow dolly, two or three captions, one red flash at impact. Live trucks are hidden during lane replays.
+
+### Action steps
+- [ ] Hold actions fill a bar while the key is down and drain when released; reaching full completes the step.
+- [ ] Timing actions sweep a marker; pressing inside the green window completes, outside shows "too early / too late" and lets the player retry. Misses never count as near misses.
+
+### Ambience
+- Wind, diesel idle, a reversing beeper, gulls, a ship horn — all synthesised in WebAudio on the first click. Impact thud on replay impact. **♪** mutes.
 
 ### Language
 - EN default, ID toggle. Persisted in `localStorage`. Switching mid-walk updates the HUD; cards render in the current language when opened.
@@ -87,4 +97,5 @@ Everything under Features and Behavior, plus the start overlay, shift report, an
 
 ## Open Questions
 - Should the replay be skippable after the first viewing? (Can wait; default no.)
+- Operator role is still played on foot; a driving model is out of scope for the POC.
 - Regulation paraphrases need a K3 practitioner's read before any real training use. (After the hackathon.)

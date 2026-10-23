@@ -3,7 +3,7 @@ doc: spec
 status: approved
 ---
 
-# K3 Sim — First Shift — Technical Spec
+# ShiftReplay — First Shift — Technical Spec
 
 ## How This Works, In Plain Language
 The whole app is one web page. Three.js draws a container yard out of boxes and cylinders — no downloaded 3D models. You walk around it with the keyboard and mouse like a first-person game. A list of five **checkpoints** lives in one data file: where each one is in the yard, what it asks, the three choices, the explanation, and the regulation. A small **runner** watches your position; when you step into a checkpoint it pauses the yard and shows the card. If you choose wrong, a **replay** script moves a dummy worker and a truck or container through a short scripted accident while the camera watches from the side, then hands you back to the card. There is no server and no login: everything runs in the browser, so the link opens for anyone.
@@ -19,6 +19,7 @@ Why this shape: the kernel is the replay, so the budget went there. Primitives i
 PRD ref: `prd.md > The Core Journey`.
 
 ## Stack
+- Two static pages (`index.html` landing, `play/index.html` sim) built by Vite's multi-page input.
 - **Vite 8** (dev server + build) — https://vite.dev — zero config, instant reload.
 - **three.js r186** — https://threejs.org/docs — the only runtime dependency. Chosen over a game engine because the scene is simple and the engine would dominate the repo.
 - Plain JavaScript modules, no framework — the UI is five DOM panels; React would be weight without benefit.
@@ -65,24 +66,40 @@ Renders start overlay, objective, progress dots, decision card, feedback card, r
 PRD ref: `prd.md > Screens and Layout`.
 
 ### `src/main.js` — wiring
-Renderer, scene, camera, frame loop, resize, URL helpers.
+Renderer (ACES tone mapping, PCF shadows), scene, camera, frame loop, resize, URL helpers (`?role= ?at= ?replay= ?action= ?end= ?shot=`).
+
+### `src/textures.js` — procedural textures
+Canvas-drawn corrugation + bump, grime, rust, asphalt colour/roughness, concrete, painted lines, hazard stripes, text signs, vests, faces. Seeded PRNG so the yard is identical on every load.
+
+### `src/audio.js` — ambience
+WebAudio graph: brown-noise wind, detuned sawtooth diesel, scheduled gulls/horn/beeper, impact thud. Created on the first click (autoplay policy).
+
+### `src/landing.js` — landing hero
+Same `buildWorld`, orbiting camera, renders only while the hero is on screen.
 
 ## Data Model
-No database. In-memory state in `HazardRunner`: `idx`, `results[]` (`'pass' | 'near'`), `disabled` (Set of option indexes for the current checkpoint), `firstTry`, `startedAt`. `localStorage['k3-lang']` is the only thing that survives a reload.
+No database. `ROLES[]` → `hazards[]` in `scenario.js` (see `docs/HAZARD-FORMAT.md`). In-memory state in `HazardRunner`: `role`, `idx`, `results[]` (`'pass' | 'near'`), `disabled` (Set), `firstTry`, `startedAt`, `progress` (hold action), `timingT` (timing action). `localStorage['k3-lang']` is the only thing that survives a reload.
 
 ## File Structure
 ```
 basic-hackathon/
-├── index.html            # DOM for HUD, cards, overlays
+├── index.html            # landing page
+├── play/index.html       # sim: HUD, decision, action bar, overlays
+├── public/screenshots/   # README + landing images
+├── docs/                 # ARCHITECTURE, HAZARD-FORMAT, DEMO-GUIDE, DEPLOY
 ├── src/
 │   ├── main.js           # renderer + loop + URL helpers
-│   ├── world.js          # yard geometry, trucks, crane, beacon, colliders
+│   ├── world.js          # yard + quay geometry, sky, trucks, workers, birds, colliders
+│   ├── textures.js       # procedural canvas textures
+│   ├── audio.js          # WebAudio ambience
+│   ├── landing.js        # landing hero orbit
 │   ├── player.js         # first-person controls + collision
 │   ├── scenario.js       # HAZARDS + STRINGS (EN/ID)
 │   ├── hazards.js        # checkpoint state machine
 │   ├── replay.js         # consequence replay scripts
 │   ├── ui.js             # DOM rendering
-│   └── style.css
+│   ├── style.css         # sim
+│   └── landing.css       # landing
 ├── devpost/              # Devpost Learn workspace (scope, prd, spec, checklist)
 ├── .agents/skills/       # hackathon skill pack (installed by npx skills add)
 └── package.json
@@ -103,6 +120,9 @@ None at runtime. No API keys, no network calls after the page loads.
 - **Paraphrased regulations** instead of quoted legal text — regulation names are real (Permenaker 8/2010, 8/2020, 9/2016; UU 1/1970; PP 50/2012); the one-line summaries are the learner's paraphrase and must be reviewed by a K3 practitioner before real training use.
 
 ## Decisions and Open Issues
+- **Roles share one scene** (learner choice, after seeing the first build): three jobs give the demo range without a second world; the lashing role uses the quay end of the same terminal.
+- **Action steps are two primitives** (hold, timing) rather than per-checkpoint minigames — enough to make the safe behaviour physical, cheap to add to any checkpoint.
+- **Sound is synthesised** — no audio files keeps the repo asset-free and the link instant; the cost is that gulls sound like synth gulls.
 - **Replay time runs at 0.55×** (learner choice: slow enough to read captions, short enough not to bore in a demo). Tradeoff: real speeds in captions, slowed motion on screen — the banner says REPLAY so it is not mistaken for real-time.
 - **Live trucks hidden during lane replays** (implementation detail) so the staged tractor is the only vehicle in frame.
 - **Learner uncertainty discussed:** whether "first-person in the browser without a headset" is enough presence for the lesson to land. Agreed evidence: the lane-crossing replay must make a first-time viewer flinch in the demo recording; if it does not, add a camera shake and a closer angle before shipping.

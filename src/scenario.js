@@ -3,9 +3,10 @@
 // and which consequence replay plays when the choice is wrong.
 // Rule names are real Indonesian regulations; wording is paraphrased, not quoted.
 
-export const HAZARDS = [
+const CHECKER = [
   {
     id: 'ppe',
+    action: { type: 'hold', key: 'KeyE', seconds: 1.6, label: { en: 'Hold E — put on helmet, vest, boots', id: 'Tahan E — pakai helm, rompi, sepatu' } },
     zone: { x: 0, z: 43, r: 2.6 },
     objective: { en: 'Walk to the gate and clear the PPE check', id: 'Jalan ke gerbang dan lewati pemeriksaan APD' },
     title: { en: 'Gate check: what do you put on?', id: 'Pos gerbang: apa yang kamu pakai?' },
@@ -30,6 +31,7 @@ export const HAZARDS = [
   },
   {
     id: 'cross',
+    action: { type: 'timing', key: 'Space', label: { en: 'Press SPACE the moment the driver waves', id: 'Tekan SPASI saat pengemudi melambai' }, window: [0.58, 0.74] },
     zone: { x: 0, z: 25.5, r: 2.6 },
     objective: { en: 'Cross the truck lane to reach the stacks', id: 'Seberangi jalur truk menuju tumpukan' },
     title: { en: 'Truck lane: a terminal tractor is coming', id: 'Jalur truk: terminal tractor mendekat' },
@@ -54,6 +56,7 @@ export const HAZARDS = [
   },
   {
     id: 'load',
+    action: { type: 'hold', key: 'KeyE', seconds: 1.4, label: { en: 'Hold E — radio the RTG operator, wait for set-down', id: 'Tahan E — radio operator RTG, tunggu beban turun' } },
     zone: { x: 0, z: -3, r: 2.6 },
     objective: { en: 'Reach the RTG crane block', id: 'Menuju blok crane RTG' },
     title: { en: 'Suspended load across your path', id: 'Beban menggantung di jalurmu' },
@@ -78,6 +81,7 @@ export const HAZARDS = [
   },
   {
     id: 'height',
+    action: { type: 'hold', key: 'KeyE', seconds: 1.8, label: { en: 'Hold E — clip harness, check the platform', id: 'Tahan E — pasang harness, cek platform' } },
     zone: { x: 0, z: -24, r: 2.6 },
     objective: { en: 'Check the seal on container stack B-7', id: 'Periksa segel di tumpukan kontainer B-7' },
     title: { en: 'Seal check on a two-high stack', id: 'Cek segel di tumpukan dua tingkat' },
@@ -102,6 +106,7 @@ export const HAZARDS = [
   },
   {
     id: 'report',
+    action: { type: 'hold', key: 'KeyE', seconds: 2.0, label: { en: 'Hold E — fill the near-miss form', id: 'Tahan E — isi form near miss' } },
     zone: { x: 0, z: -38, r: 2.8 },
     objective: { en: 'End of shift: go to the site office', id: 'Akhir shift: ke kantor lapangan' },
     title: { en: 'Shift over. Do you report the near miss?', id: 'Shift selesai. Lapor near miss atau tidak?' },
@@ -126,7 +131,126 @@ export const HAZARDS = [
   },
 ];
 
+const OPERATOR = [
+  {
+    id: 'prestart',
+    zone: { x: 0, z: 43, r: 2.6 },
+    objective: { en: 'Walk to the reach stacker and start your shift', id: 'Jalan ke reach stacker dan mulai shift' },
+    title: { en: 'Pre-start: the machine is already warm', id: 'Pre-start: mesin sudah menyala' },
+    situation: { en: 'The night driver left the 45-tonne reach stacker running. The checklist board is empty. Dispatch wants the first box moved in four minutes.', id: 'Pengemudi malam meninggalkan reach stacker 45 ton menyala. Papan checklist kosong. Dispatch minta kotak pertama dipindah dalam empat menit.' },
+    options: [
+      { en: 'Climb in and go. It ran all night, it is fine.', id: 'Naik dan jalan. Semalaman jalan, pasti aman.', correct: false, replay: 'cross', captions: { en: ['Brakes never tested after the night shift.', 'A 45 t machine with a soft pedal needs 30 m to stop.', 'The walkway was 12 m away.'], id: ['Rem tidak pernah dicek setelah shift malam.', 'Mesin 45 t dengan pedal lembek butuh 30 m untuk berhenti.', 'Jalur pejalan hanya 12 m.'] } },
+      { en: 'Do the walkaround: tyres, brakes, horn, mirrors, spreader. Then log it.', id: 'Lakukan walkaround: ban, rem, klakson, spion, spreader. Lalu catat.', correct: true },
+      { en: 'Ask dispatch to check it later, move the box first.', id: 'Minta dispatch cek nanti, pindahkan kotak dulu.', correct: false, replay: 'cross', captions: { en: ['The check that was going to happen later.', 'Service brake at 60%. Nobody knew.', 'Struck on the walkway.'], id: ['Pemeriksaan yang "nanti saja".', 'Rem servis 60%. Tidak ada yang tahu.', 'Tertabrak di jalur pejalan.'] } },
+    ],
+    action: { type: 'hold', key: 'KeyE', seconds: 2.0, label: { en: 'Hold E — walkaround inspection', id: 'Tahan E — inspeksi walkaround' } },
+    why: { en: 'A reach stacker is the heaviest thing that moves in the yard. The pre-start is the only brake test it gets today.', id: 'Reach stacker adalah benda terberat yang bergerak di lapangan. Pre-start adalah satu-satunya uji rem hari ini.' },
+    rule: { name: 'Permenaker No. 8/2020 · operator pre-use inspection', en: 'Lifting equipment must be inspected by the operator before each use and defects reported.', id: 'Pesawat angkat wajib diperiksa operator sebelum digunakan dan cacat dilaporkan.' },
+  },
+  {
+    id: 'blindspot',
+    zone: { x: 0, z: 25.5, r: 2.6 },
+    objective: { en: 'Drive to the lane crossing', id: 'Kemudikan ke penyeberangan jalur' },
+    title: { en: 'Somebody is in your blind spot', id: 'Ada orang di blind spot-mu' },
+    situation: { en: 'You are carrying a 40-ft box, spreader high. A checker in orange just vanished from the left mirror near the crossing.', id: 'Kamu membawa kotak 40 kaki, spreader tinggi. Seorang checker berompi oranye baru saja hilang dari spion kiri dekat penyeberangan.' },
+    options: [
+      { en: 'Keep rolling slowly, they will step back.', id: 'Terus jalan pelan, mereka pasti mundur.', correct: false, replay: 'cross', captions: { en: ['From the cab, the three metres in front of a raised box are invisible.', 'Slowly is still 5 km/h and 60 tonnes.', 'Run over at walking pace.'], id: ['Dari kabin, tiga meter di depan kotak yang terangkat tidak terlihat.', 'Pelan tetap 5 km/jam dan 60 ton.', 'Terlindas dalam kecepatan jalan kaki.'] } },
+      { en: 'Stop, sound the horn, wait until you see them clear and get a wave.', id: 'Berhenti, bunyikan klakson, tunggu sampai terlihat aman dan dapat lambaian.', correct: true },
+      { en: 'Lower the box fast so you can see.', id: 'Turunkan kotak cepat supaya terlihat.', correct: false, replay: 'load', captions: { en: ['A fast lower with a person underneath the swing.', 'The spreader does not know who is below it.', '30 t, set down on a person.'], id: ['Menurunkan cepat dengan orang di bawah ayunan.', 'Spreader tidak tahu siapa di bawahnya.', '30 t, diturunkan ke atas orang.'] } },
+    ],
+    action: { type: 'timing', key: 'Space', label: { en: 'Press SPACE when the checker waves you on', id: 'Tekan SPASI saat checker melambai' }, window: [0.55, 0.72] },
+    why: { en: 'Stop, horn, eye contact, wave. Every pedestrian strike by a container handler in the last decade had one of those four missing.', id: 'Berhenti, klakson, kontak mata, lambaian. Setiap pejalan tertabrak container handler dalam sepuluh tahun terakhir kehilangan salah satu dari empat itu.' },
+    rule: { name: 'UU No. 1/1970 · vehicle–pedestrian interaction', en: 'Drivers must stop when a pedestrian may be in the path; horn and visual confirmation before moving.', id: 'Pengemudi wajib berhenti bila pejalan mungkin di jalur; klakson dan konfirmasi visual sebelum bergerak.' },
+  },
+  {
+    id: 'wind',
+    zone: { x: 0, z: -3, r: 2.6 },
+    objective: { en: 'Stack the box at block B', id: 'Tumpuk kotak di blok B' },
+    title: { en: 'Gusts at 14 m/s, stacking three-high', id: 'Angin 14 m/s, menumpuk tiga tingkat' },
+    situation: { en: 'The anemometer on the light mast reads 14 m/s with gusts. The plan says third tier. The box is empty and light.', id: 'Anemometer di tiang lampu menunjukkan 14 m/s dengan hembusan. Rencana: tingkat ketiga. Kotak kosong dan ringan.' },
+    options: [
+      { en: 'Stack it. Empty boxes are easy.', id: 'Tumpuk saja. Kotak kosong gampang.', correct: false, replay: 'load', captions: { en: ['An empty 40-ft box is a 30 m² sail.', 'Gust catches it on the spreader at 8 m.', 'It lands on whoever is on the ground side.'], id: ['Kotak 40 kaki kosong adalah layar seluas 30 m².', 'Hembusan menangkapnya di spreader pada 8 m.', 'Mendarat ke siapa pun yang ada di sisi bawah.'] } },
+      { en: 'Hold at ground tier, call the planner, stop stacking above two until the wind drops.', id: 'Tahan di tingkat dasar, hubungi planner, stop menumpuk di atas dua sampai angin turun.', correct: true },
+      { en: 'Stack it fast between gusts.', id: 'Tumpuk cepat di antara hembusan.', correct: false, replay: 'load', captions: { en: ['Between gusts is a guess.', 'The spreader twists, one corner unlocks.', 'Dropped from the third tier.'], id: ['"Di antara hembusan" hanyalah tebakan.', 'Spreader terpuntir, satu sudut terlepas.', 'Jatuh dari tingkat ketiga.'] } },
+    ],
+    action: { type: 'hold', key: 'KeyE', seconds: 1.6, label: { en: 'Hold E — set the box down, lock out stacking', id: 'Tahan E — turunkan kotak, kunci penumpukan' } },
+    why: { en: 'Empty containers are the ones the wind takes. Wind limits exist per tier because the people under the stack cannot see the gust coming.', id: 'Kontainer kosong justru yang dibawa angin. Batas angin per tingkat ada karena orang di bawah tumpukan tidak bisa melihat hembusan datang.' },
+    rule: { name: 'Permenaker No. 8/2020 · environmental limits for lifting', en: 'Lifting operations must stop when wind exceeds the equipment or site limit.', id: 'Operasi pengangkatan wajib berhenti bila angin melebihi batas alat atau lokasi.' },
+  },
+];
+
+const LASHING = [
+  {
+    id: 'gangway',
+    zone: { x: 0, z: -62, r: 2.8 },
+    objective: { en: 'Board the vessel by the gangway', id: 'Naik ke kapal lewat gangway' },
+    title: { en: 'The gangway safety net is missing', id: 'Jaring pengaman gangway tidak ada' },
+    situation: { en: 'High tide, the gangway sits at a steep angle. The net that should hang under it is on the quay in a heap. The foreman is already aboard, waving you up.', id: 'Pasang tinggi, gangway miring curam. Jaring yang seharusnya tergantung di bawahnya tergeletak di dermaga. Mandor sudah di atas, melambaikan tangan.' },
+    options: [
+      { en: 'Go up carefully, hold both rails.', id: 'Naik hati-hati, pegang kedua pegangan.', correct: false, replay: 'height', captions: { en: ['Wet aluminium, 38° angle, no net.', 'One slip between hull and quay.', 'Crushed between ship and fender on the next swell.'], id: ['Aluminium basah, kemiringan 38°, tanpa jaring.', 'Satu kali terpeleset di antara lambung dan dermaga.', 'Terjepit antara kapal dan fender pada gelombang berikutnya.'] } },
+      { en: 'Refuse to board until the net is rigged and the angle is reduced.', id: 'Tolak naik sampai jaring terpasang dan sudut dikurangi.', correct: true },
+      { en: 'Use the pilot ladder instead, it is quicker.', id: 'Pakai tangga pilot saja, lebih cepat.', correct: false, replay: 'height', captions: { en: ['A pilot ladder is for pilots, with a boat below.', '12 m of rope ladder over concrete.', 'Fall onto the quay edge.'], id: ['Tangga pilot untuk pandu, dengan kapal di bawahnya.', '12 m tangga tali di atas beton.', 'Jatuh ke tepi dermaga.'] } },
+    ],
+    action: { type: 'hold', key: 'KeyE', seconds: 1.8, label: { en: 'Hold E — rig the net with the crew', id: 'Tahan E — pasang jaring bersama kru' } },
+    why: { en: 'The gap between ship and quay is the most common fatal fall on a terminal. The net is not optional equipment; it is the floor.', id: 'Celah antara kapal dan dermaga adalah jatuh fatal paling umum di terminal. Jaring bukan perlengkapan opsional; itu lantainya.' },
+    rule: { name: 'Permenaker No. 9/2016 · access and fall protection', en: 'Access ways over a fall hazard require guard rails and a safety net or equivalent.', id: 'Jalur akses di atas bahaya jatuh wajib pagar pengaman dan jaring atau setara.' },
+  },
+  {
+    id: 'snapback',
+    zone: { x: 0, z: -96, r: 2.8 },
+    objective: { en: 'Walk the quay to the lashing station', id: 'Jalani dermaga ke stasiun lashing' },
+    title: { en: 'Mooring line under load, you are in the bight', id: 'Tali tambat tertegang, kamu di zona bight' },
+    situation: { en: 'The stern line is humming. The hatched snap-back zone on the quay is painted right across your route. Going round adds a minute.', id: 'Tali buritan berdengung. Zona snap-back bergaris di dermaga tepat melintang rute-mu. Memutar menambah satu menit.' },
+    options: [
+      { en: 'Walk through quickly, lines rarely part.', id: 'Lewati cepat, tali jarang putus.', correct: false, replay: 'snapback' },
+      { en: 'Stay outside the hatched zone, wait for the winch to ease, then pass behind the bollard.', id: 'Tetap di luar zona bergaris, tunggu winch mengendur, lalu lewat di belakang bollard.', correct: true },
+      { en: 'Duck under the line.', id: 'Merunduk di bawah tali.', correct: false, replay: 'snapback' },
+    ],
+    action: { type: 'timing', key: 'Space', label: { en: 'Press SPACE when the winch eases and the line drops', id: 'Tekan SPASI saat winch mengendur dan tali turun' }, window: [0.6, 0.78] },
+    why: { en: 'A parted mooring line travels faster than you can see it. The hatched zone is drawn where bodies have been found.', id: 'Tali tambat yang putus bergerak lebih cepat dari yang bisa kamu lihat. Zona bergaris digambar di tempat korban pernah ditemukan.' },
+    rule: { name: 'PP No. 50/2012 (SMK3) · hazard zoning', en: 'Identified hazard zones must be marked and entry controlled.', id: 'Zona bahaya teridentifikasi wajib ditandai dan aksesnya dikendalikan.' },
+  },
+  {
+    id: 'lashcage',
+    zone: { x: 0, z: -106, r: 2.8 },
+    objective: { en: 'Lash the top tier at bay 22', id: 'Lashing tingkat atas di bay 22' },
+    title: { en: 'Twist-locks on the top tier, cage or climb?', id: 'Twist-lock di tingkat atas, cage atau panjat?' },
+    situation: { en: 'The lashing cage is on the other crane, ten minutes away. The gantry operator offers to lift you on the spreader. The rods are 14 m up.', id: 'Lashing cage ada di crane lain, sepuluh menit jauhnya. Operator gantry menawarkan mengangkatmu dengan spreader. Batangnya 14 m di atas.' },
+    options: [
+      { en: 'Ride the spreader, it is faster.', id: 'Naik spreader, lebih cepat.', correct: false, replay: 'height', captions: { en: ['Standing on a spreader beam at 14 m, no cage, no clip.', 'The trolley brakes. You do not.', '14 m onto the deck.'], id: ['Berdiri di balok spreader pada 14 m, tanpa cage, tanpa harness.', 'Trolley mengerem. Kamu tidak.', '14 m ke dek.'] } },
+      { en: 'Wait for the cage, clip in, work from inside the rails.', id: 'Tunggu cage, pasang harness, kerja dari dalam pagar.', correct: true },
+      { en: 'Climb the container ladder rungs with the rod on your shoulder.', id: 'Panjat anak tangga kontainer dengan batang di bahu.', correct: false, replay: 'height', captions: { en: ['A 20 kg lashing rod and one free hand.', 'Rungs are wet. The rod swings.', 'Fall from the fourth tier.'], id: ['Batang lashing 20 kg dan satu tangan bebas.', 'Anak tangga basah. Batang berayun.', 'Jatuh dari tingkat keempat.'] } },
+    ],
+    action: { type: 'hold', key: 'KeyE', seconds: 2.0, label: { en: 'Hold E — clip in, lash from the cage', id: 'Tahan E — pasang harness, lashing dari cage' } },
+    why: { en: 'Riding a spreader is the single most common shortcut on deck and the single most common way lashers die.', id: 'Menaiki spreader adalah jalan pintas paling umum di dek dan cara paling umum lasher meninggal.' },
+    rule: { name: 'Permenaker No. 9/2016 · work at height on vessels', en: 'Work at height requires an engineered platform (cage) and fall arrest; riding loads or lifting gear is prohibited.', id: 'Kerja di ketinggian wajib platform terencana (cage) dan penahan jatuh; menumpang beban atau alat angkat dilarang.' },
+  },
+];
+
+export const ROLES = [
+  { id: 'checker', name: { en: 'Yard checker', id: 'Checker lapangan' }, tag: { en: 'On foot · 5 checkpoints', id: 'Jalan kaki · 5 checkpoint' },
+    blurb: { en: 'First day on foot in the container yard. Gate, lane, crane block, stacks, office.', id: 'Hari pertama jalan kaki di lapangan kontainer. Gerbang, jalur, blok crane, tumpukan, kantor.' },
+    spawn: { x: 0, z: 48, yaw: 0 }, hazards: CHECKER },
+  { id: 'operator', name: { en: 'Reach stacker operator', id: 'Operator reach stacker' }, tag: { en: 'Heavy equipment · 3 checkpoints', id: 'Alat berat · 3 checkpoint' },
+    blurb: { en: 'You drive the 45-tonne machine. Pre-start, blind spots, wind limits.', id: 'Kamu mengemudikan mesin 45 ton. Pre-start, blind spot, batas angin.' },
+    spawn: { x: 0, z: 48, yaw: 0 }, hazards: OPERATOR },
+  { id: 'lashing', name: { en: 'Lashing crew', id: 'Kru lashing' }, tag: { en: 'Quay & vessel · 3 checkpoints', id: 'Dermaga & kapal · 3 checkpoint' },
+    blurb: { en: 'Ship side. Gangway, mooring lines, the top tier.', id: 'Sisi kapal. Gangway, tali tambat, tingkat atas.' },
+    spawn: { x: 0, z: -52, yaw: 0 }, hazards: LASHING },
+];
+export const HAZARDS = CHECKER;
+
 export const STRINGS = {
+  roleTitle: { en: 'Pick your shift', id: 'Pilih shift-mu' },
+  roleLead: { en: 'Three jobs, three sets of calls. Each one ends in a shift report.', id: 'Tiga pekerjaan, tiga rangkaian keputusan. Masing-masing berakhir dengan laporan shift.' },
+  actionDone: { en: 'DONE', id: 'SELESAI' },
+  actionMiss: { en: 'Too early / too late', id: 'Terlalu cepat / terlambat' },
+  mission: { en: 'MISSION', id: 'MISI' },
+  milestones: { en: 'Milestones', id: 'Milestone' },
+  shiftTime: { en: 'Shift time', id: 'Waktu shift' },
+  distance: { en: 'to checkpoint', id: 'ke checkpoint' },
+  sound: { en: 'Sound', id: 'Suara' },
+  chooseKey: { en: 'Press 1 · 2 · 3 or click', id: 'Tekan 1 · 2 · 3 atau klik' },
   startLead: {
     en: 'Your first shift at a container terminal, in the browser. No headset. Walk the yard, make five calls a new worker makes every day. Get one wrong and the sim does not tell you — it shows you.',
     id: 'Shift pertamamu di terminal kontainer, langsung di browser. Tanpa headset. Jalani lapangan, ambil lima keputusan yang dihadapi pekerja baru tiap hari. Kalau salah, sim tidak sekadar memberi tahu — ia memperlihatkannya.',

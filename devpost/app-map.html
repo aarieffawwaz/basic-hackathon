@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ShiftReplay — App Map</title>
+<style>
+  body { font-family: ui-sans-serif, system-ui, sans-serif; max-width: 860px; margin: 32px auto; padding: 0 20px; color: #1b1f24; line-height: 1.5; }
+  h1 { font-size: 28px; margin-bottom: 4px; } h2 { font-size: 20px; margin-top: 32px; }
+  code { background: #f1f3f5; padding: 1px 5px; border-radius: 4px; font-size: 0.92em; }
+  .stop { border-left: 4px solid #f5c518; padding: 8px 14px; margin: 10px 0; background: #fffbe6; }
+  .muted { color: #57606a; font-size: 14px; }
+  table { border-collapse: collapse; width: 100%; } td, th { text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb; vertical-align: top; }
+  svg text { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 12px; }
+  details { margin: 8px 0; } summary { cursor: pointer; font-weight: 600; }
+</style>
+</head>
+<body>
+<h1>ShiftReplay — App Map</h1>
+<p class="muted">Snapshot of the proof of concept after build revisions. Paths and symbols are checked against the source at the commit named at the bottom; the code can drift after that.</p>
+
+<h2>What it is, in one breath</h2>
+<p>One web page draws a container terminal with three.js. You pick a job, walk to checkpoints, and choose what to do. A wrong choice plays a short scripted replay of the accident; a right choice asks you to physically do the safe thing (hold a key, or time a key press). A report closes the shift.</p>
+<p>Four pieces: <b>the world</b> (<code>src/world.js</code>, with textures from <code>src/textures.js</code>), <b>the player</b> (<code>src/player.js</code>), <b>the content</b> (<code>src/scenario.js</code>), and <b>the runner</b> (<code>src/hazards.js</code>) that turns content into what you see through <code>src/ui.js</code> and <code>src/replay.js</code>.</p>
+
+<h2>One action, end to end: choosing "Cross now" at the truck lane</h2>
+<svg viewBox="0 0 820 170" width="100%" role="img" aria-label="Flow from walking into the checkpoint zone to the replay and the rule card">
+  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#57606a"/></marker></defs>
+  <g fill="#fffbe6" stroke="#f5c518" stroke-width="2">
+    <rect x="10" y="40" width="150" height="70" rx="8"/><rect x="215" y="40" width="150" height="70" rx="8"/><rect x="420" y="40" width="150" height="70" rx="8"/><rect x="625" y="40" width="180" height="70" rx="8"/>
+  </g>
+  <g fill="#1b1f24">
+    <text x="20" y="62">You walk into the</text><text x="20" y="78">beacon ring</text><text x="20" y="98" fill="#57606a">hazards.js update()</text>
+    <text x="225" y="62">Decision fills screen,</text><text x="225" y="78">you press A</text><text x="225" y="98" fill="#57606a">ui.js showPrompt()</text>
+    <text x="430" y="62">Replay: tractor at</text><text x="430" y="78">the zebra, flash</text><text x="430" y="98" fill="#57606a">replay.js 'cross'</text>
+    <text x="635" y="62">NEAR MISS card +</text><text x="635" y="78">UU No. 1/1970, retry</text><text x="635" y="98" fill="#57606a">ui.js showFeedback()</text>
+  </g>
+  <g stroke="#57606a" stroke-width="2" marker-end="url(#a)"><line x1="160" y1="75" x2="212" y2="75"/><line x1="365" y1="75" x2="417" y2="75"/><line x1="570" y1="75" x2="622" y2="75"/></g>
+  <text x="10" y="150" fill="#57606a">Nothing is stored. The only external thing is the browser's pointer lock and WebAudio.</text>
+</svg>
+
+<h2>Reference route (3 stops)</h2>
+<p class="muted">Labelled a reference route: it was prepared from the source, not toured interactively in this session.</p>
+<div class="stop"><b>Stop 1 — the trigger.</b> <code>src/hazards.js</code>, method <code>update(dt)</code>, branch <code>if (this.state === 'walk')</code>. It measures the distance from <code>player.pos</code> to the current hazard's <code>zone</code> and calls <code>trigger()</code> inside the radius. That is why the yellow ring is exactly where the decision appears.</div>
+<div class="stop"><b>Stop 2 — the content.</b> <code>src/scenario.js</code>, constant <code>CHECKER</code>, object with <code>id: 'cross'</code>. The three options, which one is <code>correct</code>, which replay a wrong one plays, the <code>action</code> afterwards, and the <code>rule</code>. Changing a sentence here changes the screen; nothing else needs to move.</div>
+<div class="stop"><b>Stop 3 — the consequence.</b> <code>src/replay.js</code>, branch <code>if (id === 'cross' || id === 'report')</code>. A dummy worker walks to <code>z = 17.8</code> while a truck travels at <code>v = 15</code> replay-metres per second; <code>impactAt</code> is when they meet, and the runner flashes the screen there. The camera path is <code>cam(t)</code>.</div>
+
+<h2>To change this, start here</h2>
+<table>
+  <tr><th>Want to…</th><th>Open</th></tr>
+  <tr><td>Reword a situation, option or rule</td><td><code>src/scenario.js</code> → the hazard object (search its <code>id</code>)</td></tr>
+  <tr><td>Add a checkpoint to a role</td><td><code>src/scenario.js</code> → push an object onto <code>CHECKER</code>, <code>OPERATOR</code> or <code>LASHING</code>; see <code>docs/HAZARD-FORMAT.md</code></td></tr>
+  <tr><td>Make a replay longer or change its camera</td><td><code>src/replay.js</code> → that branch's <code>dur</code> and <code>cam(t)</code></td></tr>
+  <tr><td>Make the hold action faster</td><td><code>src/scenario.js</code> → the hazard's <code>action.seconds</code></td></tr>
+  <tr><td>Change the look of the yard</td><td><code>src/world.js</code> (geometry, lights, sky) and <code>src/textures.js</code> (surfaces)</td></tr>
+  <tr><td>Change HUD text sizes or colours</td><td><code>src/style.css</code> → <code>#decision</code>, <code>#mission</code></td></tr>
+  <tr><td>Switch the default language</td><td><code>src/ui.js</code> → constructor, <code>localStorage.getItem('k3-lang') || 'en'</code></td></tr>
+</table>
+
+<h2>A practice to reuse</h2>
+<p><b>Decision:</b> keep all content as data (<code>src/scenario.js</code>) and all behaviour as a small state machine (<code>src/hazards.js</code>). <b>Evidence:</b> adding two more roles with six checkpoints (<code>devpost/checklist.md &gt; Slices &gt; 4</code>) needed no changes to the runner, and reusing a replay with new captions was a one-field addition (<code>captions</code>). <b>Elsewhere:</b> when an app is "the same loop over different content", write the loop once and keep the content in one file; the agent can then extend the product by editing data, which is cheap to review.</p>
+
+<details><summary>Verification used during the build</summary>
+<ul>
+  <li><code>pnpm build</code> after every slice.</li>
+  <li>Screenshots of <code>/play/?shot=1</code>, <code>?at=2</code>, <code>?at=N&amp;replay=T</code>, <code>?at=1&amp;action=1</code>, <code>?end=1</code> and <code>/</code> in a real browser (Chrome extension on the LAN address). Headless Chrome could not render the v2 scene.</li>
+  <li>Console checked for errors on each page.</li>
+</ul>
+</details>
+
+<h2>Run it again</h2>
+<p><code>pnpm install</code> then <code>pnpm dev</code> → open <code>http://localhost:5173/play/</code>. Live: <code>https://shiftreplay.vercel.app/play/</code>.</p>
+<p class="muted">Source commit for this map: see <code>git log -1 -- devpost/app-map.html</code>.</p>
+</body>
+</html>

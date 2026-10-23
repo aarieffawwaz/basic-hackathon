@@ -14,7 +14,7 @@ export class Player {
     this.enabled = false;
     this.speed = 5.5;
     this.radius = 0.5;
-    this.bounds = { x: 58, zMin: -52, zMax: 52 };
+    this.bounds = { x: 58, zMin: -109, zMax: 52 };
 
     addEventListener('keydown', (e) => { this.keys[e.code] = true; });
     addEventListener('keyup', (e) => { this.keys[e.code] = false; });
@@ -32,6 +32,7 @@ export class Player {
   unlock() { if (this.locked) document.exitPointerLock(); }
 
   setPosition(x, z, yaw = 0) {
+    this.pos.set(x, 1.7, z); this.yaw = yaw; this.pitch = 0; this.applyCamera(); return;
     this.pos.set(x, 1.7, z);
     this.yaw = yaw;
     this.pitch = 0;

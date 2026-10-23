@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ShiftReplay — First Shift</title>
+    <meta name="description" content="Browser-only 3D safety sim. Make the call, see the consequence, learn the rule." />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="app"></div>
+    <div id="vignette"></div>
+
+    <div id="hud" class="hidden">
+      <aside id="mission">
+        <div class="k" id="mission-k">MISSION</div>
+        <div id="mission-role"></div>
+        <div id="objective-text"></div>
+        <div id="distance"></div>
+        <div class="k" id="milestones-k">MILESTONES</div>
+        <ol id="milestones"></ol>
+      </aside>
+      <aside id="status">
+        <div class="row"><span id="timer">0:00</span><span class="lbl" id="timer-lbl"></span></div>
+        <div class="row"><span id="near-count">0</span><span class="lbl" id="near-lbl"></span></div>
+        <div class="row ctl"><button id="sound" type="button">♪</button><button id="lang" type="button">ID</button></div>
+      </aside>
+      <div id="crosshair"></div>
+      <div id="hint"></div>
+    </div>
+
+    <div id="flash"></div>
+    <div id="replay-banner" class="hidden"><span class="tag">REPLAY</span><span id="replay-caption"></span></div>
+
+    <div id="decision" class="hidden"></div>
+    <div id="action" class="hidden"></div>
+
+    <div id="overlay-start" class="overlay">
+      <div class="panel wide">
+        <div class="eyebrow">SHIFTREPLAY · CONTAINER TERMINAL</div>
+        <h1>First Shift</h1>
+        <p id="start-lead"></p>
+        <h3 id="role-title"></h3>
+        <div id="roles"></div>
+        <p class="fine" id="start-fine"></p>
+        <a class="back" href="/">← shiftreplay.vercel.app</a>
+      </div>
+    </div>
+    <div id="overlay-end" class="overlay hidden"></div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

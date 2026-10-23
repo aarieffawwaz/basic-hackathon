@@ -3,9 +3,11 @@ doc: scope
 status: approved
 ---
 
-# K3 Sim — First Shift
+# ShiftReplay — First Shift
 
-One line: a browser-only 3D safety-training sim where a new terminal worker walks their first shift, makes five real calls, and sees the accident each wrong call would have caused.
+One line: a browser-only 3D safety-training sim where a new terminal worker picks a job, walks their first shift, makes the calls that job demands, and sees the accident each wrong call would have caused.
+
+(Working title during scoping was "K3 Sim"; renamed ShiftReplay before shipping because the kernel is in the name.)
 
 ## The Unique Kernel
 When you make the wrong call, the sim does not say "incorrect". It cuts to a third-person slow-motion **consequence replay** of what would have happened to you — the tractor, the dropped container, the fall — and only then shows the rule. The lesson is the replay, not the quiz. Delete the replay and this is a multiple-choice K3 test with a 3D background; keep it and it is the thing people remember.
@@ -29,11 +31,12 @@ I grew up around people who work field jobs — ports, plants, mines — and the
 Open the link, click Start, walk to the truck lane, choose "cross now", and watch the tractor hit you in slow motion with the stopping-distance caption, then the Permenaker reference. That is the "oh" beat. Then five checkpoints end in a shift report listing each call, first try or replayed.
 
 ## The POC Boundary
-- One scene: a container terminal built from primitives (no model files).
-- Five checkpoints: PPE at the gate, truck-lane crossing, suspended load, work at height, near-miss reporting.
-- Four distinct consequence replays (the reporting checkpoint reuses the crossing replay "seven days later").
-- English and Bahasa Indonesia toggle.
-- Shift report at the end. No accounts, no server, no API keys.
+- One scene: a container terminal with yard and quay, built from primitives and procedurally drawn textures (no model or image files).
+- Three roles: yard checker (5 checkpoints), reach stacker operator (3), lashing crew (3). Eleven checkpoints in total.
+- Five consequence replays (`ppe`, `cross`, `load`, `height`, `snapback`); roles retell the same physics with different captions.
+- An action step after each right call: hold E, or time SPACE.
+- Procedural port ambience (WebAudio), birds, sky, sun.
+- English and Bahasa Indonesia toggle. Shift report at the end. A landing page. No accounts, no server, no API keys.
 
 ## Later
 - More scenes (petrochemical plant, mine haul road) driven by the same JSON hazard format.

@@ -1,12 +1,12 @@
 import * as THREE from 'three';
-import { makeWorker, makeTruck, makeContainer } from './world.js';
+import { makeWorker, makeTruck, makeContainer, animateWorker } from './world.js';
 
 // Consequence replays. Each returns { dur, cam(t), update(t), captions, dispose() }.
 // Time t runs in "replay seconds"; the runner slows the clock so the moment reads as slow motion.
 const ease = (a, b, t) => a + (b - a) * Math.max(0, Math.min(1, t));
 const smooth = (t) => t * t * (3 - 2 * t);
 
-export function createReplay(id, world, lang) {
+export function createReplay(id, world, lang, captionsOverride) {
   const scene = world.scene;
   const actors = [];
   const add = (o) => { scene.add(o); actors.push(o); return o; };
@@ -36,7 +36,7 @@ export function createReplay(id, world, lang) {
 
   if (id === 'cross' || id === 'report') {
     const later = id === 'report';
-    const w = add(makeWorker(later ? 0x38c172 : 0xff8c1a)); w.position.set(0, 0, 23.5);
+    const w = add(makeWorker(later ? 0x38c172 : 0xff8c1a)); w.position.set(0, 0, 23.5); w.rotation.y = Math.PI;
     const truck = add(makeTruck(0xe67e22)); truck.position.set(-40, 0, 18); truck.rotation.y = 0;
     const v = 15; // m per replay-second
     const hitT = 40 / v; // truck front (x≈+5) reaches worker at x=0 → use 35/v
@@ -57,7 +57,7 @@ export function createReplay(id, world, lang) {
         truck.position.x = -40 + v * t;
         if (t < tHit) {
           w.position.z = ease(23.5, 17.8, t / tHit);
-          w.position.y = Math.abs(Math.sin(t * 9)) * 0.06;
+          animateWorker(w, t, 1);
         } else {
           const k = t - tHit;
           w.position.x = Math.min(k * 9, 9); w.position.y = Math.max(0.3, 1.8 * k - 2.5 * k * k);
@@ -68,7 +68,7 @@ export function createReplay(id, world, lang) {
   }
 
   if (id === 'load') {
-    const w = add(makeWorker(0xff8c1a)); w.position.set(0, 0, -3.5);
+    const w = add(makeWorker(0xff8c1a)); w.position.set(0, 0, -3.5); w.rotation.y = Math.PI;
     const hang = world.hang;
     const y0 = hang.position.y;
     return {
@@ -82,7 +82,7 @@ export function createReplay(id, world, lang) {
       cam: (t) => ({ pos: new THREE.Vector3(-11, 3.4, 3 - t * 0.5), look: new THREE.Vector3(0, 3, -12) }),
       update: (t) => {
         w.position.z = ease(-3.5, -12.5, t / 2.9);
-        w.position.y = Math.abs(Math.sin(t * 9)) * 0.06;
+        animateWorker(w, t, 1);
         if (t > 1.6) { const k = t - 1.6; hang.rotation.x = -Math.min(0.35, k * 0.5); hang.position.y = y0 - Math.min(5.0, 2.2 * k * k); }
         if (t > 2.75) w.visible = false;
       },
@@ -101,11 +101,45 @@ export function createReplay(id, world, lang) {
       impactAt: 2.9,
       cam: (t) => ({ pos: new THREE.Vector3(-3 + t * 0.3, 4.5, -17), look: new THREE.Vector3(5, 3, -23.4) }),
       update: (t) => {
-        if (t < 1.9) { w.position.x = ease(9.5, 4.6, t / 1.9); w.position.y = 5.2 + Math.abs(Math.sin(t * 8)) * 0.05; }
+        if (t < 1.9) { w.position.x = ease(9.5, 4.6, t / 1.9); w.rotation.y = -Math.PI / 2; animateWorker(w, t, 1); }
         else { const k = t - 1.9; w.position.x = 4.6 - k * 1.2; w.position.y = Math.max(0.35, 5.2 - 4.9 * k * k); w.rotation.z = Math.min(Math.PI / 2, k * 2.2); }
       },
     };
   }
 
+  if (id === 'snapback') {
+    const w = add(makeWorker(0x38c172)); w.position.set(2.5, 0, -100); w.rotation.y = Math.PI;
+    const line = add(new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 46, 6), new THREE.MeshStandardMaterial({ color: 0xd8cfae, roughness: 0.9 })));
+    const bollard = new THREE.Vector3(6, 0.6, -110);
+    const setLine = (ang) => { line.position.set(bollard.x + Math.sin(ang) * 23 * 0.0, 0, 0); line.position.copy(bollard).add(new THREE.Vector3(Math.sin(ang) * 23 * 0.3, 9 * 0.5, -23)); line.rotation.set(Math.PI / 2 - 0.37, 0, ang); };
+    setLine(0);
+    return {
+      dur: 5, dispose,
+      captions: [
+        { t: 0, text: L('Stern line, 60 t on the winch. The hatched zone is where it would land.', 'Tali buritan, 60 t di winch. Zona bergaris adalah tempat tali akan mendarat.') },
+        { t: 1.9, text: L('One strand goes. The rest follow in 40 ms.', 'Satu serat putus. Sisanya menyusul dalam 40 ms.') },
+        { t: 3.0, text: L('The line reaches you before the sound does.', 'Tali mencapaimu sebelum suaranya.') },
+      ],
+      impactAt: 2.1,
+      cam: (t) => ({ pos: new THREE.Vector3(-9, 4.2, -90 - t * 0.4), look: new THREE.Vector3(3, 1.5, -104) }),
+      update: (t) => {
+        if (t < 1.9) { w.position.z = ease(-100, -106, t / 1.9); animateWorker(w, t, 1); }
+        else {
+          const k = t - 1.9;
+          setLine(Math.min(1.4, k * 9));
+          w.position.x = 2.5 - Math.min(k * 7, 7); w.position.y = Math.max(0.3, 1.6 * k - 2.4 * k * k); w.rotation.z = Math.min(Math.PI / 2, k * 4);
+        }
+      },
+    };
+  }
+
   throw new Error(`unknown replay ${id}`);
+}
+
+// Wrap createReplay so a hazard can swap caption text (same beats, different story).
+const base = createReplay;
+export function createReplayFor(id, world, lang, override) {
+  const r = base(id, world, lang);
+  if (override) { const list = override[lang] || override.en; r.captions = r.captions.map((c, i) => ({ t: c.t, text: list[i] ?? c.text })); }
+  return r;
 }
