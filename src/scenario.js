@@ -260,8 +260,12 @@ export const STRINGS = {
     en: ['WASD to walk, mouse to look, V for third person', 'Follow the yellow beacon', 'Decide at each checkpoint', 'Wrong call → consequence replay → the rule'],
     id: ['WASD jalan, mouse lihat, V untuk sudut orang ketiga', 'Ikuti beacon kuning', 'Putuskan di tiap checkpoint', 'Salah → replay akibatnya → aturannya'],
   },
+  startKeys: {
+    en: [['W A S D', 'walk'], ['Mouse', 'look'], ['V', 'third person'], ['A B C', 'decide'], ['Esc', 'release mouse']],
+    id: [['W A S D', 'jalan'], ['Mouse', 'lihat'], ['V', 'orang ketiga'], ['A B C', 'putuskan'], ['Esc', 'lepas mouse']],
+  },
   startBtn: { en: 'Start shift', id: 'Mulai shift' },
-  startFine: { en: 'Click locks your mouse to the sim. Press Esc to release it.', id: 'Klik akan mengunci mouse ke sim. Tekan Esc untuk melepas.' },
+  startFine: { en: 'Clicking locks your mouse to the sim. Follow the yellow beacon. A wrong call plays the consequence, then the rule.', id: 'Klik akan mengunci mouse ke sim. Ikuti beacon kuning. Keputusan salah memutar akibatnya, lalu aturannya.' },
   hint: { en: 'WASD walk · mouse look · V view · Esc release mouse', id: 'WASD jalan · mouse lihat · V sudut pandang · Esc lepas mouse' },
   hintClick: { en: 'Click to resume', id: 'Klik untuk lanjut' },
   passed: { en: 'SAFE CALL', id: 'KEPUTUSAN AMAN' },

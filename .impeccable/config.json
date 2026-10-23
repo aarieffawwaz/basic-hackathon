@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "src/landing.css"
+        ],
+        "createdAt": "2026-10-23T13:55:31.372Z",
+        "reason": "Claude: .hero-step deliberately mirrors the sim's #mission HUD panel (same 4px accent left border in src/style.css) so the landing caption reads as the product's own mission card"
+      }
+    ]
+  }
+}

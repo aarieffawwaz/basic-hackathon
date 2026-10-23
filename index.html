@@ -16,7 +16,7 @@
   <body>
     <div class="grain" aria-hidden="true"></div>
     <nav class="nav">
-      <a class="brand" href="/"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#f5c518"/><path d="M48 37.8 A17 17 0 1 1 40.5 17.3" fill="none" stroke="#0f1216" stroke-width="6" stroke-linecap="round"/><path d="M46.2 21.2 L37.4 22.6 L42.6 12.4 Z" fill="#0f1216"/><path d="M25 34 a7 7 0 0 1 14 0 z" fill="#0f1216"/><rect x="21.5" y="34" width="21" height="3.6" rx="1.8" fill="#0f1216"/><circle cx="32" cy="26.5" r="1.6" fill="#f5c518"/></svg><span>Shift<em>Replay</em></span></a>
+      <a class="brand" href="/"><img class="mark" src="/logo.svg" alt="" width="26" height="26" /><span>Shift<em>Replay</em></span></a>
       <div class="links">
         <a href="#how">How it works <span>+</span></a>
         <a href="#replay">The replay <span>+</span></a>
@@ -27,75 +27,83 @@
     </nav>
 
     <header class="hero">
-      <canvas id="hero3d"></canvas>
-      <div class="hero-inner">
-        <div class="tag">◼ K3 SAFETY SIM · BROWSER ONLY · NO HEADSET</div>
-        <h1>See the accident<br>before it happens.</h1>
-        <p>ShiftReplay puts a new worker on a 3D container terminal, asks them to make the calls a first shift demands, and when they get one wrong it does not say "incorrect" — it replays what would have happened. Then the rule.</p>
-        <div class="ctas">
-          <a class="btn primary" href="/play/">Start shift →</a>
-          <a class="btn" href="https://github.com/aarieffawwaz/basic-hackathon#readme" target="_blank" rel="noreferrer">Read the docs</a>
+      <div class="hero-sticky">
+        <canvas id="hero3d"></canvas>
+        <div class="hero-inner"><div>
+          <div class="eyebrow">K3 safety sim</div>
+          <h1>See the accident<br>before it happens.</h1>
+          <p class="lead">A new worker walks a 3D container terminal and makes the calls a first shift demands. Get one wrong and the sim replays what would have happened, then shows the rule.</p>
+          <div class="ctas">
+            <a class="btn primary" href="/play/">Start shift →</a>
+            <a class="btn" href="https://github.com/aarieffawwaz/basic-hackathon#readme" target="_blank" rel="noreferrer">Read the docs</a>
+          </div>
+        </div></div>
+        <div class="hero-steps" aria-live="polite">
+          <div class="hero-step"><div class="n">01 · WALK THE YARD</div><h3>First person, from the gate</h3><p>WASD and mouse. A beacon marks the next checkpoint. Trucks loop, the RTG sways, gulls circle the quay.</p></div>
+          <div class="hero-step"><div class="n">02 · MAKE THE CALL</div><h3>A tractor is coming</h3><p>Three options fill the screen. One is right, two are what people do when they are late. Press A, B or C.</p></div>
+          <div class="hero-step"><div class="n">03 · WATCH THE REPLAY</div><h3>Wrong call, third person</h3><p>The camera cuts away and plays the accident in slow motion, with the physics in the captions.</p></div>
+          <div class="hero-step"><div class="n">04 · DO THE SAFE THING</div><h3>Then the rule</h3><p>Hold E to put on PPE or clip a harness. Hit SPACE the moment the driver waves. Then the shift report.</p><a class="btn primary go" href="/play/">Start shift →</a></div>
         </div>
-        <div class="meta"><span>Built with Claude Code</span><span>three.js · Vite</span><span>Devpost Learn · Build With AI: Basics</span></div>
+        <div class="scroll">Scroll</div>
       </div>
-      <div class="scroll">scroll</div>
+      <span id="how" aria-hidden="true"></span>
     </header>
 
     <div class="ticker"><div class="track">
-      <span>Permenaker No. 8/2010 · Alat Pelindung Diri</span><span>UU No. 1/1970 · Keselamatan Kerja</span><span>Permenaker No. 8/2020 · Pesawat Angkat &amp; Angkut</span><span>Permenaker No. 9/2016 · Kerja pada Ketinggian</span><span>PP No. 50/2012 · SMK3</span>
-      <span>Permenaker No. 8/2010 · Alat Pelindung Diri</span><span>UU No. 1/1970 · Keselamatan Kerja</span><span>Permenaker No. 8/2020 · Pesawat Angkat &amp; Angkut</span><span>Permenaker No. 9/2016 · Kerja pada Ketinggian</span><span>PP No. 50/2012 · SMK3</span>
+      <span><b>Permenaker 8/2010</b>Personal protective equipment</span><span><b>UU 1/1970</b>Occupational safety act</span><span><b>Permenaker 8/2020</b>Lifting and transport equipment</span><span><b>Permenaker 9/2016</b>Work at height</span><span><b>PP 50/2012</b>Safety management system (SMK3)</span>
+      <span><b>Permenaker 8/2010</b>Personal protective equipment</span><span><b>UU 1/1970</b>Occupational safety act</span><span><b>Permenaker 8/2020</b>Lifting and transport equipment</span><span><b>Permenaker 9/2016</b>Work at height</span><span><b>PP 50/2012</b>Safety management system (SMK3)</span>
     </div></div>
 
-    <section class="stats">
-      <div><b>3</b><span>roles · yard, machine, vessel</span></div>
-      <div><b>11</b><span>checkpoints with real regulations</span></div>
-      <div><b>5</b><span>consequence replays</span></div>
-      <div><b>0</b><span>installs, headsets, logins</span></div>
-    </section>
-
-    <section id="how" class="how">
-      <div class="sec-head"><div class="tag">◼ HOW IT WORKS</div><h2>Walk. Decide. Watch. Learn.</h2></div>
+    <section class="how how-static">
+      <div class="sec-head"><div class="eyebrow">How it works</div><h2>Walk. Decide. Watch. Learn.</h2></div>
       <div class="steps">
-        <div class="step"><div class="n">01</div><h3>Walk the yard</h3><p>WASD and mouse, first person. A beacon marks the next checkpoint. Trucks loop, the RTG sways, gulls circle the quay.</p></div>
-        <div class="step"><div class="n">02</div><h3>Make the call</h3><p>Three options fill the screen. One is right, two are what people actually do when they are late. Press A, B or C.</p></div>
-        <div class="step"><div class="n">03</div><h3>Watch the replay</h3><p>Wrong call: the camera cuts to third person and plays the accident in slow motion, with the physics in the captions.</p></div>
-        <div class="step"><div class="n">04</div><h3>Do the safe thing</h3><p>Hold E to put on PPE or clip a harness. Hit SPACE the moment the driver waves. Then the shift report.</p></div>
+        <div class="ap step"><div class="ap-bar">step 01</div><pre class="digit" data-n="01" aria-hidden="true"></pre><h3>Walk the yard</h3><p>WASD and mouse, first person. A beacon marks the next checkpoint. Trucks loop, the RTG sways, gulls circle the quay.</p></div>
+        <div class="ap step"><div class="ap-bar">step 02</div><pre class="digit" data-n="02" aria-hidden="true"></pre><h3>Make the call</h3><p>Three options fill the screen. One is right, two are what people actually do when they are late. Press A, B or C.</p></div>
+        <div class="ap step"><div class="ap-bar">step 03</div><pre class="digit" data-n="03" aria-hidden="true"></pre><h3>Watch the replay</h3><p>Wrong call: the camera cuts to third person and plays the accident in slow motion, with the physics in the captions.</p></div>
+        <div class="ap step"><div class="ap-bar">step 04</div><pre class="digit" data-n="04" aria-hidden="true"></pre><h3>Do the safe thing</h3><p>Hold E to put on PPE or clip a harness. Hit SPACE the moment the driver waves. Then the shift report.</p></div>
       </div>
     </section>
+
+    <div class="rule"><pre class="ascii-rule" aria-hidden="true"></pre></div>
 
     <section id="replay" class="feature">
       <div class="feature-copy">
-        <div class="tag">◼ THE KERNEL</div>
+        <div class="eyebrow">The kernel</div>
         <h2>The replay is the lesson.</h2>
-        <p>A quiz tells you that you were wrong. A replay shows you the 25-tonne tractor, the 20 metres it needs to stop, and the three seconds you had. Regulations are introduced <em>after</em> the body, because that is the order in which they were written.</p>
-        <ul>
+        <p>A quiz tells you that you were wrong. A replay shows you the 25-tonne tractor, the 20 metres it needs to stop, and the three seconds you had. The regulation comes after the body, because that is the order in which it was written.</p>
+        <ul class="checks">
           <li><b>Scripted, not simulated.</b> Each replay is a five-second scene with a fixed camera and timed captions. It reads the same every time, which is what a lesson needs.</li>
           <li><b>Real rules, paraphrased.</b> Every checkpoint cites the Indonesian regulation it comes from. The one-line summaries are ours and are flagged for practitioner review.</li>
-          <li><b>EN / ID.</b> Judges read it in English; the people it is for read it in Bahasa Indonesia.</li>
+          <li><b>English first.</b> Every screen ships in English. The sim has a one-tap switch to Bahasa Indonesia for the workers it is made for.</li>
         </ul>
       </div>
       <div class="feature-media">
-        <img src="/screenshots/replay-cross.jpg" alt="Consequence replay: a terminal tractor strikes a worker at the crossing" />
+        <div class="ap"><div class="ap-bar">replay · truck lane · 00:03</div><img src="/screenshots/replay-cross.jpg" alt="Consequence replay: a terminal tractor strikes a worker at the crossing" /></div>
         <div class="grid4">
-          <img src="/screenshots/replay-ppe.jpg" alt="A twist-lock falls on a helmetless worker" />
-          <img src="/screenshots/replay-load.jpg" alt="A suspended container drops" />
-          <img src="/screenshots/replay-height.jpg" alt="A worker steps off a container roof" />
-          <img src="/screenshots/replay-snapback.jpg" alt="A mooring line parts" />
+          <div class="ap"><div class="ap-bar">ppe</div><img src="/screenshots/replay-ppe.jpg" alt="A twist-lock falls on a helmetless worker" /></div>
+          <div class="ap"><div class="ap-bar">load</div><img src="/screenshots/replay-load.jpg" alt="A suspended container drops" /></div>
+          <div class="ap"><div class="ap-bar">height</div><img src="/screenshots/replay-height.jpg" alt="A worker steps off a container roof" /></div>
+          <div class="ap"><div class="ap-bar">snapback</div><img src="/screenshots/replay-snapback.jpg" alt="A mooring line parts" /></div>
         </div>
       </div>
     </section>
 
+    <div class="rule"><pre class="ascii-rule" aria-hidden="true"></pre></div>
+
     <section id="roles" class="roles">
-      <div class="sec-head"><div class="tag">◼ THREE SHIFTS</div><h2>Pick a job. Each one has different ways to go wrong.</h2></div>
+      <div class="sec-head"><div class="eyebrow">Three shifts</div><h2>Pick a job. Each one has different ways to go wrong.</h2></div>
       <div class="role-grid">
-        <a class="role" href="/play/?role=checker"><div class="rn">Yard checker</div><div class="rt">On foot · 5 checkpoints</div><p>Gate PPE, the truck lane, the suspended load, the two-high stack, and whether you file the near-miss report.</p><img src="/screenshots/decision.jpg" alt="Decision screen" /></a>
-        <a class="role" href="/play/?role=operator"><div class="rn">Reach stacker operator</div><div class="rt">Heavy equipment · 3 checkpoints</div><p>Pre-start inspection on a warm machine, a checker in your blind spot, gusts at 14 m/s with a stack to build.</p><img src="/screenshots/yard.jpg" alt="The yard" /></a>
-        <a class="role" href="/play/?role=lashing"><div class="rn">Lashing crew</div><div class="rt">Quay &amp; vessel · 3 checkpoints</div><p>A gangway with no net, a stern line under 60 tonnes, and the fastest way to the top tier.</p><img src="/screenshots/quay.jpg" alt="The quay" /></a>
+        <a class="ap role" href="/play/?role=checker"><div class="ap-bar">on foot · 5 checkpoints</div><div class="rn">Yard checker</div><p>Gate PPE, the truck lane, the suspended load, the two-high stack, and whether you file the near-miss report.</p><img src="/screenshots/decision.jpg" alt="Decision screen" /><div class="go">start shift →</div></a>
+        <a class="ap role" href="/play/?role=operator"><div class="ap-bar">heavy equipment · 3 checkpoints</div><div class="rn">Reach stacker operator</div><p>Pre-start inspection on a warm machine, a checker in your blind spot, gusts at 14 m/s with a stack to build.</p><img src="/screenshots/yard.jpg" alt="The yard" /><div class="go">start shift →</div></a>
+        <a class="ap role" href="/play/?role=lashing"><div class="ap-bar">quay &amp; vessel · 3 checkpoints</div><div class="rn">Lashing crew</div><p>A gangway with no net, a stern line under 60 tonnes, and the fastest way to the top tier.</p><img src="/screenshots/quay.jpg" alt="The quay" /><div class="go">start shift →</div></a>
       </div>
     </section>
 
+    <div class="rule"><pre class="ascii-rule" aria-hidden="true"></pre></div>
+
     <section class="compare">
-      <div class="sec-head"><div class="tag">◼ WHY NOT VR</div><h2>Headsets train the people who already have a training room.</h2></div>
+      <div class="sec-head"><div class="eyebrow">Why not VR</div><h2>Headsets train the people who already have a training room.</h2></div>
+      <div class="ap"><div class="ap-bar">vr vs shiftreplay</div>
       <table>
         <thead><tr><th></th><th>VR safety training</th><th>ShiftReplay</th></tr></thead>
         <tbody>
@@ -103,25 +111,40 @@
           <tr><td>Time to first lesson</td><td>Procurement, install, onboarding</td><td>Open a link, click a role</td></tr>
           <tr><td>Who sees it</td><td>Staff at HQ with the room</td><td>The contractor on day one</td></tr>
           <tr><td>Adding a scenario</td><td>Vendor project</td><td>One JSON object</td></tr>
-          <tr><td>Presence</td><td>Higher</td><td>Lower — compensated by the replay</td></tr>
+          <tr><td>Presence</td><td>Higher</td><td>Lower. The replay makes up the difference</td></tr>
         </tbody>
       </table>
-      <p class="note">Molca, Immerse, SimLab and others do serious VR work for ports and energy. ShiftReplay is the version for everyone who does not get a headset.</p>
+      </div>
+      <p class="note fine">Molca, Immerse, SimLab and others do serious VR work for ports and energy. ShiftReplay is the version for everyone who does not get a headset.</p>
     </section>
 
+    <div class="rule"><pre class="ascii-rule" aria-hidden="true"></pre></div>
+
     <section class="built">
-      <div class="sec-head"><div class="tag">◼ BUILT FOR DEVPOST LEARN</div><h2>Planned first, then built.</h2></div>
-      <div class="docs">
-        <a href="https://github.com/aarieffawwaz/basic-hackathon/blob/main/devpost/scope.md"><b>scope.md</b><span>The kernel, who it is for, what was cut</span></a>
-        <a href="https://github.com/aarieffawwaz/basic-hackathon/blob/main/devpost/prd.md"><b>prd.md</b><span>Core journey, screens, behaviour, decisions</span></a>
-        <a href="https://github.com/aarieffawwaz/basic-hackathon/blob/main/devpost/spec.md"><b>spec.md</b><span>Stack, components, data, failure modes</span></a>
-        <a href="https://github.com/aarieffawwaz/basic-hackathon/blob/main/devpost/checklist.md"><b>checklist.md</b><span>Build slices, verification, revisions</span></a>
+      <div class="sec-head"><div class="eyebrow">Built for Devpost Learn</div><h2>Planned first, then built.</h2></div>
+      <div class="ap docs"><div class="ap-bar">devpost/</div>
+        <a href="https://github.com/aarieffawwaz/basic-hackathon/blob/main/devpost/scope.md"><b>├── scope.md</b><span>The kernel, who it is for, what was cut</span></a>
+        <a href="https://github.com/aarieffawwaz/basic-hackathon/blob/main/devpost/prd.md"><b>├── prd.md</b><span>Core journey, screens, behaviour, decisions</span></a>
+        <a href="https://github.com/aarieffawwaz/basic-hackathon/blob/main/devpost/spec.md"><b>├── spec.md</b><span>Stack, components, data, failure modes</span></a>
+        <a href="https://github.com/aarieffawwaz/basic-hackathon/blob/main/devpost/checklist.md"><b>└── checklist.md</b><span>Build slices, verification, revisions</span></a>
       </div>
     </section>
 
     <footer>
-      <div class="brand"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#f5c518"/><path d="M48 37.8 A17 17 0 1 1 40.5 17.3" fill="none" stroke="#0f1216" stroke-width="6" stroke-linecap="round"/><path d="M46.2 21.2 L37.4 22.6 L42.6 12.4 Z" fill="#0f1216"/><path d="M25 34 a7 7 0 0 1 14 0 z" fill="#0f1216"/><rect x="21.5" y="34" width="21" height="3.6" rx="1.8" fill="#0f1216"/><circle cx="32" cy="26.5" r="1.6" fill="#f5c518"/></svg><span>Shift<em>Replay</em></span><span class="sep">· First Shift</span></div>
-      <div class="small">Regulation names are real; summaries are paraphrased and not reviewed by a K3 practitioner. Not a substitute for certified training. <a href="https://github.com/aarieffawwaz/basic-hackathon">GitHub</a></div>
+      <div class="foot-top">
+        <div class="foot-brand">
+          <a class="brand" href="/"><img class="mark" src="/logo.svg" alt="" width="26" height="26" /><span>Shift<em>Replay</em></span></a>
+          <p>See the accident before it happens. A browser-only K3 safety sim for the first shift at a container terminal.</p>
+          <a class="btn primary" href="/play/">Start shift →</a>
+        </div>
+        <nav class="foot-cols" aria-label="Footer">
+          <div><div class="eyebrow">Product</div><a href="/play/">Start shift</a><a href="#how">How it works</a><a href="#replay">The replay</a><a href="#roles">Roles</a></div>
+          <div><div class="eyebrow">Planning</div><a href="https://github.com/aarieffawwaz/basic-hackathon/blob/main/devpost/scope.md">Scope</a><a href="https://github.com/aarieffawwaz/basic-hackathon/blob/main/devpost/prd.md">PRD</a><a href="https://github.com/aarieffawwaz/basic-hackathon/blob/main/devpost/spec.md">Spec</a><a href="https://github.com/aarieffawwaz/basic-hackathon/blob/main/devpost/checklist.md">Checklist</a></div>
+          <div><div class="eyebrow">Built with</div><a href="https://claude.com/claude-code" target="_blank" rel="noreferrer">Claude Code</a><a href="https://threejs.org" target="_blank" rel="noreferrer">three.js</a><a href="https://vite.dev" target="_blank" rel="noreferrer">Vite</a><a href="https://github.com/aarieffawwaz/basic-hackathon" target="_blank" rel="noreferrer">GitHub ↗</a></div>
+        </nav>
+      </div>
+      <div class="foot-art"><pre id="ascii-terminal" aria-label="A ship-to-shore crane lifts a container onto the quay while a tractor runs the truck lane, animated ASCII art"></pre></div>
+      <pre class="foot-word" id="ascii-wordmark" aria-hidden="true"></pre>
     </footer>
 
     <script type="module" src="/src/landing.js"></script>

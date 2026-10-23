@@ -12,6 +12,9 @@ importers:
         specifier: ^0.186.1
         version: 0.186.1
     devDependencies:
+      ascii-magic-art:
+        specifier: ^1.0.2
+        version: 1.0.2
       vite:
         specifier: ^8.3.4
         version: 8.3.5
@@ -119,6 +122,11 @@ packages:
 
   '@rolldown/pluginutils@1.0.1':
     resolution: {integrity: sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw==}
+
+  ascii-magic-art@1.0.2:
+    resolution: {integrity: sha512-c3TGcWiGSS+mZQiP2d8yHC7+FuS0P0zbG+NvXcD/VEFoadUHk5LKmbs7SqeHpaUJiyFyhLS8CWHEOfEJ2Vyu6w==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   detect-libc@2.1.2:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
@@ -337,6 +345,8 @@ snapshots:
     optional: true
 
   '@rolldown/pluginutils@1.0.1': {}
+
+  ascii-magic-art@1.0.2: {}
 
   detect-libc@2.1.2: {}
 

@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "ascii-magic-art": "^1.0.2",
     "vite": "^8.3.4"
   },
   "dependencies": {
