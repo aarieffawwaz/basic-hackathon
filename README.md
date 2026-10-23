@@ -132,6 +132,7 @@ Query parameters on `/play/` so you can jump to any moment for a screenshot or t
 | `/play/?at=1&action=1` | Checkpoint 1's action step |
 | `/play/?end=1` | The shift report with sample results |
 | `/play/?shot=1` | Skip the start screen, stand at spawn |
+| `/play/?fx=0` | Disable post-processing (AO/SMAA) on weak GPUs |
 
 See [docs/DEMO-GUIDE.md](docs/DEMO-GUIDE.md) for a shot list.
 
@@ -209,7 +210,7 @@ _Link to be added at submission._
 | Desktop only (pointer lock, keyboard) | Touch controls |
 | Third-person camera has no wall collision | Spring-arm raycast against colliders |
 | One terminal scene | Petrochemical plant and mine haul road from the same hazard format |
-| Procedural low-poly geometry | Optional GLTF assets (Kenney CC0) behind the same `makeContainer` / `makeTruck` API |
+| Procedural geometry and canvas textures | CC0 HDRI + PBR textures (Poly Haven) and optional GLTF props behind the same `makeContainer` / `makeTruck` API |
 | No persistence beyond language | Instructor view: which checkpoints a cohort gets wrong |
 
 ## Documentation

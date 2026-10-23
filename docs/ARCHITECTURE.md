@@ -64,10 +64,13 @@ DOM only. Mission panel (role, objective, distance, milestone list), status (tim
 ### `audio.js`
 WebAudio graph created on the first click: brown-noise wind through a wandering low-pass, three detuned sawtooth diesel oscillators, scheduled gull chirps (triangle sweeps), ship horn (two sawtooths), reversing beeper (square), impact (sine drop + square burst). No files.
 
+### `post.js`
+EffectComposer: RenderPass → GTAOPass (ground-truth ambient occlusion, 12 samples, denoised) → OutputPass (ACES + sRGB) → SMAAPass. Bloom is opt-in (`?bloom=1`) because the Sky shader and sun sprite sit far above 1.0 in linear light. `?fx=0` bypasses the composer for weak GPUs.
+
 ## Render budget
 - Draw calls ≈ 700 (containers 6-material boxes dominate; castings batched).
 - Shadow map 4096², one directional light, PCF soft. Pixel ratio capped at 1.5.
-- 60 fps on an M-series laptop; ~30–45 fps on integrated graphics at 1080p. Drop `sun.shadow.mapSize` to 2048 for low-end machines.
+- Pixel ratio capped at 1.25 because GTAO runs full-res. 60 fps on an M-series laptop with the composer; use `?fx=0` on integrated graphics.
 
 ## Failure modes
 | Breaks | User sees |
