@@ -52,6 +52,7 @@ export class HazardRunner {
     this.replay = createReplayFor(id, this.world, this.ui.lang, captions);
     this.replayT = 0; this.flashed = false;
     if (this.replay.hideTrucks) this.world.setTrucksVisible(false);
+    this.player.setBodyVisible(false);
     this.ui.replayBanner(true, this.replay.captions[0]?.text ?? '');
     this.ui.setHudVisible(false);
     this.afterReplay = () => {
@@ -61,6 +62,7 @@ export class HazardRunner {
   }
   endReplay() {
     this.replay.dispose(); this.world.setTrucksVisible(true); this.replay = null;
+    this.player.setBodyVisible(true);
     this.ui.replayBanner(false); this.ui.setHudVisible(true); this.player.applyCamera();
     this.afterReplay();
   }

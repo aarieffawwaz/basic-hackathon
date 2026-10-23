@@ -9,6 +9,7 @@ export class UI {
     this.decision = $('decision'); this.action = $('action');
     $('lang').addEventListener('click', () => { this.setLang(this.lang === 'en' ? 'id' : 'en'); this.onLang?.(); });
     $('sound').addEventListener('click', () => { this.onSound?.(); });
+    $('view').addEventListener('click', () => { this.onView?.(); });
     this.renderStart();
   }
   t(obj) { return typeof obj === 'string' ? obj : (obj?.[this.lang] ?? obj?.en ?? ''); }
@@ -30,6 +31,7 @@ export class UI {
   hideStart() { $('overlay-start').classList.add('hidden'); $('hud').classList.remove('hidden'); }
   setHudVisible(v) { $('hud').classList.toggle('hidden', !v); $('vignette').style.opacity = v ? 1 : 0.6; }
   setSound(on) { $('sound').classList.toggle('off', !on); }
+  setView(v) { $('view').textContent = v === 'third' ? '1st' : '3rd'; $('view').title = this.t(STRINGS.view); $('crosshair').classList.toggle('hidden', v === 'third'); }
 
   setMission(role, hazards, results, idx) {
     $('mission-role').textContent = this.t(role.name);

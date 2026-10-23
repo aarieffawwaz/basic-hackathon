@@ -84,6 +84,7 @@ Build mode: fast
 - App map generated at `devpost/app-map.html` (reference route, not toured interactively). Activity: focused alternative prepared — the "content as data, behaviour as a state machine" decision with evidence from slice 4. Reflection question not yet offered. Learner has not confirmed the wrap-up; nothing is claimed as learned.
 
 ## Revisions
+- Learner asked for a third-person view option: body rig follows the player, orbit camera, V key + HUD button, persisted in localStorage. Hidden during replays. Crosshair hidden in third person.
 - Slices 1–3 were built in one session by the agent from the approved spec; headless verification replaced the per-slice learner check.
 - After slice 3 the learner asked for: role selection with different flows, interaction beyond walking (keys to perform actions), a richer interface (mission/milestones), bigger decision text, sky, faces and limb animation, port sounds, birds, a better sun, a landing page in the style of modern product sites, and fuller documentation. Scope, PRD and spec were updated; slices 4–6 added.
 - Renamed from "K3 Sim" to "ShiftReplay".

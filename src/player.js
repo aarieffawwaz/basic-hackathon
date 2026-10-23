@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { animateWorker } from './world.js';
 
 // First-person walker: pointer-lock mouse look, WASD, and simple AABB push-out so the
 // player cannot walk through container stacks or crane legs.
@@ -15,8 +16,10 @@ export class Player {
     this.speed = 5.5;
     this.radius = 0.5;
     this.bounds = { x: 58, zMin: -109, zMax: 52 };
+    this.view = localStorage.getItem('k3-view') === 'third' ? 'third' : 'first';
+    this.body = null; this.t = 0; this.moving = false;
 
-    addEventListener('keydown', (e) => { this.keys[e.code] = true; });
+    addEventListener('keydown', (e) => { this.keys[e.code] = true; if (e.code === 'KeyV' && !e.repeat) this.toggleView(); });
     addEventListener('keyup', (e) => { this.keys[e.code] = false; });
     addEventListener('mousemove', (e) => {
       if (!this.enabled || document.pointerLockElement !== this.dom) return;
@@ -27,20 +30,34 @@ export class Player {
     this.applyCamera();
   }
 
+  // Third-person: a visible body rig (from world.makeWorker) that follows the player.
+  setBody(group) { this.body = group; this.body.visible = this.view === 'third'; }
+  setView(v) { this.view = v; localStorage.setItem('k3-view', v); if (this.body) this.body.visible = v === 'third' && this.bodyAllowed !== false; this.applyCamera(); this.onView?.(v); }
+  toggleView() { this.setView(this.view === 'first' ? 'third' : 'first'); }
+  setBodyVisible(v) { this.bodyAllowed = v; if (this.body) this.body.visible = v && this.view === 'third'; }
   get locked() { return document.pointerLockElement === this.dom; }
   lock() { this.dom.requestPointerLock?.(); }
   unlock() { if (this.locked) document.exitPointerLock(); }
 
   setPosition(x, z, yaw = 0) {
-    this.pos.set(x, 1.7, z); this.yaw = yaw; this.pitch = 0; this.applyCamera(); return;
     this.pos.set(x, 1.7, z);
     this.yaw = yaw;
     this.pitch = 0;
     this.applyCamera();
   }
 
-  applyCamera() {
-    this.camera.position.copy(this.pos);
+  applyCamera(bobY = 0) {
+    if (this.body) { this.body.position.set(this.pos.x, 0, this.pos.z); this.body.rotation.y = this.yaw + Math.PI; }
+    if (this.view === 'third') {
+      const r = 4.6, cp = Math.cos(this.pitch), sp = Math.sin(this.pitch);
+      const tx = this.pos.x, ty = 1.3, tz = this.pos.z;
+      const cx = tx + Math.sin(this.yaw) * cp * r, cz = tz + Math.cos(this.yaw) * cp * r;
+      const cy = Math.max(0.5, ty - sp * r + 0.6);
+      this.camera.position.set(cx, cy, cz);
+      this.camera.lookAt(tx, ty + 0.2, tz);
+      return;
+    }
+    this.camera.position.set(this.pos.x, this.pos.y + bobY, this.pos.z);
     this.camera.rotation.set(this.pitch, this.yaw, 0, 'YXZ');
   }
 
@@ -63,11 +80,12 @@ export class Player {
       this.pos.z += dz;
       this.collide();
     }
-    // subtle head bob while moving
-    const moving = fx || fz;
+    // subtle head bob while moving; body walk cycle in third person
+    const moving = !!(fx || fz);
+    this.t += dt; this.moving = moving;
     this.bob = (this.bob || 0) + (moving ? dt * 9 : 0);
-    this.camera.position.set(this.pos.x, this.pos.y + (moving ? Math.sin(this.bob) * 0.04 : 0), this.pos.z);
-    this.camera.rotation.set(this.pitch, this.yaw, 0, 'YXZ');
+    if (this.body) animateWorker(this.body, this.t, moving ? 1 : 0);
+    this.applyCamera(moving ? Math.sin(this.bob) * 0.04 : 0);
   }
 
   collide() {

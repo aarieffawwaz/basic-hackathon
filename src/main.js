@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { buildWorld } from './world.js';
+import { buildWorld, makeWorker } from './world.js';
 import { Player } from './player.js';
 import { ROLES } from './scenario.js';
 import { HazardRunner } from './hazards.js';
@@ -20,6 +20,7 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(72, innerWidth / innerHeight, 0.1, 1200);
 const world = buildWorld(scene, renderer);
 const player = new Player(camera, renderer.domElement, world.colliders);
+const body = makeWorker(0xff8c1a); scene.add(body); player.setBody(body);
 const ui = new UI();
 const audio = new PortAudio();
 const runner = new HazardRunner({ camera, world, player, ui, audio });
@@ -27,6 +28,9 @@ const runner = new HazardRunner({ camera, world, player, ui, audio });
 ui.onRole = (role) => { audio.start(); ui.hideStart(); runner.setRole(role); runner.begin(); player.lock(); };
 ui.onLang = () => { if (runner.role) runner.syncHud(); };
 ui.onSound = () => { audio.setEnabled(!audio.enabled); ui.setSound(audio.enabled); };
+ui.onView = () => player.toggleView();
+player.onView = (v) => ui.setView(v);
+ui.setView(player.view);
 renderer.domElement.addEventListener('click', () => { if (runner.state === 'walk' || runner.state === 'action') player.lock(); });
 addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
 

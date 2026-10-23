@@ -117,7 +117,7 @@ pnpm preview      # smoke-test the build
 | `pnpm build` | Production build of both pages into `dist/` |
 | `pnpm preview` | Serve `dist/` locally |
 
-Controls: **WASD / arrows** walk · **mouse** look · **Esc** release mouse · **click** re-lock · **1 2 3 / A B C** choose · **E** hold-actions · **SPACE** timing-actions · **♪** mute · **ID/EN** language.
+Controls: **WASD / arrows** walk · **mouse** look · **V** first/third person · **Esc** release mouse · **click** re-lock · **1 2 3 / A B C** choose · **E** hold-actions · **SPACE** timing-actions · **♪** mute · **ID/EN** language.
 
 ## Recording and debug helpers
 
@@ -206,6 +206,7 @@ _Link to be added at submission._
 | Regulation summaries are paraphrased, unreviewed | K3 practitioner review before any real induction use |
 | Replays are scripted, fixed-camera | Camera shake and a closer angle if the lane replay does not make first-time viewers flinch |
 | Desktop only (pointer lock, keyboard) | Touch controls |
+| Third-person camera has no wall collision | Spring-arm raycast against colliders |
 | One terminal scene | Petrochemical plant and mine haul road from the same hazard format |
 | Procedural low-poly geometry | Optional GLTF assets (Kenney CC0) behind the same `makeContainer` / `makeTruck` API |
 | No persistence beyond language | Instructor view: which checkpoints a cohort gets wrong |
