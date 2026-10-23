@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>K3 Sim — First Shift</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <div id="hud" class="hidden">
+      <div id="hud-top">
+        <div id="objective"><span class="k">OBJECTIVE</span><span id="objective-text"></span></div>
+        <div id="progress"></div>
+        <button id="lang" type="button" title="Bahasa">ID</button>
+      </div>
+      <div id="crosshair"></div>
+      <div id="hint"></div>
+    </div>
+
+    <div id="flash"></div>
+
+    <div id="replay-banner" class="hidden">
+      <span class="tag">REPLAY</span>
+      <span id="replay-caption"></span>
+    </div>
+
+    <div id="card" class="hidden"></div>
+
+    <div id="overlay-start" class="overlay">
+      <div class="panel">
+        <div class="eyebrow">K3 SIM · CONTAINER TERMINAL</div>
+        <h1>First Shift</h1>
+        <p id="start-lead"></p>
+        <ul id="start-list"></ul>
+        <button id="start-btn" type="button" class="primary"></button>
+        <p class="fine" id="start-fine"></p>
+      </div>
+    </div>
+
+    <div id="overlay-end" class="overlay hidden"></div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

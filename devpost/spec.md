@@ -1,0 +1,109 @@
+---
+doc: spec
+status: approved
+---
+
+# K3 Sim — First Shift — Technical Spec
+
+## How This Works, In Plain Language
+The whole app is one web page. Three.js draws a container yard out of boxes and cylinders — no downloaded 3D models. You walk around it with the keyboard and mouse like a first-person game. A list of five **checkpoints** lives in one data file: where each one is in the yard, what it asks, the three choices, the explanation, and the regulation. A small **runner** watches your position; when you step into a checkpoint it pauses the yard and shows the card. If you choose wrong, a **replay** script moves a dummy worker and a truck or container through a short scripted accident while the camera watches from the side, then hands you back to the card. There is no server and no login: everything runs in the browser, so the link opens for anyone.
+
+Why this shape: the kernel is the replay, so the budget went there. Primitives instead of models and scripted motion instead of a physics engine kept the build to a weekend and the repo to a single dependency.
+
+## The Core Journey Through the System
+1. Start → `ui.js` hides the overlay, `player.js` requests pointer lock, `hazards.js` enables walking and shows checkpoint 1's objective and beacon (`world.setBeacon`).
+2. Walking → every frame `player.update` moves the camera and pushes it out of any collider box; `hazards.update` measures distance to the current checkpoint zone.
+3. Inside the zone → `runner.trigger()` pauses `world`, releases the mouse, and `ui.showPrompt()` renders the card from `scenario.js`.
+4. Choice → `runner.choose(i)`. Correct: record `pass`/`near`, `ui.showFeedback(correct)`. Wrong: `createReplay(id)` from `replay.js` adds actors to the scene; `runner.update` advances replay time at 0.55×, moves the camera along `cam(t)`, updates captions, flashes at `impactAt`, then `endReplay()` removes actors and shows the near-miss card; **Choose again** reopens the card with that option disabled.
+5. Continue → `runner.advance()` moves to the next checkpoint, re-locks the mouse, updates beacon and HUD. After the fifth, `ui.showEnd()` renders the shift report from `results[]`.
+PRD ref: `prd.md > The Core Journey`.
+
+## Stack
+- **Vite 8** (dev server + build) — https://vite.dev — zero config, instant reload.
+- **three.js r186** — https://threejs.org/docs — the only runtime dependency. Chosen over a game engine because the scene is simple and the engine would dominate the repo.
+- Plain JavaScript modules, no framework — the UI is five DOM panels; React would be weight without benefit.
+- Package manager: **pnpm** (npm 10.8 on Node 20 hit an arborist bug resolving Vite 8's peer set; pnpm resolved it).
+- Node 20+.
+
+## Where It Runs and How Someone Tries It
+Runs entirely in the browser (desktop, mouse + keyboard; pointer lock needs a click).
+```
+pnpm install
+pnpm dev        # http://localhost:5173
+pnpm build      # static output in dist/
+```
+Demo recording: open `http://localhost:5173`, click **Start shift**, walk to the truck lane, choose "Cross now", let the replay play, choose the safe option, continue to the end. URL helpers for recording: `?at=2` opens checkpoint 2 directly; `?at=2&replay=1` also plays its replay; `?shot=1` skips the start screen.
+Optional deployment: static `dist/` to Vercel or any static host (no env vars needed).
+
+## Look and Feel
+Dark glass HUD panels (`rgba(16,19,24,.88)`) with a yellow accent (`#f5c518`) for objective, beacon, lane lines, and primary buttons. Red (`#ef4444`) only for the replay banner, the impact flash, and near-miss verdicts; green only for safe calls. System sans-serif. Yard is flat-shaded Lambert materials, warm directional sun with soft shadows, light-blue sky and fog. Copy: second person, short, no exclamation marks. Honors `prd.md > Look and Feel` fully; three.js imposes no constraint on the DOM styling.
+
+## Components
+
+### `src/world.js` — the yard
+Builds ground, markings, gate + PPE rack, container blocks (seeded pseudo-random heights so the layout is stable), the RTG crane with its suspended container (`world.hang`), two looping terminal tractors, NPC workers, the beacon, and skyline fillers. Exposes `colliders` (AABBs), `setBeacon`, `setTrucksVisible`, `paused`, and `update(dt)`. Also exports `makeWorker`, `makeTruck`, `makeContainer` for replays.
+PRD ref: `prd.md > Walking the yard`.
+
+### `src/player.js` — first-person controller
+Pointer-lock yaw/pitch, WASD relative to view, AABB push-out against `colliders`, head bob. `enabled` is the single switch the runner flips.
+PRD ref: `prd.md > Walking the yard`.
+
+### `src/scenario.js` — checkpoint data
+`HAZARDS[]` (zone, objective, title, situation, options, why, rule, replay id) and `STRINGS` for all UI copy, each as `{ en, id }`.
+PRD ref: `prd.md > Checkpoints`, `prd.md > Language`.
+
+### `src/hazards.js` — the runner
+State machine `walk → prompt → (replay →) feedback → walk … → done`. Owns `results[]`, first-try tracking, disabled options, replay clock, camera during replays.
+PRD ref: `prd.md > Checkpoints`, `prd.md > Consequence replays`.
+
+### `src/replay.js` — consequence replays
+`createReplay(id, world, lang)` returns `{ dur, captions, impactAt, cam(t), update(t), dispose(), hideTrucks? }`. Four scripted scenes; `report` reuses `cross` with different captions.
+PRD ref: `prd.md > Consequence replays`.
+
+### `src/ui.js` — HUD and cards
+Renders start overlay, objective, progress dots, decision card, feedback card, replay banner, flash, shift report. Holds `lang`.
+PRD ref: `prd.md > Screens and Layout`.
+
+### `src/main.js` — wiring
+Renderer, scene, camera, frame loop, resize, URL helpers.
+
+## Data Model
+No database. In-memory state in `HazardRunner`: `idx`, `results[]` (`'pass' | 'near'`), `disabled` (Set of option indexes for the current checkpoint), `firstTry`, `startedAt`. `localStorage['k3-lang']` is the only thing that survives a reload.
+
+## File Structure
+```
+basic-hackathon/
+├── index.html            # DOM for HUD, cards, overlays
+├── src/
+│   ├── main.js           # renderer + loop + URL helpers
+│   ├── world.js          # yard geometry, trucks, crane, beacon, colliders
+│   ├── player.js         # first-person controls + collision
+│   ├── scenario.js       # HAZARDS + STRINGS (EN/ID)
+│   ├── hazards.js        # checkpoint state machine
+│   ├── replay.js         # consequence replay scripts
+│   ├── ui.js             # DOM rendering
+│   └── style.css
+├── devpost/              # Devpost Learn workspace (scope, prd, spec, checklist)
+├── .agents/skills/       # hackathon skill pack (installed by npx skills add)
+└── package.json
+```
+
+## External Services and Dependencies
+None at runtime. No API keys, no network calls after the page loads.
+
+## Important Failure Modes
+- **Pointer lock refused or released (Esc, alt-tab)** → hint pill switches to "Click to resume"; clicking the canvas re-locks. The sim keeps rendering.
+- **WebGL unavailable** → three.js throws on renderer creation; the page shows the start overlay with a blank background. Acceptable for a POC; a fallback message is a later item.
+- **Walking into a replay zone from an odd angle** → zones are circles with radius 2.6 m on the walkway; the beacon marks them, and triggering only depends on distance, so approach angle does not matter.
+
+## What Was Simplified and Why
+- **Scripted replays** instead of a physics engine — identical on screen for a 5 s clip; a physics engine would add a dependency and a day of tuning.
+- **Primitive geometry** instead of GLTF models — reads as a yard, zero asset licensing, instant load.
+- **Circle trigger zones + beacon** instead of interact-to-trigger — fewer controls to explain in a 1–3 min video.
+- **Paraphrased regulations** instead of quoted legal text — regulation names are real (Permenaker 8/2010, 8/2020, 9/2016; UU 1/1970; PP 50/2012); the one-line summaries are the learner's paraphrase and must be reviewed by a K3 practitioner before real training use.
+
+## Decisions and Open Issues
+- **Replay time runs at 0.55×** (learner choice: slow enough to read captions, short enough not to bore in a demo). Tradeoff: real speeds in captions, slowed motion on screen — the banner says REPLAY so it is not mistaken for real-time.
+- **Live trucks hidden during lane replays** (implementation detail) so the staged tractor is the only vehicle in frame.
+- **Learner uncertainty discussed:** whether "first-person in the browser without a headset" is enough presence for the lesson to land. Agreed evidence: the lane-crossing replay must make a first-time viewer flinch in the demo recording; if it does not, add a camera shake and a closer angle before shipping.
+- Open: skippable replays on repeat runs (carried from PRD, default no).
