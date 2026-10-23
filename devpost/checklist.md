@@ -84,6 +84,7 @@ Build mode: fast
 - App map generated at `devpost/app-map.html` (reference route, not toured interactively). Activity: focused alternative prepared — the "content as data, behaviour as a state machine" decision with evidence from slice 4. Reflection question not yet offered. Learner has not confirmed the wrap-up; nothing is claimed as learned.
 
 ## Revisions
+- Learner approved CC0 downloads: Poly Haven HDRI (`industrial_sunset_puresky`) as environment + background, PBR sets for asphalt, concrete apron and container corrugation. Procedural sky/textures remain as fallback until files load.
 - Fixed: shadow swimming (shadow camera now follows the player in a 110 m box, texel-snapped; GTAO denoise widened) and the worker face rendering on the back of the head (stray 180° head rotation).
 - Learner: "looks like Roblox". Cinematic pass: GTAO + SMAA post stack, instanced container frames (posts/rails), capsule-limbed workers, asphalt normal map, rounded truck cab with headlights, FOV 64, film grain. Bloom tried and reverted to opt-in (whited out the sky).
 - Learner asked for a third-person view option: body rig follows the player, orbit camera, V key + HUD button, persisted in localStorage. Hidden during replays. Crosshair hidden in third person.

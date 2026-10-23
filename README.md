@@ -196,7 +196,7 @@ Devpost Learn's workflow: **scope → PRD → spec → build → ship**, each a 
 | [`devpost/spec.md`](devpost/spec.md) | Stack, components, data model, failure modes, simplifications |
 | [`devpost/checklist.md`](devpost/checklist.md) | Build slices with mechanical verification, revisions log |
 
-Built with [Claude Code](https://claude.com/claude-code). Scene, textures, audio and copy are generated; no third-party assets.
+Built with [Claude Code](https://claude.com/claude-code). Geometry, most textures, audio and copy are generated. The sky and three surface sets are CC0 from [Poly Haven](https://polyhaven.com): `industrial_sunset_puresky`, `asphalt_02`, `concrete_floor_worn_001`, `corrugated_iron` (1k, `public/tex/`).
 
 ### Demo video
 _Link to be added at submission._
@@ -210,7 +210,7 @@ _Link to be added at submission._
 | Desktop only (pointer lock, keyboard) | Touch controls |
 | Third-person camera has no wall collision | Spring-arm raycast against colliders |
 | One terminal scene | Petrochemical plant and mine haul road from the same hazard format |
-| Procedural geometry and canvas textures | CC0 HDRI + PBR textures (Poly Haven) and optional GLTF props behind the same `makeContainer` / `makeTruck` API |
+| Procedural geometry; HDRI + 3 PBR sets | GLTF props (reach stacker, STS crane) behind the same `makeContainer` / `makeTruck` API |
 | No persistence beyond language | Instructor view: which checkpoints a cohort gets wrong |
 
 ## Documentation

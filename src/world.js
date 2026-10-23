@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { Sky } from 'three/examples/jsm/objects/Sky.js';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
+import { pbrSet, loadHDRI } from './assets.js';
 import { containerMaps, containerDoorMaps, asphaltMaps, concreteMaps, paintedMaps, hazardStripe, signText, vestMaps, paintText, contactShadow, waterNormal } from './textures.js';
 
 // Container terminal built from primitives + procedural textures. No model files.
@@ -26,13 +27,15 @@ function plane(w, d, mat, x, z, y = 0.01, parent) {
 
 // ---- Containers -------------------------------------------------------------------
 const containerMats = [];
+let CORR = null;
 function containerMaterial(idx) {
   if (!containerMats[idx]) {
     const color = C.containers[idx % C.containers.length];
     const side = containerMaps(color, idx), door = containerDoorMaps(color);
-    const sideMat = std({ map: side.map, bumpMap: side.bump, bumpScale: 0.35, roughness: 0.52, metalness: 0.4, envMapIntensity: 0.9 });
+    CORR ||= pbrSet('corrugated_iron', [5.6, 1]);
+    const sideMat = std({ map: side.map, normalMap: CORR.normalMap, normalScale: new THREE.Vector2(0.9, 0.9), roughnessMap: CORR.roughnessMap, roughness: 0.95, metalness: 0.45, envMapIntensity: 0.9 });
     const endMat = std({ map: door.map, roughness: 0.55, metalness: 0.4, envMapIntensity: 0.9 });
-    const topMat = std({ map: side.map, bumpMap: side.bump, bumpScale: 0.3, roughness: 0.7, metalness: 0.3 });
+    const topMat = std({ map: side.map, normalMap: CORR.normalMap, normalScale: new THREE.Vector2(0.7, 0.7), roughnessMap: CORR.roughnessMap, roughness: 1.0, metalness: 0.35 });
     // BoxGeometry material order: +x, -x, +y, -y, +z, -z
     containerMats[idx] = [endMat, endMat, topMat, topMat, sideMat, sideMat];
   }
@@ -155,6 +158,7 @@ function contact(w, d, x, z, parent, opacity = 0.75) {
 
 export function buildWorld(scene, renderer) {
   SCENE = scene; castings = null;
+  const world = {};
   const colliders = [];
   const addCollider = (minX, maxX, minZ, maxZ) => colliders.push({ minX, maxX, minZ, maxZ });
 
@@ -162,7 +166,7 @@ export function buildWorld(scene, renderer) {
   const sky = new Sky(); sky.scale.setScalar(2000); scene.add(sky);
   const u = sky.material.uniforms;
   u.turbidity.value = 9; u.rayleigh.value = 2.6; u.mieCoefficient.value = 0.012; u.mieDirectionalG.value = 0.93;
-  const sunDir = new THREE.Vector3().setFromSphericalCoords(1, THREE.MathUtils.degToRad(90 - 24), THREE.MathUtils.degToRad(150));
+  const sunDir = new THREE.Vector3().setFromSphericalCoords(1, THREE.MathUtils.degToRad(90 - 16), THREE.MathUtils.degToRad(150));
   u.sunPosition.value.copy(sunDir);
   if (renderer) {
     const pmrem = new THREE.PMREMGenerator(renderer);
@@ -172,6 +176,12 @@ export function buildWorld(scene, renderer) {
     skyScene.clear();
   }
   scene.fog = new THREE.FogExp2(0xaebbc8, 0.0026);
+  loadHDRI('industrial_sunset_puresky_1k.hdr', (hdr) => {
+    scene.environment = hdr; scene.background = hdr;
+    scene.environmentIntensity = 0.45; scene.backgroundIntensity = 0.9; scene.backgroundBlurriness = 0.0;
+    sky.visible = false; if (world.sunSprite) world.sunSprite.visible = false;
+    scene.fog.color.setHex(0xb7b3ad); scene.fog.density = 0.0022;
+  });
   scene.add(new THREE.HemisphereLight(0xbfd3ea, 0x3a3f45, 0.35));
   const sun = new THREE.DirectionalLight(0xffe7c4, 1.7);
   sun.position.copy(sunDir).multiplyScalar(90); sun.castShadow = true;
@@ -191,9 +201,11 @@ export function buildWorld(scene, renderer) {
 
   // Ground + markings
   const asphalt = asphaltMaps();
-  plane(300, 300, std({ map: asphalt.map, normalMap: asphalt.normal, normalScale: new THREE.Vector2(0.6, 0.6), roughnessMap: asphalt.rough, roughness: 1, metalness: 0, envMapIntensity: 0.15 }), 0, -20, 0);
+  const ASPH = pbrSet('asphalt_02', [60, 60]);
+  plane(300, 300, std({ map: ASPH.map, normalMap: ASPH.normalMap, normalScale: new THREE.Vector2(0.8, 0.8), roughnessMap: ASPH.roughnessMap, roughness: 1, metalness: 0, envMapIntensity: 0.2 }), 0, -20, 0);
   const concrete = concreteMaps();
-  plane(40, 14, std({ map: concrete.map, roughness: 0.95 }), 0, 45, 0.015);                      // gate apron
+  const CONC = pbrSet('concrete_floor_worn_001', [10, 3.5]);
+  plane(40, 14, std({ map: CONC.map, normalMap: CONC.normalMap, roughnessMap: CONC.roughnessMap, roughness: 1 }), 0, 45, 0.015);   // gate apron
   const walkMat = std({ map: paintedMaps('#2c8a52', 0.45).map, roughness: 0.9 });
   plane(2.2, 104, walkMat, 0, -4, 0.02);
   plane(2.2, 60, walkMat, 0, -80, 0.02);                                                        // on to the quay
@@ -366,6 +378,7 @@ export function buildWorld(scene, renderer) {
   sctx.fillStyle = grad; sctx.fillRect(0, 0, 256, 256);
   const sunSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(sc), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, fog: false }));
   sunSprite.position.copy(sunDir).multiplyScalar(900); sunSprite.scale.setScalar(260); scene.add(sunSprite);
+  world.sunSprite = sunSprite;
 
   // Beacon
   const beacon = new THREE.Group();
@@ -376,7 +389,7 @@ export function buildWorld(scene, renderer) {
   scene.add(beacon);
 
   let t = 0;
-  const world = {
+  Object.assign(world, {
     scene, colliders, trucks, hang, beacon, rtg, npcs, paused: false,
     setBeacon(x, z, visible = true) { beacon.position.set(x, 0, z); beacon.visible = visible; },
     setTrucksVisible(v) { for (const tr of trucks) tr.g.visible = v; },
@@ -409,6 +422,6 @@ export function buildWorld(scene, renderer) {
         n.w.position.set(nx, 0, nz); animateWorker(n.w, t, 1);
       }
     },
-  };
+  });
   return world;
 }
