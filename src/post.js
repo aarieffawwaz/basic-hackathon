@@ -21,14 +21,16 @@ export function setupPost(renderer, scene, camera, { bloom = 0.18 } = {}) {
   gtao.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 4, radiusExponent: 1, rings: 2, samples: 16 });
   gtao.blendIntensity = 0.85;
   composer.addPass(gtao);
-  const bloomPass = new UnrealBloomPass(size, bloom, 0.6, 0.92);
-  composer.addPass(bloomPass);
+  // Bloom only on request: the Sky shader and the sun sprite sit far above 1.0 in linear light,
+  // so any sane threshold still blooms the whole sky. Opt in with ?bloom=1 (threshold 3.5, strength 0.12).
+  let bloomPass = null;
+  if (q.get('bloom') === '1') { bloomPass = new UnrealBloomPass(size, 0.12, 0.4, 3.5); composer.addPass(bloomPass); }
   composer.addPass(new OutputPass());
   const smaa = new SMAAPass();
   composer.addPass(smaa);
   return {
     composer,
     render: () => composer.render(),
-    setSize: (w, h) => { composer.setSize(w, h); gtao.setSize(w, h); bloomPass.setSize(w, h); },
+    setSize: (w, h) => { composer.setSize(w, h); gtao.setSize(w, h); bloomPass?.setSize(w, h); },
   };
 }
