@@ -16,7 +16,7 @@ OBJECTS: The decision card (dark glass, three option buttons A/B/C, situation te
          blue chassis). The near-miss card (red verdict pill, the rule in a dark box). The yellow beacon (ring + pillar).
          The action bar (marker sweeping over a green window). The shift report (rows with pass / near miss).
          The cursor: a 72 px tall dark arrow with a 3 px #f5c518 rim, drop shadow 0 6 px 14 px 45%.
-         The mark: public/logo.svg (yellow rounded square, dark replay arrow). Wordmark "ShiftReplay" Inter 800.
+         The mark: the landing nav's line mark (light replay arc, yellow play triangle), no tile. Wordmark "shiftreplay" in JetBrains Mono 600, one colour.
 MOTION:  Title enter: per word, blur 6 px -> 0 and opacity 0 -> 1 in 0.13 s, words 0.067 s apart, no translate.
          Title exit: blur 0 -> 8 px and opacity -> 0 in 0.15 s, whole line. Landed titles are dead still.
          Caption enter: opacity 0 -> 1 in 0.2 s, power2.out, no translate; exit 0.12 s.
@@ -59,7 +59,7 @@ SHOTS:   f0-408 (0-13.6 s) PROLOGUE, the K3 problem before the product. Shot 1 w
          f1860-2070 (62-69 s) CLAIM. landing.mp4 from 28.5 s (third person, then under the RTG); both titles on the panel. Title "The replay
            is the lesson." then line 2 "No headset. No account. No server." (from the README).
          f2070-2400 (69-80 s) END CARD. Dip to #0b0e12. riser from 59 s peaks at 69 s: mark lands with impact-bass-2,
-           wordmark wipes in, button "Start shift →" (the product's yellow button), URL shiftreplay.vercel.app/play/.
+           wordmark wipes in, button "> START SHIFT" (the product's square yellow button), URL shiftreplay.pages.dev/play/.
            Holds 2070-2400 with nothing moving after 72.5 s.
 BANNED:  a black or navy void with small UI floating in it; glow, bloom, particles; purple/blue gradients; glass cards
          other than the product's own panel; cream paper + serif; everything centred; fade-and-slide-up entrances;
