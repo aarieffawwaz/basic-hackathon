@@ -1,13 +1,13 @@
 <p align="center">
-  <img src="public/screenshots/replay-cross.jpg" alt="ShiftReplay — consequence replay at the truck lane" width="100%" />
+  <img src="public/screenshots/replay-cross.jpg" alt="ShiftReplay: consequence replay at the truck lane" width="100%" />
 </p>
 
-<p align="center"><img src="public/logo.svg" width="84" alt="ShiftReplay logo" /></p>
-<h1 align="center">ShiftReplay</h1>
-<p align="center"><b>See the accident before it happens.</b><br>
+<h1><picture><source media="(prefers-color-scheme: dark)" srcset="public/mark-dark.svg" /><img src="public/mark-light.svg" width="32" alt="" /></picture> shiftreplay</h1>
+
+<p><b>See the accident before it happens.</b><br>
 Browser-only 3D safety training (K3) for ports and yards. Make the call, watch the consequence replay, learn the rule. No headset, no account, no server.</p>
 
-<p align="center">
+<p>
   <a href="https://shiftreplay.pages.dev"><img alt="Live" src="https://img.shields.io/badge/live-shiftreplay.pages.dev-f5c518?style=flat-square" /></a>
   <img alt="three.js" src="https://img.shields.io/badge/three.js-r186-000?style=flat-square" />
   <img alt="Vite" src="https://img.shields.io/badge/Vite-8-646cff?style=flat-square" />
@@ -17,7 +17,7 @@ Browser-only 3D safety training (K3) for ports and yards. Make the call, watch t
   <img alt="License" src="https://img.shields.io/badge/license-MIT-lightgrey?style=flat-square" />
 </p>
 
-<p align="center">
+<p>
   <a href="https://shiftreplay.pages.dev/play/"><b>Play</b></a> ·
   <a href="https://shiftreplay.pages.dev"><b>Landing</b></a> ·
   <a href="#demo-video"><b>Demo video</b></a> ·
@@ -27,7 +27,7 @@ Browser-only 3D safety training (K3) for ports and yards. Make the call, watch t
   <a href="docs/ARCHITECTURE.md"><b>Architecture</b></a>
 </p>
 
-> Built for the **Build With AI: Basics** hackathon (Devpost Learn, Oct 2026) with Claude Code. Proof of concept, not certified training — see [Limitations](#known-limitations).
+> Built for the **Build With AI: Basics** hackathon (Devpost Learn, Oct 2026) with Claude Code. Proof of concept, not certified training. See [Limitations](#known-limitations).
 >
 > **Testing:** open [shiftreplay.pages.dev/play](https://shiftreplay.pages.dev/play/) in a desktop browser (Chrome, Edge, Firefox or Safari) with a keyboard and mouse. No login, no install, no API key. Phones and tablets get a notice instead of the sim; `?force=1` skips it.
 
@@ -51,14 +51,14 @@ Browser-only 3D safety training (K3) for ports and yards. Make the call, watch t
 
 ## Overview
 
-Safety induction at Indonesian ports, plants and mines is mostly a slideshow and a signature. Companies such as [Molca](https://www.molca.id/) run VR safety patrols for terminals like Pelindo — effective, and gated behind headsets, a vendor and a training room.
+Safety induction at Indonesian ports, plants and mines is mostly a slideshow and a signature. Companies such as [Molca](https://www.molca.id/) run VR safety patrols for terminals like Pelindo. It works, but it needs headsets, a vendor and a training room.
 
-ShiftReplay is the version for everyone who does not get a headset. It is one web page: a low-poly container terminal rendered with three.js, a first-person walk, and a set of decision checkpoints a new worker meets on a first shift. The scene, textures, sky and sound are all generated in code; the repository has a single runtime dependency.
+ShiftReplay is the version for everyone who does not get a headset. It is one web page: a container terminal rendered with three.js, a first-person walk, and the decisions a new worker meets on a first shift. Geometry and sound are generated in code; the sky and ground surfaces are CC0 files from Poly Haven. The sim has one runtime dependency, three.js.
 
 | | |
 |---|---|
 | **Who it is for** | A new checker, operator or lasher on day one, and the HSE lead who has to induct them by Monday |
-| **What it teaches** | Five Indonesian regulations (Permenaker 8/2010, 8/2020, 9/2016; UU 1/1970; PP 50/2012) through eleven decisions |
+| **What it teaches** | Six Indonesian regulations (Permenaker 5/2018, 8/2010, 8/2020, 9/2016; UU 1/1970; PP 50/2012) through eleven decisions on foot and five hands-on modes |
 | **What makes it different** | A wrong call is answered with a slow-motion replay of the accident, not a red X |
 | **Runs on** | Any desktop browser with WebGL. No install, login, API key or server. Phones and browsers without WebGL see an explanation, not a black screen |
 
@@ -75,17 +75,17 @@ ShiftReplay is the version for everyone who does not get a headset. It is one we
 
 The ILO's code of practice [*Safety and health in ports*](https://www.ilo.org/node/562891) (rev. 2016) still describes port work as an occupation with very high accident rates. A 2024 meta-analysis of 52 studies ([Scorgie et al., *Safety Science* 171](https://mro.massey.ac.nz/handle/10179/71203)) found immersive safety training outperformed traditional training on knowledge and retention; ShiftReplay asks how much of that a browser can deliver without a headset.
 
-The port incidents above are the hazards the sim stages: a load coming down near people (`load`, RTG crane, signaller), a vehicle and a person sharing a lane (`cross`, tractor driver).
+The port incidents above are the hazards the sim stages: a load coming down near people (`load`, crane operator, signaller), a vehicle and a person sharing a lane (`cross`, truck driver).
 
 ## The kernel
 
-> When you make the wrong call, the sim does not say "incorrect". It cuts to a third-person replay of what would have happened to you — the tractor, the dropped box, the fall — with the physics in the captions. Then, and only then, the rule.
+> When you make the wrong call, the sim does not say "incorrect". It cuts to a third-person replay of what would have happened to you (the truck, the dropped container, the fall), with the physics in the captions. Then, and only then, the rule.
 
 Everything else in the repo exists to make that beat land: the walk builds presence, the big A/B/C decision makes the choice yours, the action step afterwards (hold **E** to clip in, hit **SPACE** when the driver waves) makes the safe behaviour physical, and the shift report tells you which lessons you needed a replay for.
 
 ## Product tour
 
-1. **Pick a shift.** Yard checker (on foot), reach stacker operator (heavy equipment) or lashing crew (quay and vessel).
+1. **Pick a shift.** Three roles on foot (yard checker, reach stacker operator, lashing crew) or five hands-on modes. Pick from the list; the preview shows a screenshot, the keys and a start button.
 2. **Walk.** WASD + mouse. The mission panel on the left lists milestones; a yellow beacon marks the next one. Trucks loop in the lane, the RTG sways, gulls circle the quay, diesel idles in the distance.
 3. **Decide.** Reaching a checkpoint fills the screen with the situation and three options. Press **1 / 2 / 3** or **A / B / C**.
 4. **Watch.** Wrong call → the camera cuts out of your body, the replay plays at 0.55×, the screen flashes at impact, and the captions tell you the speed, the mass and the stopping distance. Then the regulation. Choose again with that option struck out.
@@ -108,7 +108,7 @@ Everything else in the repo exists to make that beat land: the walk builds prese
 | Lashing crew | Mooring line snap-back | a parted stern line | PP No. 50/2012 |
 | Lashing crew | Top-tier lashing | riding the spreader at 14 m | Permenaker No. 9/2016 |
 
-Replays are reused across roles with different captions where the physics is the same — that is a feature of the data format, not a shortcut (see [Adding a checkpoint](#adding-a-checkpoint-or-a-scene)).
+Replays are reused across roles with different captions where the physics is the same. That is a feature of the data format, not a shortcut (see [Adding a checkpoint](#adding-a-checkpoint-or-a-scene)).
 
 ## Hands-on modes
 
@@ -130,7 +130,7 @@ The crane and signaller modes share one RTG model (`src/modes/cranesim.js`): gan
 |---|---|
 | ![Role select](public/screenshots/roles.jpg) <br> **Pick a shift** | ![Yard](public/screenshots/yard.jpg) <br> **The yard, first person** |
 | ![Decision](public/screenshots/decision.jpg) <br> **Big A/B/C decision** | ![Action](public/screenshots/action.jpg) <br> **Action step: hold E** |
-| ![Replay — load](public/screenshots/replay-load.jpg) <br> **Replay: suspended load** | ![Replay — height](public/screenshots/replay-height.jpg) <br> **Replay: fall from the stack** |
+| ![Replay: load](public/screenshots/replay-load.jpg) <br> **Replay: suspended load** | ![Replay: height](public/screenshots/replay-height.jpg) <br> **Replay: fall from the stack** |
 | ![Quay](public/screenshots/quay.jpg) <br> **Quay, STS cranes, the vessel** | ![Report](public/screenshots/end.jpg) <br> **Shift report** |
 
 ## Quick start
@@ -145,12 +145,6 @@ pnpm dev          # landing at http://localhost:5173, sim at http://localhost:51
 pnpm build        # static output in dist/ (landing + play)
 pnpm preview      # smoke-test the build
 ```
-
-| Script | What it does |
-|---|---|
-| `pnpm dev` | Vite dev server, HMR |
-| `pnpm build` | Production build of both pages into `dist/` |
-| `pnpm preview` | Serve `dist/` locally |
 
 Controls: **WASD / arrows** walk · **mouse** look · **V** first/third person · **Esc** release mouse · **click** re-lock · **1 2 3 / A B C** choose · **E** hold-actions · **SPACE** timing-actions · **♪** mute · **ID/EN** language.
 
@@ -188,7 +182,8 @@ play/index.html ── src/main.js ─┤
 | Piece | Responsibility |
 |---|---|
 | `world.js` | Builds the terminal from primitives; batches ~1,500 corner castings into one `InstancedMesh`; `Sky` + PMREM environment; returns colliders and an `update(dt)` |
-| `textures.js` | Canvas-drawn corrugation, bump, grime, asphalt, concrete, paint, hazard stripes, signs — no image files |
+| `boot.js` | Checks WebGL and the device before loading the sim; shows a notice instead of a black screen |
+| `textures.js` | Canvas-drawn corrugation, grime, paint, hazard stripes and signs; also the fallback while the Poly Haven files in `public/tex/` load |
 | `scenario.js` | Pure data. A role is `{ spawn, hazards[] }`; a hazard is `{ zone, objective, title, situation, options[3], action?, why, rule, captions? }` |
 | `hazards.js` | The only state. `results[]` is `'pass' \| 'near'` per checkpoint; first-try tracking; action progress and timing windows |
 | `replay.js` | `createReplayFor(id, world, lang, captions)` → `{ dur, cam(t), update(t), captions, impactAt, dispose }` |
@@ -212,7 +207,7 @@ A checkpoint is one object in `src/scenario.js`. To add one to the lashing role:
     { en: 'Isolate at the panel first.', id: '…', correct: true },
     { en: '…', id: '…', correct: false, replay: 'height' },
   ],
-  action: { type: 'hold', key: 'KeyE', seconds: 1.5, label: { en: 'Hold E — isolate the panel', id: '…' } },
+  action: { type: 'hold', key: 'KeyE', seconds: 1.5, label: { en: 'Hold E: isolate the panel', id: '…' } },
   why: { en: '…', id: '…' },
   rule: { name: 'Permenaker No. 12/2015 (K3 Listrik)', en: '…', id: '…' },
 }
@@ -237,13 +232,14 @@ The plan was approved before any code; everything after slice 3 came from playin
 
 | When (2026) | What changed | Why |
 |---|---|---|
-| Oct 23, 16:43 | First build: one role, five checkpoints, four scripted replays, EN/ID | Slices 1–3 of the approved plan |
+| Oct 23, 16:43 | First build: one role, five checkpoints, four scripted replays, EN/ID | Slices 1 to 3 of the approved plan |
 | Oct 23, 17:21 | Three roles, hold-E / timing-SPACE actions, full-screen decisions, procedural sky and textures | After playing slice 3: "more than walking", bigger decisions, more interface |
 | Oct 23, 17:55 | Ambient occlusion, SMAA, container frames, capsule-limbed workers; bloom tried and reverted | Feedback: "looks like Roblox". Bloom whited out the sky |
 | Oct 23, 18:31 | Shadow camera follows the player and snaps to texels; a worker's face was on the back of his head | Shadows swam while walking |
 | Oct 23, 18:36 | CC0 HDRI sky and PBR surfaces from Poly Haven | Procedural textures read as plastic up close |
 | Oct 24, 19:36 | Five hands-on modes with own-run replay | Request to *be* the crane operator and the driver, not just watch them |
 | Oct 24 | Loading bar, in-sim training disclaimer, device and WebGL checks; planning docs synced | Pre-submission review against what a first-time visitor sees |
+| Oct 24 | Role picker became a list plus one preview; all checkpoint text rewritten in plain words | Feedback: the role cards were too much at once, and the explanations had too much port jargon |
 
 Things that did not work the first time: npm 10.8 on Node 20 could not resolve Vite 8's peers (switched to pnpm); three r186 removed `PCFSoftShadowMap`; the first GPU render was overexposed (sun 2.4 → 1.7, exposure 0.95 → 0.72); headless Chrome could not render the scene in reasonable time, so verification moved to a real browser.
 
@@ -259,7 +255,7 @@ Everything in `src/` was written for this hackathon with Claude Code during the 
 |---|---|---|
 | [three.js](https://threejs.org) r186, including `RGBELoader` and the post-processing passes | runtime | MIT |
 | [Vite](https://vite.dev) 8 | build | MIT |
-| [ascii-magic-art](https://www.npmjs.com/package/ascii-magic-art) — the dotted rules, block digits and player on the landing page | landing page | see package |
+| [ascii-magic-art](https://www.npmjs.com/package/ascii-magic-art): the dotted rules, block digits and player on the landing page | landing page | see package |
 | [Poly Haven](https://polyhaven.com) HDRI `industrial_sunset_puresky` and PBR sets (`asphalt_02`, `concrete_floor_worn_001`, `corrugated_iron` and others in `public/tex/`) | sky, surfaces | CC0 |
 | [Inter](https://rsms.me/inter/) via Google Fonts | landing page | OFL |
 | Demo-video soundtrack generated with Meta's MusicGen; port ambience rendered from the sim's own `src/audio.js` | demo video | generated |
@@ -288,8 +284,8 @@ _Link to be added at submission._
 |---|---|
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Modules, state machine, data model, render budget |
 | [docs/HAZARD-FORMAT.md](docs/HAZARD-FORMAT.md) | Checkpoint / role / replay schema and how to extend |
-| [docs/DEMO-GUIDE.md](docs/DEMO-GUIDE.md) | Shot list and URL helpers for the 1–3 min video |
-| [docs/DEPLOY.md](docs/DEPLOY.md) | Vercel and any static host |
+| [docs/DEMO-GUIDE.md](docs/DEMO-GUIDE.md) | Shot list and URL helpers for the 1 to 3 min video |
+| [docs/DEPLOY.md](docs/DEPLOY.md) | Cloudflare Pages and any static host |
 
 ## License
 
