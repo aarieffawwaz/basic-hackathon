@@ -1,0 +1,11 @@
+{
+  "$schema": "https://unpkg.com/wrangler@4.86.0/config-schema.json",
+  // Static site only: Vite builds landing (/) and sim (/play/) into dist/; no Worker script.
+  "name": "shiftreplay",
+  "compatibility_date": "2026-10-24",
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "none"
+  }
+}
