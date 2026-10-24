@@ -89,15 +89,6 @@ function frame() {
 }
 frame();
 
-// Cursor-tracking glow on role cards (input driven, so it stays).
-for (const card of document.querySelectorAll('.role')) {
-  card.addEventListener('pointermove', (e) => {
-    const r = card.getBoundingClientRect();
-    card.style.setProperty('--mx', `${e.clientX - r.left}px`);
-    card.style.setProperty('--my', `${e.clientY - r.top}px`);
-  });
-}
-
 // Footer: animated ASCII terminal (plays only while on screen, still frame under reduced motion)
 // and the block-letter wordmark, rendered once as text.
 play(document.getElementById('ascii-terminal'), terminalPiece, { maxFps: 12 });

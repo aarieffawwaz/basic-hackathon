@@ -6,7 +6,7 @@ status: approved
 # ShiftReplay — First Shift — Technical Spec
 
 ## How This Works, In Plain Language
-The whole app is one web page. Three.js draws a container yard out of boxes and cylinders — no downloaded 3D models. You walk around it with the keyboard and mouse like a first-person game. A list of five **checkpoints** lives in one data file: where each one is in the yard, what it asks, the three choices, the explanation, and the regulation. A small **runner** watches your position; when you step into a checkpoint it pauses the yard and shows the card. If you choose wrong, a **replay** script moves a dummy worker and a truck or container through a short scripted accident while the camera watches from the side, then hands you back to the card. There is no server and no login: everything runs in the browser, so the link opens for anyone.
+The whole app is one web page. Three.js draws a container yard out of boxes and cylinders — no downloaded 3D models. You walk around it with the keyboard and mouse like a first-person game. A list of **checkpoints** lives in one data file: where each one is in the yard, what it asks, the three choices, the explanation, and the regulation. A small **runner** watches your position; when you step into a checkpoint it pauses the yard and shows the card. If you choose wrong, a **replay** script moves a dummy worker and a truck or container through a short scripted accident while the camera watches from the side, then hands you back to the card. There is no server and no login: everything runs in the browser, so the link opens for anyone.
 
 Why this shape: the kernel is the replay, so the budget went there. Primitives instead of models and scripted motion instead of a physics engine kept the build to a weekend and the repo to a single dependency.
 
@@ -34,7 +34,8 @@ pnpm dev        # http://localhost:5173
 pnpm build      # static output in dist/
 ```
 Demo recording: open `http://localhost:5173`, click **Start shift**, walk to the truck lane, choose "Cross now", let the replay play, choose the safe option, continue to the end. URL helpers for recording: `?at=2` opens checkpoint 2 directly; `?at=2&replay=1` also plays its replay; `?shot=1` skips the start screen.
-Optional deployment: static `dist/` to Vercel or any static host (no env vars needed).
+Deployed as static `dist/` on Cloudflare Pages at https://shiftreplay.pages.dev (no env vars; see `docs/DEPLOY.md`). The old Vercel URL still serves the same build.
+Hands-on modes: `?role=driver|crane|signal|inspect|evac`. On a touch-only device `?force=1` skips the device notice.
 
 ## Look and Feel
 Dark glass HUD panels (`rgba(16,19,24,.88)`) with a yellow accent (`#f5c518`) for objective, beacon, lane lines, and primary buttons. Red (`#ef4444`) only for the replay banner, the impact flash, and near-miss verdicts; green only for safe calls. System sans-serif. Yard is flat-shaded Lambert materials, warm directional sun with soft shadows, light-blue sky and fog. Copy: second person, short, no exclamation marks. Honors `prd.md > Look and Feel` fully; three.js imposes no constraint on the DOM styling.
@@ -62,7 +63,7 @@ PRD ref: `prd.md > Checkpoints`, `prd.md > Consequence replays`.
 PRD ref: `prd.md > Consequence replays`.
 
 ### `src/ui.js` — HUD and cards
-Renders start overlay, objective, progress dots, decision card, feedback card, replay banner, flash, shift report. Holds `lang`.
+Renders start overlay (role list + preview card from `PREVIEW` in `scenario.js`), objective, progress dots, decision card, feedback card, replay banner, flash, shift report. Holds `lang`.
 PRD ref: `prd.md > Screens and Layout`.
 
 ### `src/main.js` — wiring
@@ -73,6 +74,14 @@ Canvas-drawn corrugation + bump, grime, rust, asphalt colour/roughness, concrete
 
 ### `src/audio.js` — ambience
 WebAudio graph: brown-noise wind, detuned sawtooth diesel, scheduled gulls/horn/beeper, impact thud. Created on the first click (autoplay policy).
+
+### `src/boot.js` — device gate
+Entry point for `/play/`. Checks WebGL and whether the only pointer is touch before importing `main.js`, so an unsupported device gets the `#overlay-unsupported` panel (EN/ID, link back to the landing page) instead of a black canvas. The static loading bar in `play/index.html` is on screen while the main chunk downloads; `main.js` then drives it from `THREE.DefaultLoadingManager` while the HDRI and PBR files arrive.
+PRD ref: `prd.md > States and Boundaries`.
+
+### `src/modes/` — hands-on modes
+`base.js` is the shared shell (score, verdict card, shift report, replays). `drive.js` (tractor: speed, braking distance, radar, zebra, RTG red light), `cranesim.js` (RTG gantry, hoist, pendulum load driven by gantry acceleration and wind, twist-locks that only turn when seated) used by `crane.js` and `signal.js`, `inspect.js` (frozen yard, flag hazards against a 90 s clock), `evac.js` (ammonia plume as a pure function of time and wind). `ghost.js` records each mode's state every frame and plays the last seconds back from outside at 0.55× on an incident, returning the same shape as `replay.js` so the frame loop treats both alike. Checkpoint copy lives in `modes/scenarios.js`.
+PRD ref: `prd.md > Hands-on modes`.
 
 ### `src/landing.js` — landing hero
 Same `buildWorld`, orbiting camera, renders only while the hero is on screen.
@@ -88,7 +97,10 @@ basic-hackathon/
 ├── public/screenshots/   # README + landing images
 ├── docs/                 # ARCHITECTURE, HAZARD-FORMAT, DEMO-GUIDE, DEPLOY
 ├── src/
-│   ├── main.js           # renderer + loop + URL helpers
+│   ├── boot.js           # device + WebGL gate, then imports main.js
+│   ├── main.js           # renderer + loop + URL helpers, loading bar
+│   ├── modes/            # hands-on modes + own-run replay (ghost.js)
+│   ├── assets.js         # Poly Haven HDRI + PBR loaders
 │   ├── world.js          # yard + quay geometry, sky, trucks, workers, birds, colliders
 │   ├── textures.js       # procedural canvas textures
 │   ├── audio.js          # WebAudio ambience
@@ -110,7 +122,9 @@ None at runtime. No API keys, no network calls after the page loads.
 
 ## Important Failure Modes
 - **Pointer lock refused or released (Esc, alt-tab)** → hint pill switches to "Click to resume"; clicking the canvas re-locks. The sim keeps rendering.
-- **WebGL unavailable** → three.js throws on renderer creation; the page shows the start overlay with a blank background. Acceptable for a POC; a fallback message is a later item.
+- **WebGL unavailable** → `boot.js` detects it before three.js loads and shows a panel explaining what is needed.
+- **Touch-only device** → pointer lock and WASD are unavailable; `boot.js` shows a notice with a link to the landing page and a "Continue anyway" button.
+- **Slow or failed texture download** → every surface renders its procedural fallback first; the loading bar fills as files arrive and hides after the last one or after 20 s.
 - **Walking into a replay zone from an odd angle** → zones are circles with radius 2.6 m on the walkway; the beacon marks them, and triggering only depends on distance, so approach angle does not matter.
 
 ## What Was Simplified and Why
@@ -127,3 +141,4 @@ None at runtime. No API keys, no network calls after the page loads.
 - **Live trucks hidden during lane replays** (implementation detail) so the staged tractor is the only vehicle in frame.
 - **Learner uncertainty discussed:** whether "first-person in the browser without a headset" is enough presence for the lesson to land. Agreed evidence: the lane-crossing replay must make a first-time viewer flinch in the demo recording; if it does not, add a camera shake and a closer angle before shipping.
 - Open: skippable replays on repeat runs (carried from PRD, default no).
+- Resolved: "Operator role is still played on foot" — the learner asked to drive and lift; the hands-on modes (slice 7) add a tractor and an RTG under the player's control, each with a hand-written model rather than a physics engine.

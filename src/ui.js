@@ -1,4 +1,4 @@
-import { STRINGS, ROLES } from './scenario.js';
+import { STRINGS, ROLES, PREVIEW } from './scenario.js';
 
 const $ = (id) => document.getElementById(id);
 const fmt = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
@@ -23,13 +23,36 @@ export class UI {
     this.renderStatic();
     $('start-lead').textContent = this.t(STRINGS.startLead);
     $('role-title').textContent = this.t(STRINGS.roleTitle);
-    $('start-keys').innerHTML = STRINGS.startKeys[this.lang].map(([k, l]) => `<span>${k.split(' ').map((x) => `<kbd>${x}</kbd>`).join('')} ${l}</span>`).join('');
     $('start-fine').textContent = this.t(STRINGS.startFine);
-    const card = (r) => `<button class="role${r.mode ? ' hands' : ''}" data-i="${ROLES.indexOf(r)}"><svg class="ic"><use href="#${r.icon}"/></svg><div class="n">${this.t(r.name)}</div><div class="t">${this.t(r.tag)}</div><div class="b">${this.t(r.blurb)}</div><div class="go">${this.t(STRINGS.startBtn)} →</div></button>`;
+    $('start-disclaimer').textContent = this.t(STRINGS.disclaimer);
+    // A short list to pick from, and one landing-style card for the picked role: what it looks like,
+    // the keys it uses, and the button that starts it.
+    const row = (r) => `<button type="button" class="pick" role="option" data-i="${ROLES.indexOf(r)}"><svg class="ic"><use href="#${r.icon}"/></svg><span class="n">${this.t(r.name)}</span></button>`;
     const walk = ROLES.filter((r) => !r.mode), hands = ROLES.filter((r) => r.mode);
-    $('roles').innerHTML = `<div class="group"><div class="gk">${this.t(STRINGS.groupWalk)}</div><div class="grid">${walk.map(card).join('')}</div></div>
-      <div class="group"><div class="gk">${this.t(STRINGS.groupHands)} <span class="new">${this.t(STRINGS.groupNew)}</span></div><div class="grid five">${hands.map(card).join('')}</div></div>`;
-    $('roles').querySelectorAll('.role').forEach((b) => b.addEventListener('click', () => this.onRole?.(ROLES[Number(b.dataset.i)])));
+    $('roles').innerHTML = `<div class="list" role="listbox" aria-label="${this.t(STRINGS.roleTitle)}">
+        <div class="gk">${this.t(STRINGS.groupWalk)}</div>${walk.map(row).join('')}
+        <div class="gk">${this.t(STRINGS.groupHands)}</div>${hands.map(row).join('')}
+      </div><div class="preview" id="role-preview"></div>`;
+    const rows = [...$('roles').querySelectorAll('.pick')];
+    rows.forEach((b, k) => {
+      b.addEventListener('click', () => this.selectRole(Number(b.dataset.i)));
+      b.addEventListener('dblclick', () => this.onRole?.(ROLES[Number(b.dataset.i)]));
+      b.addEventListener('keydown', (e) => {
+        const step = e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : 0;
+        if (step) { e.preventDefault(); const nb = rows[(k + step + rows.length) % rows.length]; nb.focus(); this.selectRole(Number(nb.dataset.i)); }
+        else if (e.key === 'Enter') { e.preventDefault(); this.onRole?.(ROLES[Number(b.dataset.i)]); }
+      });
+    });
+    this.selectRole(this.picked ?? 0);
+  }
+  selectRole(i) {
+    this.picked = i; const r = ROLES[i], p = PREVIEW[r.id];
+    $('roles').querySelectorAll('.pick').forEach((b) => { const on = Number(b.dataset.i) === i; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+    const keys = p.keys[this.lang].map(([k, l]) => `<span>${k.split(' ').map((x) => `<kbd>${x}</kbd>`).join('')} ${l}</span>`).join('<span class="sep">·</span>');
+    $('role-preview').innerHTML = `<div class="ap-bar">${this.t(r.tag)}</div>
+      <h2>${this.t(r.name)}</h2><p>${this.t(r.blurb)}</p><div class="pkeys">${keys}</div>
+      <img src="${p.shot}" alt="" /><button type="button" class="go" id="role-go">${this.t(p.go)}</button>`;
+    $('role-go').addEventListener('click', () => this.onRole?.(r));
   }
   showRoles() { this.hideEnd(); $('overlay-start').classList.remove('hidden'); $('hud').classList.add('hidden'); }
   hideStart() { $('overlay-start').classList.add('hidden'); $('hud').classList.remove('hidden'); }
@@ -106,6 +129,7 @@ export class UI {
       <div class="stat-row"><div class="score">${clean}<small>/${hazards.length} ${this.t(STRINGS.endScore)}</small></div><div class="score" style="font-size:28px">${near}<small> ${this.t(STRINGS.endNear)}</small></div><div class="score" style="font-size:28px">${fmt(seconds)}<small> ${this.t(STRINGS.endTime)}</small></div></div>
       <div class="report">${rows}</div>
       <p>${this.t(STRINGS.endLead)}</p>
+      <p class="disclaimer">${this.t(STRINGS.disclaimer)}</p>
       <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="primary" id="restart">${this.t(STRINGS.restart)}</button><button class="primary" id="roles-btn" style="background:rgba(255,255,255,0.1);color:#fff">${this.t(STRINGS.roleTitle)}</button></div></div>`;
     $('overlay-end').classList.remove('hidden');
     $('restart').addEventListener('click', onRestart); $('roles-btn').addEventListener('click', onRoles);

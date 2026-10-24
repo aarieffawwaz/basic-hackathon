@@ -14,17 +14,17 @@
     <link rel="stylesheet" href="/src/landing.css" />
   </head>
   <body>
-    <div class="grain" aria-hidden="true"></div>
     <nav class="nav">
-      <a class="brand" href="/"><img class="mark" src="/logo.svg" alt="" width="26" height="26" /><span>Shift<em>Replay</em></span></a>
+      <a class="brand" href="/" aria-label="ShiftReplay home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M43.3 20.7A16 16 0 1 0 48 32" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="square"/><path d="M38.5 12.5l13 3.4-4.4 12.6z" fill="currentColor"/><path d="M27.5 24.5v15l12.5-7.5z" fill="var(--accent)"/></svg><span>shiftreplay</span></a>
       <div class="links">
-        <a href="#how">How it works <span>+</span></a>
-        <a href="#replay">The replay <span>+</span></a>
-        <a href="#roles">Roles <span>+</span></a>
-        <a href="#hands-on">Hands-on <span>+</span></a>
+        <a href="#problem">The problem</a>
+        <a href="#how">How it works</a>
+        <a href="#replay">The replay</a>
+        <a href="#roles">Roles</a>
+        <a href="#hands-on">Hands-on</a>
         <a href="https://github.com/aarieffawwaz/basic-hackathon" target="_blank" rel="noreferrer">Docs <span>↗</span></a>
       </div>
-      <a class="cta" href="/play/">Start shift →</a>
+      <a class="cta" href="/play/">Start shift</a>
     </nav>
 
     <header class="hero">
@@ -35,15 +35,15 @@
           <h1>See the accident<br>before it happens.</h1>
           <p class="lead">A new worker walks a 3D container terminal, or takes the wheel, the crane or the radio, and makes the calls a first shift demands. Get one wrong and the sim replays what would have happened, then shows the rule.</p>
           <div class="ctas">
-            <a class="btn primary" href="/play/">Start shift →</a>
+            <a class="btn primary" href="/play/">Start shift</a>
             <a class="btn" href="https://github.com/aarieffawwaz/basic-hackathon#readme" target="_blank" rel="noreferrer">Read the docs</a>
           </div>
         </div></div>
         <div class="hero-steps" aria-live="polite">
-          <div class="hero-step"><div class="n">01 · PICK A SHIFT</div><h3>On foot or at the controls</h3><p>Walk the yard in first person, or drive the tractor, run the RTG crane, signal a lift, inspect the yard, get out of a gas leak.</p></div>
-          <div class="hero-step"><div class="n">02 · MAKE THE CALL</div><h3>A tractor is coming</h3><p>Three options fill the screen. One is right, two are what people do when they are late. Press A, B or C.</p></div>
-          <div class="hero-step"><div class="n">03 · WATCH THE REPLAY</div><h3>Wrong call, third person</h3><p>The camera cuts away and plays the accident in slow motion. At the controls, it is your own run, with your speed on screen.</p></div>
-          <div class="hero-step"><div class="n">04 · DO THE SAFE THING</div><h3>Then the rule</h3><p>Hold E to put on PPE or clip a harness. Hit SPACE the moment the driver waves. Then the shift report.</p><a class="btn primary go" href="/play/">Start shift →</a></div>
+          <div class="hero-step"><div class="n">01 · PICK A SHIFT</div><h2>On foot or at the controls</h2><p>Walk the yard in first person, or drive the tractor, run the RTG crane, signal a lift, inspect the yard, get out of a gas leak.</p></div>
+          <div class="hero-step"><div class="n">02 · MAKE THE CALL</div><h2>A tractor is coming</h2><p>Three options fill the screen. One is right, two are what people do when they are late. Press A, B or C.</p></div>
+          <div class="hero-step"><div class="n">03 · WATCH THE REPLAY</div><h2>Wrong call, third person</h2><p>The camera cuts away and plays the accident in slow motion. At the controls, it is your own run, with your speed on screen.</p></div>
+          <div class="hero-step"><div class="n">04 · DO THE SAFE THING</div><h2>Then the rule</h2><p>Hold E to put on PPE or clip a harness. Hit SPACE the moment the driver waves. Then the shift report.</p><a class="btn primary go" href="/play/">Start shift</a></div>
         </div>
         <div class="scroll">Scroll</div>
       </div>
@@ -55,8 +55,22 @@
       <span><b>Permenaker 8/2010</b>Personal protective equipment</span><span><b>UU 1/1970</b>Occupational safety act</span><span><b>Permenaker 8/2020</b>Lifting and transport equipment</span><span><b>Permenaker 9/2016</b>Work at height</span><span><b>PP 50/2012</b>Safety management system (SMK3)</span><span><b>Permenaker 5/2018</b>Chemical agents (NAB)</span>
     </div></div>
 
+    <section id="problem" class="problem">
+      <div class="sec-head"><div class="eyebrow">The problem</div><h2>Indonesia recorded 462,241 workplace accidents in 2024.</h2><p class="lead">Two years earlier it was 298,137. At the ports, the accidents look like the ones in this sim: a box coming down, a vehicle and a person in the same lane.</p></div>
+      <div class="stats">
+        <div class="ap stat"><div class="ap-bar">2024 · national</div><div class="num">462,241</div><p>work-accident cases, January to December</p><a class="src" href="https://data.go.id/dataset/dataset/kasus-kecelakaan-kerja-tahun-2024" target="_blank" rel="noreferrer">Kemnaker, data.go.id</a></div>
+        <div class="ap stat"><div class="ap-bar">2022 · national</div><div class="num">298,137</div><p>cases in 2022; 2024 was 55% higher</p><a class="src" href="https://nasional.kontan.co.id/news/menteri-ketenagakerjaan-soroti-tren-peningkatan-jumlah-kecelakaan-kerja" target="_blank" rel="noreferrer">Manpower Minister, via Kontan</a></div>
+        <div class="ap stat"><div class="ap-bar">feb 2026 · tanjung perak</div><div class="num">1 dead</div><p>containers fell from a listing ship during cargo handling; a dockworker drowned</p><a class="src" href="https://www.cnnindonesia.com/nasional/20260202193828-20-1323807/kapal-kontainer-oleng-di-surabaya-pekerja-ditemukan-tewas-tenggelam" target="_blank" rel="noreferrer">CNN Indonesia</a></div>
+        <div class="ap stat"><div class="ap-bar">sep 2024 · tanjung priok</div><div class="num">1 dead</div><p>a container fell onto a truck cab after a turn in a tight space</p><a class="src" href="https://www.akurat.co/hukum/763816/viral-satu-unit-truk-tertimpa-peti-kemas-di-pelabuhan-tanjung-priok-sopir-tewas" target="_blank" rel="noreferrer">Akurat</a></div>
+      </div>
+      <div class="who">
+        <p><b>Who it is for.</b> The new checker, driver or lasher on day one, and the HSE officer who has to induct them. Their induction today is usually a slideshow and a signature; VR patrols exist, but only where there is a headset and a training room.</p>
+        <p><b>Why a replay.</b> A 2024 meta-analysis of 52 studies found that immersive safety training beat traditional training on both knowledge and retention (<a href="https://mro.massey.ac.nz/handle/10179/71203" target="_blank" rel="noreferrer">Scorgie et al., <i>Safety Science</i> 171</a>). ShiftReplay tests how much of that a browser can carry without the headset.</p>
+      </div>
+    </section>
+
     <section class="how how-static">
-      <div class="sec-head"><div class="eyebrow">How it works</div><h2>Act. Decide. Watch. Learn.</h2></div>
+      <div class="sec-head"><div class="eyebrow">How it works</div><h2>From the gate to the shift report.</h2></div>
       <div class="steps">
         <div class="ap step"><div class="ap-bar">step 01</div><pre class="digit" data-n="01" aria-hidden="true"></pre><h3>Pick a shift</h3><p>Walk the yard with WASD and mouse, or take the controls: tractor, RTG crane, signaller, inspector, gas leak. A beacon marks the next checkpoint.</p></div>
         <div class="ap step"><div class="ap-bar">step 02</div><pre class="digit" data-n="02" aria-hidden="true"></pre><h3>Make the call</h3><p>Three options fill the screen. One is right, two are what people actually do when they are late. Press A, B or C.</p></div>
@@ -80,7 +94,7 @@
         </ul>
       </div>
       <div class="feature-media">
-        <div class="ap"><div class="ap-bar">your run · tractor · 19 km/h past the radar</div><img src="/screenshots/replay-own.jpg" alt="Own-run replay: the tractor you drove passes the radar at 19 km/h, labelled YOUR RUN" /></div>
+        <div class="ap"><div class="ap-bar">your run · 19 km/h</div><img src="/screenshots/replay-own.jpg" alt="Own-run replay: the tractor you drove passes the radar at 19 km/h, labelled YOUR RUN" /></div>
         <div class="grid4">
           <div class="ap"><div class="ap-bar">truck lane</div><img src="/screenshots/replay-cross.jpg" alt="A terminal tractor strikes a worker at the crossing" /></div>
           <div class="ap"><div class="ap-bar">ppe</div><img src="/screenshots/replay-ppe.jpg" alt="A twist-lock falls on a helmetless worker" /></div>
@@ -95,9 +109,9 @@
     <section id="roles" class="roles">
       <div class="sec-head"><div class="eyebrow">Walk the shift · 3 roles</div><h2>Pick a job. Each one has different ways to go wrong.</h2></div>
       <div class="role-grid">
-        <a class="ap role" href="/play/?role=checker"><div class="ap-bar">on foot · 5 checkpoints</div><div class="rn">Yard checker</div><p>Gate PPE, the truck lane, the suspended load, the two-high stack, and whether you file the near-miss report.</p><img src="/screenshots/decision.jpg" alt="Decision screen" /><div class="go">start shift →</div></a>
-        <a class="ap role" href="/play/?role=operator"><div class="ap-bar">heavy equipment · 3 checkpoints</div><div class="rn">Reach stacker operator</div><p>Pre-start inspection on a warm machine, a checker in your blind spot, gusts at 14 m/s with a stack to build.</p><img src="/screenshots/yard.jpg" alt="The yard" /><div class="go">start shift →</div></a>
-        <a class="ap role" href="/play/?role=lashing"><div class="ap-bar">quay &amp; vessel · 3 checkpoints</div><div class="rn">Lashing crew</div><p>A gangway with no net, a stern line under 60 tonnes, and the fastest way to the top tier.</p><img src="/screenshots/quay.jpg" alt="The quay" /><div class="go">start shift →</div></a>
+        <a class="ap role" href="/play/?role=checker"><div class="ap-bar">on foot · 5 checkpoints</div><div class="rn">Yard checker</div><p>Gate PPE, the truck lane, the suspended load, the two-high stack, and whether you file the near-miss report.</p><img src="/screenshots/decision.jpg" alt="Decision screen" /><div class="go">start shift</div></a>
+        <a class="ap role" href="/play/?role=operator"><div class="ap-bar">machine · 3 checkpoints</div><div class="rn">Reach stacker operator</div><p>Pre-start inspection on a warm machine, a checker in your blind spot, gusts at 14 m/s with a stack to build.</p><img src="/screenshots/yard.jpg" alt="The yard" /><div class="go">start shift</div></a>
+        <a class="ap role" href="/play/?role=lashing"><div class="ap-bar">quay &amp; vessel · 3 checkpoints</div><div class="rn">Lashing crew</div><p>A gangway with no net, a stern line under 60 tonnes, and the fastest way to the top tier.</p><img src="/screenshots/quay.jpg" alt="The quay" /><div class="go">start shift</div></a>
       </div>
     </section>
 
@@ -106,11 +120,11 @@
     <section id="hands-on" class="roles hands">
       <div class="sec-head"><div class="eyebrow">Hands-on · 5 modes · new</div><h2>Take the controls. Crash, and you watch your own run.</h2><p class="lead">You drive, lift, signal, inspect and evacuate, and the sim grades what you actually did, not what you clicked.</p></div>
       <div class="hands-grid">
-        <a class="ap role wide" href="/play/?role=driver"><div class="ap-bar">you drive · 3 checkpoints</div><div class="rn">Tractor driver</div><p>15 km/h past the radar, a checker on the zebra, a red light under the RTG while a box is landing.</p><div class="keys"><kbd>W</kbd><kbd>S</kbd> gas, brake · <kbd>A</kbd><kbd>D</kbd> steer · <kbd>V</kbd> cab</div><img src="/screenshots/mode-driver.jpg" alt="Driving a terminal tractor toward the radar at 5 km/h" /><div class="go">start driving →</div></a>
-        <a class="ap role wide" href="/play/?role=crane"><div class="ap-bar">you lift · 3 checkpoints</div><div class="rn">RTG crane operator</div><p>Four twist-locks before you hoist, a checker steps into the load path, then land 30 t on a chassis in the wind.</p><div class="keys"><kbd>W</kbd><kbd>S</kbd> gantry · <kbd>R</kbd><kbd>F</kbd> hoist · <kbd>Space</kbd> locks</div><img src="/screenshots/mode-crane.jpg" alt="RTG crane view with the twist-lock and sway gauge" /><div class="go">start lifting →</div></a>
-        <a class="ap role" href="/play/?role=signal"><div class="ap-bar">you guide · 3 checkpoints</div><div class="rn">Signaller</div><p>The operator cannot see the ground. You can. Your hand signals move the crane, and the all-stop is yours.</p><div class="keys"><kbd>1</kbd>–<kbd>4</kbd> signal · <kbd>Space</kbd> all-stop</div><img src="/screenshots/mode-signal.jpg" alt="Signaller view of a box coming down onto a truck" /><div class="go">start signalling →</div></a>
-        <a class="ap role" href="/play/?role=inspect"><div class="ap-bar">spot the hazard · 90 s</div><div class="rn">HSE inspector</div><p>The yard is frozen at 07:42. Five things are wrong and one is a decoy. Whatever you miss plays out.</p><div class="keys">look · <kbd>F</kbd> flag</div><img src="/screenshots/mode-inspect.jpg" alt="A worker without a helmet in the frozen yard" /><div class="go">start inspecting →</div></a>
-        <a class="ap role" href="/play/?role=evac"><div class="ap-bar">evacuate · 3 checkpoints</div><div class="rn">Gas leak</div><p>A reefer leaks ammonia. Read the wind, do not become the second casualty, pick the right muster point.</p><div class="keys">walk · <kbd>E</kbd> radio</div><img src="/screenshots/mode-evac.jpg" alt="Ammonia haze over the reefer row with a worker down" /><div class="go">start the drill →</div></a>
+        <a class="ap role wide" href="/play/?role=driver"><div class="ap-bar">you drive · 3 checkpoints</div><div class="rn">Truck driver</div><p>15 km/h past the speed radar, a worker on the zebra crossing, a red light under the crane while a container comes down.</p><div class="keys"><kbd>W</kbd><kbd>S</kbd> gas, brake · <kbd>A</kbd><kbd>D</kbd> steer · <kbd>V</kbd> cab</div><img src="/screenshots/mode-driver.jpg" alt="Driving a terminal tractor toward the radar at 5 km/h" /><div class="go">start driving</div></a>
+        <a class="ap role wide" href="/play/?role=crane"><div class="ap-bar">you lift · 3 checkpoints</div><div class="rn">Crane operator</div><p>Lock all four corners before you lift, stop when a worker walks under the load, then set 30 t on a truck in the wind.</p><div class="keys"><kbd>W</kbd><kbd>S</kbd> gantry · <kbd>R</kbd><kbd>F</kbd> hoist · <kbd>Space</kbd> locks</div><img src="/screenshots/mode-crane.jpg" alt="RTG crane view with the twist-lock and sway gauge" /><div class="go">start lifting</div></a>
+        <a class="ap role" href="/play/?role=signal"><div class="ap-bar">you guide · 3 checkpoints</div><div class="rn">Signaller</div><p>The operator cannot see the ground. You can. Your hand signals move the crane, and the all-stop is yours.</p><div class="keys"><kbd>1</kbd>–<kbd>4</kbd> signal · <kbd>Space</kbd> all-stop</div><img src="/screenshots/mode-signal.jpg" alt="Signaller view of a box coming down onto a truck" /><div class="go">start signalling</div></a>
+        <a class="ap role" href="/play/?role=inspect"><div class="ap-bar">spot the hazard · 90 s</div><div class="rn">Safety inspector</div><p>The yard is frozen at 07:42. Five things are wrong and one is a decoy. Whatever you miss plays out.</p><div class="keys">look · <kbd>F</kbd> flag</div><img src="/screenshots/mode-inspect.jpg" alt="A worker without a helmet in the frozen yard" /><div class="go">start inspecting</div></a>
+        <a class="ap role" href="/play/?role=evac"><div class="ap-bar">evacuate · 3 checkpoints</div><div class="rn">Gas leak</div><p>A reefer leaks ammonia. Read the wind, do not become the second casualty, pick the right muster point.</p><div class="keys">walk · <kbd>E</kbd> radio</div><img src="/screenshots/mode-evac.jpg" alt="Ammonia haze over the reefer row with a worker down" /><div class="go">start the drill</div></a>
       </div>
     </section>
 
@@ -149,9 +163,9 @@
     <footer>
       <div class="foot-top">
         <div class="foot-brand">
-          <a class="brand" href="/"><img class="mark" src="/logo.svg" alt="" width="26" height="26" /><span>Shift<em>Replay</em></span></a>
+          <a class="brand" href="/" aria-label="ShiftReplay home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M43.3 20.7A16 16 0 1 0 48 32" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="square"/><path d="M38.5 12.5l13 3.4-4.4 12.6z" fill="currentColor"/><path d="M27.5 24.5v15l12.5-7.5z" fill="var(--accent)"/></svg><span>shiftreplay</span></a>
           <p>See the accident before it happens. A browser-only K3 safety sim for the first shift at a container terminal.</p>
-          <a class="btn primary" href="/play/">Start shift →</a>
+          <a class="btn primary" href="/play/">Start shift</a>
         </div>
         <nav class="foot-cols" aria-label="Footer">
           <div><div class="eyebrow">Product</div><a href="/play/">Start shift</a><a href="#how">How it works</a><a href="#replay">The replay</a><a href="#roles">Roles</a><a href="#hands-on">Hands-on</a></div>

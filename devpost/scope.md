@@ -31,10 +31,11 @@ I grew up around people who work field jobs — ports, plants, mines — and the
 Open the link, click Start, walk to the truck lane, choose "cross now", and watch the tractor hit you in slow motion with the stopping-distance caption, then the Permenaker reference. That is the "oh" beat. Then five checkpoints end in a shift report listing each call, first try or replayed.
 
 ## The POC Boundary
-- One scene: a container terminal with yard and quay, built from primitives and procedurally drawn textures (no model or image files).
-- Three roles: yard checker (5 checkpoints), reach stacker operator (3), lashing crew (3). Eleven checkpoints in total.
+- One scene: a container terminal with yard and quay, built from primitives and procedurally drawn textures. No model files; the learner later approved a CC0 HDRI sky and three PBR surface sets from Poly Haven (see `checklist.md > Revisions`).
+- Three walk-and-decide roles: yard checker (5 checkpoints), reach stacker operator (3), lashing crew (3). Eleven checkpoints in total.
 - Five consequence replays (`ppe`, `cross`, `load`, `height`, `snapback`); roles retell the same physics with different captions.
 - An action step after each right call: hold E, or time SPACE.
+- Five hands-on modes (added after the learner played the three roles and asked to *be* the crane operator and the driver): tractor driver, RTG crane operator, signaller, HSE inspector, ammonia gas-leak evacuation. The controls are the decision; a mistake replays **the player's own run** (recorded each frame) instead of a scripted scene. Same kernel, stronger form: the accident on screen is the one you just caused.
 - Procedural port ambience (WebAudio), birds, sky, sun.
 - English and Bahasa Indonesia toggle. Shift report at the end. A landing page. No accounts, no server, no API keys.
 
@@ -45,7 +46,7 @@ Open the link, click Start, walk to the truck lane, choose "cross now", and watc
 
 ## Explicitly Cut
 - **VR / WebXR** — the whole point is laptop-only; headsets are Molca's lane.
-- **Physics engine** — replays are scripted animations; a physics engine would cost a day and add nothing the viewer can tell apart.
+- **Physics engine** — replays are scripted animations; a physics engine would cost a day and add nothing the viewer can tell apart. The hands-on modes use small hand-written models instead (tractor speed and braking distance, an RTG pendulum load, a gas plume as a pure function of time).
 - **Real 3D assets / GLTF** — primitives are enough to read "yard", and keep the repo dependency-free beyond three.js.
 - **Scoring persistence / leaderboard** — nothing to prove about the kernel.
 - **Verified legal text** — rule names are real regulations; the wording is paraphrased and flagged as such in the spec. A compliance review is a later step, not a weekend one.

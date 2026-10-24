@@ -11,6 +11,24 @@
         ],
         "createdAt": "2026-10-23T13:55:31.372Z",
         "reason": "Claude: .hero-step deliberately mirrors the sim's #mission HUD panel (same 4px accent left border in src/style.css) so the landing caption reads as the product's own mission card"
+      },
+      {
+        "rule": "wide-tracking",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-10-24T12:32:16.831Z",
+        "reason": "Claude: 0.08em applies only to short uppercase mono labels (.eyebrow, .hero-step .n, .compare th, .scroll), never running text; the rule reserves wide tracking for exactly these"
+      },
+      {
+        "rule": "marquee",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-10-24T12:45:57.433Z",
+        "reason": "user confirmed: asked to restore the scrolling regulation ticker after it was made static; reduced-motion keeps a static wrap"
       }
     ]
   }

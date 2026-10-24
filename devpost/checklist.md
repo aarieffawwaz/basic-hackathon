@@ -60,7 +60,7 @@ Build mode: fast
   Commit: `Realism pass: procedural textures, sky, rigged workers, birds, audio`
 
 - [x] **6. Landing page, docs, deploy**
-  Becomes usable: `/` landing with live hero, README with screenshots, docs/, Vercel at shiftreplay.vercel.app.
+  Becomes usable: `/` landing with live hero, README with screenshots, docs/, deployed (first Vercel at shiftreplay.vercel.app, now Cloudflare Pages at shiftreplay.pages.dev).
   Why now: Submission needs a link that explains itself and a repo a stranger can read.
   PRD ref: `prd.md > Screens and Layout`
   Spec ref: `spec.md > Where It Runs and How Someone Tries It`
@@ -68,6 +68,26 @@ Build mode: fast
   Verify (mechanical): `pnpm build` emits both pages; live URL returns 200 and renders.
   Learner check: Open the live URL on your laptop, click Start shift, play one role.
   Commit: `Add landing page, docs, screenshots; deploy`
+
+- [x] **7. Five hands-on modes with own-run replay**
+  Becomes usable: tractor driver, RTG crane operator, signaller, HSE inspector and gas-leak evacuation on the start screen; each records the run and, on an incident, replays the player's last seconds from outside with live numbers, then the rule.
+  Why now: After playing the three roles the learner asked to be the crane operator and the driver instead of watching them ("jadi operator buat angkat container… jadi yang nyetir mobilnya"), then approved all five.
+  PRD ref: `prd.md > Hands-on modes`
+  Spec ref: `spec.md > Components > src/modes/`
+  Build: `src/modes/` (base, drive, cranesim, crane, signal, inspect, evac, ghost, props, scenarios), landing Hands-on section, README.
+  Verify (mechanical): `pnpm build` passes; real-browser screenshots of `?role=driver|crane|signal|inspect|evac` and one own-run replay per mode; no console errors.
+  Learner check: Drive past the radar too fast and watch your own run come back.
+  Commit: `Add five hands-on modes, own-run replay and sync the landing page`
+
+- [x] **8. First-visit polish before submission**
+  Becomes usable: loading bar on `/play/`, training disclaimer on the start screen and shift report, device and WebGL notices, sourced accident figures on the landing page and README, landing decoration trimmed.
+  Why now: Pre-submission review against the judging criteria (first-time visitor, real-problem evidence, no default-looking decoration).
+  PRD ref: `prd.md > States and Boundaries`, `prd.md > Screens and Layout`
+  Spec ref: `spec.md > Components > src/boot.js`, `spec.md > Important Failure Modes`
+  Build: `src/boot.js`, loading hooks in `main.js`, `STRINGS.disclaimer`, landing `#problem`, README *Why this matters*, *Iterations*, *Third-party work*; planning docs synced with slice 7.
+  Verify (mechanical): `pnpm build` passes; `/play/` shows the bar then the cards; `?force` path and the touch notice render under mobile emulation; landing renders the problem section with working source links.
+  Learner check: Open the live link in a fresh browser, watch the first ten seconds, then open it on your phone.
+  Commit: `Add loading bar, disclaimer, device checks and sourced problem data`
 
 ## Hands-on Checkpoints
 
@@ -84,6 +104,11 @@ Build mode: fast
 - App map generated at `devpost/app-map.html` (reference route, not toured interactively). Activity: focused alternative prepared — the "content as data, behaviour as a state machine" decision with evidence from slice 4. Reflection question not yet offered. Learner has not confirmed the wrap-up; nothing is claimed as learned.
 
 ## Revisions
+- Pre-submission (Oct 24): planning docs had fallen behind slice 7 (PRD still said a driving model was out of scope). Scope, PRD and spec updated; slices 7–8 recorded. Stale duplicate skill copy under `agent/skills/` removed (the installed pack is `.agents/skills/`).
+- Landing audit against "default AI landing" patterns: removed the glow shadow on CTA hover, card lift on hover, the film-grain overlay, nav "+" suffixes, unused cursor-tracking code, and the four-word slogan heading. Learner then flagged the nav as still templated: the yellow app-tile logo, the two-tone "Shift/Replay" wordmark and rounded yellow pill buttons with "→". Replaced with a bare line mark, a single-colour monospace wordmark, and square-cornered monospace uppercase buttons that match the page's ASCII boxes. Kept the ASCII language, which the learner chose.
+- The regulation ticker was made static during the audit; the learner asked for the scrolling marquee back, so it scrolls again (reduced motion still shows a static list).
+- Learner: the eight role cards on `/play/` were too much information at once. Replaced with a name-only list and one preview card for the selected role (screenshot, keys, start button), styled like the landing page's role cards so the choice comes with a picture of what you will be doing.
+- Learner: the explanations at every checkpoint were still hard to follow. Rewrote all situation, option, why and rule text (EN and ID) in plain words: terms like spreader, twist-lock, bight, gangway, anemometer, chassis, ERT and SCBA are now either explained in the sentence or replaced ("wind meter on the light pole", "corner locks", "emergency team with breathing masks"). Renamed three hands-on roles to match (Truck driver, Crane operator, Safety inspector) on the start screen, landing page and README. No em or en dashes left in the copy.
 - Learner approved CC0 downloads: Poly Haven HDRI (`industrial_sunset_puresky`) as environment + background, PBR sets for asphalt, concrete apron and container corrugation. Procedural sky/textures remain as fallback until files load.
 - Fixed: shadow swimming (shadow camera now follows the player in a 110 m box, texel-snapped; GTAO denoise widened) and the worker face rendering on the back of the head (stray 180° head rotation).
 - Learner: "looks like Roblox". Cinematic pass: GTAO + SMAA post stack, instanced container frames (posts/rails), capsule-limbed workers, asphalt normal map, rounded truck cab with headlights, FOV 64, film grain. Bloom tried and reverted to opt-in (whited out the sky).

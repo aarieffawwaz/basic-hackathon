@@ -18,6 +18,13 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 0.72;
 app.appendChild(renderer.domElement);
 
+// Loading bar on the start panel: the HDRI and PBR sets all go through three's default manager.
+// The cards stay clickable meanwhile; each surface keeps its procedural fallback until its file lands.
+const loading = document.getElementById('loading'), loadFill = document.getElementById('loading-fill');
+THREE.DefaultLoadingManager.onProgress = (_, done, total) => { loadFill.style.transform = `scaleX(${0.1 + (0.9 * done) / total})`; };
+THREE.DefaultLoadingManager.onLoad = () => loading.classList.add('done');
+setTimeout(() => loading.classList.add('done'), 20000);
+
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(64, innerWidth / innerHeight, 0.1, 1200);
 const world = buildWorld(scene, renderer);

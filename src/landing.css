@@ -20,10 +20,9 @@ p { margin: 0; }
 kbd { display: inline-block; font-family: var(--mono); font-size: 12px; line-height: 1; padding: 4px 6px; border-radius: 5px; border: 1px solid var(--line); background: rgba(255,255,255,0.06); color: var(--ink); vertical-align: middle; }
 
 /* ---- brand ---------------------------------------------------------------- */
-.mark { display: inline-block; width: 26px; height: 26px; margin-right: 10px; vertical-align: middle; border-radius: 7px; }
+.mark { display: inline-block; width: 22px; height: 22px; margin-right: 10px; vertical-align: middle; color: var(--ink); }
 .brand:active .mark { transform: scale(0.94); }
-.brand { display: inline-flex; align-items: center; font-weight: 800; letter-spacing: -0.01em; font-size: 17px; text-decoration: none; }
-.brand em { font-style: normal; color: var(--accent); }
+.brand { display: inline-flex; align-items: center; font: 700 14px/1 var(--mono); letter-spacing: 0.04em; text-decoration: none; color: var(--ink); }
 
 /* ---- nav: transparent over the hero, a glass material once content scrolls under it */
 .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 20; display: flex; align-items: center; gap: 28px; padding: 14px 28px; background: rgba(11,14,18,0); border-bottom: 1px solid rgba(255,255,255,0); transition: background .25s ease, border-color .25s ease, backdrop-filter .25s ease; }
@@ -36,12 +35,13 @@ kbd { display: inline-block; font-family: var(--mono); font-size: 12px; line-hei
 @media (max-width: 760px) { .links { display: none; } .nav { padding: 12px 16px; gap: 12px; } }
 
 /* ---- buttons: feedback on press, lift on hover, nothing idle ------------- */
-.btn, .cta { position: relative; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; padding: 12px 20px; border-radius: 10px; font-weight: 700; font-size: 15px; color: var(--ink); background: rgba(255,255,255,0.06); border: 1px solid var(--line); transition: var(--press), background .15s, border-color .15s, box-shadow .15s; }
-.btn:hover, .cta:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.22); transform: translateY(-1px); }
+/* Square-cornered, monospace, uppercase: the same language as the .ap boxes, the HUD key caps and the ticker. */
+.btn, .cta { position: relative; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 13px 18px; border-radius: 2px; font: 700 13px/1 var(--mono); letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink); background: transparent; border: 1px solid rgba(255,255,255,0.28); transition: var(--press), background .15s, border-color .15s, color .15s; }
+.btn:hover, .cta:hover { border-color: var(--ink); }
 .btn:active, .cta:active { transform: scale(0.97); }
 .btn.primary, .cta { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
-.btn.primary:hover, .cta:hover { background: #ffd43a; border-color: #ffd43a; box-shadow: 0 8px 28px rgba(245,197,24,0.28); }
-.cta { padding: 10px 16px; font-size: 14px; }
+.btn.primary:hover, .cta:hover { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.cta { padding: 10px 14px; font-size: 12px; }
 .ctas { display: inline-flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 
 /* ---- hero: pinned 3D; scroll drives the camera from the orbit into the gate */
@@ -57,10 +57,10 @@ kbd { display: inline-block; font-family: var(--mono); font-size: 12px; line-hei
 
 /* step captions that land as the camera passes gate, lane, crane */
 .hero-steps { position: absolute; left: 28px; bottom: 36px; z-index: 2; width: min(420px, calc(100vw - 56px)); pointer-events: none; }
-.hero-step { position: absolute; left: 0; bottom: 0; width: 100%; background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 14px; padding: 16px 18px 18px; backdrop-filter: var(--glass); box-shadow: 0 12px 40px rgba(0,0,0,0.35); opacity: 0; transform: translateY(16px); transition: opacity .35s ease, transform .45s cubic-bezier(.2,.8,.2,1); }
+.hero-step { position: absolute; left: 0; bottom: 0; width: 100%; background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 14px; padding: 16px 18px 18px; backdrop-filter: var(--glass); opacity: 0; transform: translateY(16px); transition: opacity .35s ease, transform .45s cubic-bezier(.2,.8,.2,1); }
 .hero-step.on { opacity: 1; transform: translateY(0); }
 .hero-step .n { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 8px; }
-.hero-step h3 { margin-bottom: 6px; }
+.hero-step h2 { margin-bottom: 6px; font-size: 20px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; max-width: none; }
 .hero-step p { color: var(--ink-2); font-size: 15px; line-height: 1.5; }
 .hero-step .go { pointer-events: auto; margin-top: 14px; }
 .scroll { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); z-index: 2; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); transition: opacity .3s; }
@@ -85,8 +85,7 @@ kbd { display: inline-block; font-family: var(--mono); font-size: 12px; line-hei
 .ap-bar::before { content: "┤ "; color: var(--muted); font-weight: 400; }
 .ap-bar::after { content: " ├"; color: var(--muted); font-weight: 400; }
 .ap > img { display: block; width: 100%; border-radius: 1px; }
-a.ap:hover { border-color: rgba(245,197,24,0.6); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.35); }
-a.ap:active { transform: translateY(0); }
+a.ap:hover { border-color: rgba(245,197,24,0.6); }
 
 .rule { max-width: 1180px; margin: 0 auto; padding: 0 28px; overflow: hidden; color: var(--dim, #3a434d); }
 .rule pre, .rule canvas { display: block; margin: 0 auto; max-width: 100%; }
@@ -121,7 +120,7 @@ section { position: relative; padding: var(--s24) 28px; max-width: 1180px; margi
 .feature-media { display: grid; gap: 14px; }
 .feature-media .ap { padding: 14px 8px 8px; }
 .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-.grid4 .ap-bar { font-size: 10px; left: 8px; }
+.grid4 .ap-bar { font-size: 11px; left: 8px; }
 @media (max-width: 960px) { .feature { grid-template-columns: 1fr; } }
 
 .role-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
@@ -171,9 +170,6 @@ footer > canvas { margin: var(--s8) auto var(--s8); }
 @media (max-width: 960px) { .foot-top { grid-template-columns: 1fr 1fr; } .foot-brand { grid-column: 1 / -1; } }
 @media (max-width: 760px) { footer { padding: var(--s12) 16px 0; } .foot-top { grid-template-columns: 1fr 1fr; } }
 
-/* ---- grain -------------------------------------------------------------------- */
-.grain { position: fixed; inset: 0; pointer-events: none; z-index: 30; opacity: 0.06; mix-blend-mode: overlay; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
-
 @media (prefers-reduced-transparency: reduce) {
   .nav.scrolled, .tag, .hero-step { backdrop-filter: none; background: var(--bg); }
 }
@@ -187,3 +183,17 @@ footer > canvas { margin: var(--s8) auto var(--s8); }
 .role .keys kbd { font-size: 11px; padding: 3px 5px; margin-right: 2px; }
 @media (max-width: 960px) { .hands-grid { grid-template-columns: 1fr 1fr; } .hands-grid .role, .hands-grid .role.wide { grid-column: span 1; } .hands-grid .role p { min-height: 0; } }
 @media (max-width: 560px) { .hands-grid { grid-template-columns: 1fr; } }
+
+/* ---- the problem: sourced numbers, then who it is for ------------------------ */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.stat { display: grid; gap: 8px; align-content: start; }
+.stat .num { font: 700 clamp(28px, 3vw, 38px)/1.05 var(--mono); letter-spacing: -0.02em; color: var(--ink); }
+.stat p { color: var(--ink-2); font-size: 15px; line-height: 1.5; }
+.stat .src { color: var(--muted); font-size: 13px; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line); }
+.stat .src:hover { color: var(--ink); }
+.who { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s8); margin-top: var(--s8); }
+.who p { color: var(--ink-2); font-size: 16px; line-height: 1.6; max-width: 60ch; }
+.who b { color: var(--ink); font-weight: 600; }
+.who a { color: var(--ink); text-underline-offset: 3px; }
+@media (max-width: 960px) { .stats { grid-template-columns: 1fr 1fr; } .who { grid-template-columns: 1fr; gap: var(--s4); } }
+@media (max-width: 560px) { .stats { grid-template-columns: 1fr; } }

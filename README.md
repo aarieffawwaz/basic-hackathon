@@ -28,9 +28,12 @@ Browser-only 3D safety training (K3) for ports and yards. Make the call, watch t
 </p>
 
 > Built for the **Build With AI: Basics** hackathon (Devpost Learn, Oct 2026) with Claude Code. Proof of concept, not certified training — see [Limitations](#known-limitations).
+>
+> **Testing:** open [shiftreplay.pages.dev/play](https://shiftreplay.pages.dev/play/) in a desktop browser (Chrome, Edge, Firefox or Safari) with a keyboard and mouse. No login, no install, no API key. Phones and tablets get a notice instead of the sim; `?force=1` skips it.
 
 ## Contents
 - [Overview](#overview)
+- [Why this matters](#why-this-matters)
 - [The kernel](#the-kernel)
 - [Product tour](#product-tour)
 - [Three roles, eleven checkpoints](#three-roles-eleven-checkpoints)
@@ -41,6 +44,7 @@ Browser-only 3D safety training (K3) for ports and yards. Make the call, watch t
 - [Architecture](#architecture)
 - [Adding a checkpoint or a scene](#adding-a-checkpoint-or-a-scene)
 - [How it was built](#how-it-was-built)
+- [Third-party work](#third-party-work)
 - [Known limitations](#known-limitations)
 - [Documentation](#documentation)
 - [License](#license)
@@ -56,7 +60,22 @@ ShiftReplay is the version for everyone who does not get a headset. It is one we
 | **Who it is for** | A new checker, operator or lasher on day one, and the HSE lead who has to induct them by Monday |
 | **What it teaches** | Five Indonesian regulations (Permenaker 8/2010, 8/2020, 9/2016; UU 1/1970; PP 50/2012) through eleven decisions |
 | **What makes it different** | A wrong call is answered with a slow-motion replay of the accident, not a red X |
-| **Runs on** | Any desktop browser with WebGL. No install, login, API key or server |
+| **Runs on** | Any desktop browser with WebGL. No install, login, API key or server. Phones and browsers without WebGL see an explanation, not a black screen |
+
+## Why this matters
+
+| | Figure | Source |
+|---|---|---|
+| Work-accident cases in Indonesia, 2024 | **462,241** | Kemnaker on [data.go.id](https://data.go.id/dataset/dataset/kasus-kecelakaan-kerja-tahun-2024) |
+| Same, 2022 | **298,137** (2024 is 55% higher) | Manpower Minister, Bulan K3 2025, via [Kontan](https://nasional.kontan.co.id/news/menteri-ketenagakerjaan-soroti-tren-peningkatan-jumlah-kecelakaan-kerja) |
+| JKK accident-insurance claims, 2019 → 2022 | 182,835 → 297,725 | [BPJS Ketenagakerjaan](https://www.bpjsketenagakerjaan.go.id/berita/28681/KecelakaanKerja-Makin-Marak-dalam-Lima-Tahun-Terakhir) |
+| Tanjung Perak, Surabaya, 2 Feb 2026 | Containers fell from a listing ship during cargo handling; one dockworker drowned | [CNN Indonesia](https://www.cnnindonesia.com/nasional/20260202193828-20-1323807/kapal-kontainer-oleng-di-surabaya-pekerja-ditemukan-tewas-tenggelam) |
+| Tanjung Priok, 26 Sep 2024 | A container fell onto a truck cab; the driver died | [Akurat](https://www.akurat.co/hukum/763816/viral-satu-unit-truk-tertimpa-peti-kemas-di-pelabuhan-tanjung-priok-sopir-tewas) |
+| Tanjung Priok, 9 Jul 2021 | A truck hit a container being unloaded; the driver died, the crane operator was named a suspect | [iNews](https://www.inews.id/news/megapolitan/sebabkan-sopir-truk-kontainer-tewas-di-pelabuhan-tanjung-priok-2-operator-ditetapkan-tersangka) |
+
+The ILO's code of practice [*Safety and health in ports*](https://www.ilo.org/node/562891) (rev. 2016) still describes port work as an occupation with very high accident rates. A 2024 meta-analysis of 52 studies ([Scorgie et al., *Safety Science* 171](https://mro.massey.ac.nz/handle/10179/71203)) found immersive safety training outperformed traditional training on knowledge and retention; ShiftReplay asks how much of that a browser can deliver without a headset.
+
+The port incidents above are the hazards the sim stages: a load coming down near people (`load`, RTG crane, signaller), a vehicle and a person sharing a lane (`cross`, tractor driver).
 
 ## The kernel
 
@@ -97,10 +116,10 @@ Five more shifts where the controls are the decision. There is no A/B/C: you dri
 
 | Mode | You control | Wrong move replays… | Regulation |
 |---|---|---|---|
-| Tractor driver | W/S throttle and brake, A/D steer, H horn | your approach to the radar with your stopping distance drawn next to the 15 km/h one; the checker on the zebra; the box landing on your cab under a red RTG light | Permenaker 8/2020, UU 1/1970 |
-| RTG crane operator | W/S gantry, R/F hoist, Shift creep, SPACE twist-locks, H horn | hoisting on 3 of 4 locks; carrying 30 t over a checker who stepped out between stacks; landing too fast or off the chassis | Permenaker 8/2020 |
+| Truck driver | W/S throttle and brake, A/D steer, H horn | your approach to the radar with your stopping distance drawn next to the 15 km/h one; the checker on the zebra; the box landing on your cab under a red RTG light | Permenaker 8/2020, UU 1/1970 |
+| Crane operator | W/S gantry, R/F hoist, Shift creep, SPACE twist-locks, H horn | hoisting on 3 of 4 locks; carrying 30 t over a checker who stepped out between stacks; landing too fast or off the chassis | Permenaker 8/2020 |
 | Signaller (banksman) | hold 1/4/2/3 to signal travel/away/lower/raise, SPACE all-stop, F wave someone off | signalling from inside the load path; not stopping for someone in the corridor; lowering with the driver beside the chassis | Permenaker 8/2020 |
-| HSE inspector | walk, look, F to flag; 90 s | every hazard you missed plays its consequence before the report (one decoy costs 5 s) | Permenaker 8/2010, 8/2020, 9/2016; UU 1/1970; PP 50/2012 |
+| Safety inspector | walk, look, F to flag; 90 s | every hazard you missed plays its consequence before the report (one decoy costs 5 s) | Permenaker 8/2010, 8/2020, 9/2016; UU 1/1970; PP 50/2012 |
 | Emergency: gas leak | walk; read the windsock; one A/B/C call | walking with the wind into the ammonia plume; running in to rescue; mustering at the downwind point | Permenaker 5/2018 (NAB 25 ppm), PP 50/2012 |
 
 The crane and signaller modes share one RTG model (`src/modes/cranesim.js`): gantry travel, hoist, a pendulum load driven by gantry acceleration and wind, twist-locks that only turn when the box is seated. The gas plume is a pure function of time, so its replay is rebuilt exactly.
@@ -212,7 +231,41 @@ Devpost Learn's workflow: **scope → PRD → spec → build → ship**, each a 
 | [`devpost/spec.md`](devpost/spec.md) | Stack, components, data model, failure modes, simplifications |
 | [`devpost/checklist.md`](devpost/checklist.md) | Build slices with mechanical verification, revisions log |
 
-Built with [Claude Code](https://claude.com/claude-code). Geometry, most textures, audio and copy are generated. The sky and three surface sets are CC0 from [Poly Haven](https://polyhaven.com): `industrial_sunset_puresky`, `asphalt_02`, `concrete_floor_worn_001`, `corrugated_iron` (1k, `public/tex/`).
+### Iterations
+
+The plan was approved before any code; everything after slice 3 came from playing the build and changing direction. Each change is logged under *Revisions* in [`devpost/checklist.md`](devpost/checklist.md).
+
+| When (2026) | What changed | Why |
+|---|---|---|
+| Oct 23, 16:43 | First build: one role, five checkpoints, four scripted replays, EN/ID | Slices 1–3 of the approved plan |
+| Oct 23, 17:21 | Three roles, hold-E / timing-SPACE actions, full-screen decisions, procedural sky and textures | After playing slice 3: "more than walking", bigger decisions, more interface |
+| Oct 23, 17:55 | Ambient occlusion, SMAA, container frames, capsule-limbed workers; bloom tried and reverted | Feedback: "looks like Roblox". Bloom whited out the sky |
+| Oct 23, 18:31 | Shadow camera follows the player and snaps to texels; a worker's face was on the back of his head | Shadows swam while walking |
+| Oct 23, 18:36 | CC0 HDRI sky and PBR surfaces from Poly Haven | Procedural textures read as plastic up close |
+| Oct 24, 19:36 | Five hands-on modes with own-run replay | Request to *be* the crane operator and the driver, not just watch them |
+| Oct 24 | Loading bar, in-sim training disclaimer, device and WebGL checks; planning docs synced | Pre-submission review against what a first-time visitor sees |
+
+Things that did not work the first time: npm 10.8 on Node 20 could not resolve Vite 8's peers (switched to pnpm); three r186 removed `PCFSoftShadowMap`; the first GPU render was overexposed (sun 2.4 → 1.7, exposure 0.95 → 0.72); headless Chrome could not render the scene in reasonable time, so verification moved to a real browser.
+
+| First build (Oct 23, 16:43) | Now: crane operator, hands-on |
+|---|---|
+| <img src="public/screenshots/history/v1-yard.jpg" alt="First build: the yard checker at the gate, flat lighting" width="100%" /> | <img src="public/screenshots/mode-crane.jpg" alt="Current build: RTG crane cab view with twist-lock and sway gauges" width="100%" /> |
+
+## Third-party work
+
+Everything in `src/` was written for this hackathon with Claude Code during the submission period. Incorporated work from others:
+
+| What | Where | License |
+|---|---|---|
+| [three.js](https://threejs.org) r186, including `RGBELoader` and the post-processing passes | runtime | MIT |
+| [Vite](https://vite.dev) 8 | build | MIT |
+| [ascii-magic-art](https://www.npmjs.com/package/ascii-magic-art) — the dotted rules, block digits and player on the landing page | landing page | see package |
+| [Poly Haven](https://polyhaven.com) HDRI `industrial_sunset_puresky` and PBR sets (`asphalt_02`, `concrete_floor_worn_001`, `corrugated_iron` and others in `public/tex/`) | sky, surfaces | CC0 |
+| [Inter](https://rsms.me/inter/) via Google Fonts | landing page | OFL |
+| Demo-video soundtrack generated with Meta's MusicGen; port ambience rendered from the sim's own `src/audio.js` | demo video | generated |
+| Devpost Learn skill pack ([challengepost/learn-ai-basics](https://github.com/challengepost/learn-ai-basics)) | `.agents/skills/`, planning workflow | see repo |
+
+Shipping-line names on the containers (NUSA LINE, PELAGIC, JAYA FREIGHT …) are invented. Regulation names are real Indonesian law; the one-line summaries are paraphrased.
 
 ### Demo video
 _Link to be added at submission._
