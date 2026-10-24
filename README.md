@@ -2,12 +2,12 @@
   <img src="public/screenshots/replay-cross.jpg" alt="ShiftReplay: consequence replay at the truck lane" width="100%" />
 </p>
 
-<h1><picture><source media="(prefers-color-scheme: dark)" srcset="public/mark-dark.svg" /><img src="public/mark-light.svg" width="32" alt="" /></picture> shiftreplay</h1>
-
-<p><b>See the accident before it happens.</b><br>
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="public/mark-dark.svg" /><img src="public/mark-light.svg" width="64" alt="" /></picture></p>
+<h1 align="center">shiftreplay</h1>
+<p align="center"><b>See the accident before it happens.</b><br>
 Browser-only 3D safety training (K3) for ports and yards. Make the call, watch the consequence replay, learn the rule. No headset, no account, no server.</p>
 
-<p>
+<p align="center">
   <a href="https://shiftreplay.pages.dev"><img alt="Live" src="https://img.shields.io/badge/live-shiftreplay.pages.dev-f5c518?style=flat-square" /></a>
   <img alt="three.js" src="https://img.shields.io/badge/three.js-r186-000?style=flat-square" />
   <img alt="Vite" src="https://img.shields.io/badge/Vite-8-646cff?style=flat-square" />
@@ -17,7 +17,7 @@ Browser-only 3D safety training (K3) for ports and yards. Make the call, watch t
   <img alt="License" src="https://img.shields.io/badge/license-MIT-lightgrey?style=flat-square" />
 </p>
 
-<p>
+<p align="center">
   <a href="https://shiftreplay.pages.dev/play/"><b>Play</b></a> ·
   <a href="https://shiftreplay.pages.dev"><b>Landing</b></a> ·
   <a href="#demo-video"><b>Demo video</b></a> ·
