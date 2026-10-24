@@ -8,7 +8,7 @@
 Browser-only 3D safety training (K3) for ports and yards. Make the call, watch the consequence replay, learn the rule. No headset, no account, no server.</p>
 
 <p align="center">
-  <a href="https://shiftreplay.vercel.app"><img alt="Live" src="https://img.shields.io/badge/live-shiftreplay.vercel.app-f5c518?style=flat-square" /></a>
+  <a href="https://shiftreplay.pages.dev"><img alt="Live" src="https://img.shields.io/badge/live-shiftreplay.pages.dev-f5c518?style=flat-square" /></a>
   <img alt="three.js" src="https://img.shields.io/badge/three.js-r186-000?style=flat-square" />
   <img alt="Vite" src="https://img.shields.io/badge/Vite-8-646cff?style=flat-square" />
   <img alt="Deps" src="https://img.shields.io/badge/runtime%20deps-1-38c172?style=flat-square" />
@@ -18,8 +18,8 @@ Browser-only 3D safety training (K3) for ports and yards. Make the call, watch t
 </p>
 
 <p align="center">
-  <a href="https://shiftreplay.vercel.app/play/"><b>Play</b></a> ·
-  <a href="https://shiftreplay.vercel.app"><b>Landing</b></a> ·
+  <a href="https://shiftreplay.pages.dev/play/"><b>Play</b></a> ·
+  <a href="https://shiftreplay.pages.dev"><b>Landing</b></a> ·
   <a href="#demo-video"><b>Demo video</b></a> ·
   <a href="devpost/scope.md"><b>Scope</b></a> ·
   <a href="devpost/prd.md"><b>PRD</b></a> ·
