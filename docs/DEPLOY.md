@@ -20,3 +20,8 @@ pnpm build
 # upload dist/ — Netlify, Vercel, GitHub Pages, S3
 ```
 `/play/` is a folder with its own `index.html`, so no rewrite rules are needed.
+
+## Old workers.dev link
+`wrangler.jsonc` + `worker/redirect.js` deploy a tiny Worker (via Workers Builds on push) that
+301-redirects `shiftreplay.<account>.workers.dev/*` to the same path on `shiftreplay.pages.dev`.
+Pages skips that config file because it has no `pages_build_output_dir`.

@@ -1,11 +1,8 @@
 {
   "$schema": "https://unpkg.com/wrangler@4.86.0/config-schema.json",
-  // Static site only: Vite builds landing (/) and sim (/play/) into dist/; no Worker script.
+  // Redirect-only Worker: the site itself is deployed by Cloudflare Pages (see docs/DEPLOY.md).
+  // Pages ignores this file because it has no pages_build_output_dir.
   "name": "shiftreplay",
-  "compatibility_date": "2026-10-24",
-  "assets": {
-    "directory": "./dist",
-    "html_handling": "auto-trailing-slash",
-    "not_found_handling": "none"
-  }
+  "main": "worker/redirect.js",
+  "compatibility_date": "2026-10-24"
 }
