@@ -322,7 +322,7 @@ export function buildWorld(scene, renderer) {
   for (const [x, z] of [[-5.5, -13.2], [-5.5, -10.8], [5.5, -13.2], [5.5, -10.8]]) { const c = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 4.6, 6), cableMat); c.position.set(x, 10.3, z); hang.add(c); }
   box(12.4, 0.5, 2.6, std({ color: C.line, roughness: 0.5, metalness: 0.4 }), 0, 8.0, -12, { parent: hang });
   for (const x of [-5.9, 5.9]) box(0.4, 0.5, 2.6, 0x222, x, 7.6, -12, { parent: hang });
-  makeContainer(12.19, 0xb03a2e, 0, 5.15, -12, hang);
+  const hangBox = makeContainer(12.19, 0xb03a2e, 0, 5.15, -12, hang);
   rtg.add(hang);
   box(2.2, 2.2, 2.2, std({ color: C.cabin, roughness: 0.4 }), 6.4, 11.2, -12, { parent: rtg });
   box(1.6, 1.2, 2.3, std({ color: 0x0f1a2e, roughness: 0.1, metalness: 0.6 }), 6.4, 11.3, -12, { parent: rtg });
@@ -406,7 +406,7 @@ export function buildWorld(scene, renderer) {
 
   let t = 0;
   Object.assign(world, {
-    scene, colliders, trucks, hang, beacon, rtg, npcs, paused: false,
+    scene, colliders, trucks, hang, hangBox, trolley, beacon, rtg, npcs, paused: false, craneManual: false,
     setBeacon(x, z, visible = true) { beacon.position.set(x, 0, z); beacon.visible = visible; },
     setTrucksVisible(v) { for (const tr of trucks) tr.g.visible = v; },
     setShadowCenter,
@@ -429,7 +429,8 @@ export function buildWorld(scene, renderer) {
         for (const w of tr.g.userData.wheels) w.rotation.y += tr.speed * dt / 0.52;
         tr.g.userData.beacon.material.color.setHex(Math.floor(t * 2) % 2 ? 0xffb000 : 0x7a4f00);
       }
-      hang.position.x = Math.sin(t * 0.7) * 0.25; hang.rotation.z = Math.sin(t * 0.7) * 0.01; trolley.position.x = hang.position.x;
+      // hands-on crane modes drive the hang themselves
+      if (!world.craneManual) { hang.position.x = Math.sin(t * 0.7) * 0.25; hang.rotation.z = Math.sin(t * 0.7) * 0.01; trolley.position.x = hang.position.x; }
       for (const n of npcs) {
         if (n.still) { animateWorker(n.w, t, 0.08); continue; }
         n.t += dt; const k = (Math.sin(n.t * 0.5) + 1) / 2;

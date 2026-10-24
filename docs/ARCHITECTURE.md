@@ -78,3 +78,14 @@ EffectComposer: RenderPass → GTAOPass (ground-truth ambient occlusion, 12 samp
 | Pointer lock refused / Esc | Hint flips to "Click to resume"; the world keeps rendering |
 | WebGL unavailable | Start overlay on a blank background (no fallback message yet) |
 | Audio blocked | Silent; everything else works. `♪` toggles |
+
+### `modes/` — hands-on shifts
+A role with a `mode` field (`drive`, `crane`, `signal`, `inspect`, `evac`) is run by a mode controller instead of `HazardRunner`; `main.js` keeps one `active` controller and calls its `update(dt)`.
+
+- `base.js` — `ModeBase`: checkpoint results (resolved in any order), toast on a safe call, `fail(i, replay, onRetry)` → replay → verdict card → retry, optional A/B/C `prompt`, hold-key steps, shift report.
+- `ghost.js` — own-run replay. `Recorder` keeps the last ~10 s of `capture()` snapshots; `makeGhost({frames, apply, focus, aftermath, captions, tele})` returns the same shape as `replay.js`, so the slow-motion loop, flash and thud are shared. A red trail marks the recorded path.
+- `cranesim.js` — RTG gantry/hoist/pendulum/twist-lock model used by `crane.js` and `signal.js`. It moves the world's RTG over the corridor centre and hangs a 20-ft box; `dispose()` restores the yard.
+- `drive.js`, `crane.js`, `signal.js`, `inspect.js`, `evac.js` — one file per mode; data (titles, rules, copy) in `scenarios.js`, small props (signs, lights, windsocks) in `props.js`.
+- `world.js` exposes `trolley`, `hangBox` and a `craneManual` flag so a mode can drive the crane itself.
+
+Dev builds expose `window.__sim.step(seconds)` to advance the active controller deterministically from the console.

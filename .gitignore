@@ -31,3 +31,11 @@ dist-ssr
 !.env.example
 .vercel
 .env*
+.playwright-mcp/
+
+# demo video: render output and tool caches
+demo-video/*.mp4
+demo-video/.hyperframes/
+demo-video/.thumbnails/
+demo-video/.waveform-cache/
+demo-video/.remember/

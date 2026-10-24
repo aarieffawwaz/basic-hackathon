@@ -1,0 +1,47 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; background: #0b0e12; font-family: Inter, sans-serif; color: #f5f7fa; }
+    #ec-stage { position: absolute; inset: 0; }
+    #ec-lockup { position: absolute; left: 50%; top: 318px; width: 760px; margin-left: -380px; height: 128px; display: flex; align-items: center; gap: 30px; }
+    #ec-markwrap { position: relative; width: 120px; height: 120px; flex: 0 0 120px; }
+    #ec-markwrap img { position: absolute; inset: 0; width: 120px; height: 120px; }
+    #ec-word { font-weight: 800; font-size: 100px; letter-spacing: -0.03em; line-height: 1; white-space: nowrap; }
+    #ec-word b { font-weight: 800; color: #f5c518; }
+    #ec-tag { position: absolute; left: 0; right: 0; top: 486px; text-align: center; font-weight: 600; font-size: 40px; letter-spacing: -0.005em; color: #c9d1da; }
+    #ec-tag .w { display: inline-block; margin-right: 0.24em; }
+    #ec-btn { position: absolute; left: 50%; top: 592px; margin-left: -162px; width: 324px; height: 84px; display: flex; align-items: center; justify-content: center; gap: 12px; border-radius: 14px; background: #f5c518; color: #141414; font-weight: 800; font-size: 32px; letter-spacing: -0.01em; }
+    #ec-url { position: absolute; left: 0; right: 0; top: 718px; text-align: center; font-family: "JetBrains Mono", monospace; font-weight: 500; font-size: 34px; color: #9aa5b1; letter-spacing: 0.01em; }
+    #ec-url span { display: inline-block; }
+    #ec-note { position: absolute; left: 0; right: 0; top: 912px; text-align: center; font-size: 28px; font-weight: 500; color: #9aa5b1; }
+  </style>
+  <div data-hf-id="hf-32ii" id="root" data-composition-id="endcard" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-umbn" id="ec-stage" class="clip" data-start="0" data-duration="8.5" data-hold>
+      <div data-hf-id="hf-9mhg" id="ec-lockup">
+        <div data-hf-id="hf-epj1" id="ec-markwrap">
+                    <img data-hf-id="hf-rxjd" id="ec-mark" src="assets/brand/logo.svg" alt="" />
+        </div>
+        <div data-hf-id="hf-r552" id="ec-word">Shift<b data-hf-id="hf-cssy">Replay</b></div>
+      </div>
+      <div data-hf-id="hf-vw3u" id="ec-tag"><span data-hf-id="hf-nqaj" class="w">See</span><span data-hf-id="hf-9o0j" class="w">the</span><span data-hf-id="hf-dua1" class="w">accident</span><span data-hf-id="hf-a3sz" class="w">before</span><span data-hf-id="hf-cqxh" class="w">it</span><span data-hf-id="hf-758p" class="w">happens.</span></div>
+      <div data-hf-id="hf-bl1m" id="ec-btn">Start shift <span data-hf-id="hf-p70p">→</span></div>
+      <div data-hf-id="hf-cqn1" id="ec-url"><span data-hf-id="hf-xom7" id="ec-url-text" data-var-text="url">shiftreplay.vercel.app/play/</span></div>
+      <div data-hf-id="hf-djgo" id="ec-note">Browser only. No headset, no account, no server. Built with Claude Code for Devpost Learn.</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // The mark drops in on a light spring, then its colour rises through it from the bottom.
+    tl.fromTo("#ec-markwrap", { y: -340, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "back.out(1.2)" }, 0.05);
+    tl.fromTo("#ec-mark", { clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0% 0 0 0)", duration: 0.4, ease: "power2.out" }, 0.4);
+    // The wordmark wipes in beside it.
+    tl.fromTo("#ec-word", { clipPath: "inset(0 100% 0 0)", opacity: 1 }, { clipPath: "inset(0 0% 0 0)", duration: 0.45, ease: "power3.out" }, 0.62);
+    // Tagline, per word, blur in.
+    tl.fromTo("#ec-tag .w", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.13, stagger: 0.067, ease: "power2.out" }, 1.15);
+    // The real button, no bounce; then the URL types.
+    tl.fromTo("#ec-btn", { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power3.out" }, 1.65);
+    tl.fromTo("#ec-url-text", { clipPath: "inset(0 100% 0 0)", opacity: 1 }, { clipPath: "inset(0 0% 0 0)", duration: 0.8, ease: "none" }, 2.0);
+    tl.fromTo("#ec-note", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 2.9);
+    // Nothing moves after 3.5 s; the card holds to the end.
+    window.__timelines["endcard"] = tl;
+  </script>
+</template>

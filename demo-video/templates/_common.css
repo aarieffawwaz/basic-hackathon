@@ -1,0 +1,15 @@
+    #root { position: absolute; inset: 0; overflow: hidden; background: #0b0e12; font-family: Inter, sans-serif; color: #f5f7fa; }
+    .clip { position: absolute; inset: 0; }
+    .cam { position: absolute; inset: 0; will-change: transform; }
+    .cam video { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; object-fit: cover; display: block; }
+    .cap { position: absolute; left: 0; right: 0; bottom: 118px; display: flex; justify-content: center; pointer-events: none; }
+    .cap > div { background: rgba(14,17,22,0.92); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 16px 28px; font-weight: 600; font-size: 40px; line-height: 1.2; letter-spacing: -0.005em; color: #f5f7fa; }
+    .cap b { font-weight: 600; color: #f5c518; }
+    .title { position: absolute; left: 120px; top: 560px; font-weight: 700; font-size: 96px; letter-spacing: -0.02em; line-height: 1.02; }
+    .title .w { display: inline-block; margin-right: 0.24em; }
+    .title .acc { color: #f5c518; }
+    .title .ln { display: block; }
+    .cursor { position: absolute; left: 0; top: 0; width: 50px; height: 74px; filter: drop-shadow(0 6px 14px rgba(0,0,0,0.45)); pointer-events: none; }
+    .dip { position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; }
+    .cap.top { bottom: auto; top: 96px; }
+    .boxed { background: rgba(14,17,22,0.92); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 22px 32px 26px; }

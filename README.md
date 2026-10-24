@@ -34,6 +34,7 @@ Browser-only 3D safety training (K3) for ports and yards. Make the call, watch t
 - [The kernel](#the-kernel)
 - [Product tour](#product-tour)
 - [Three roles, eleven checkpoints](#three-roles-eleven-checkpoints)
+- [Hands-on modes](#hands-on-modes)
 - [Screens](#screens)
 - [Quick start](#quick-start)
 - [Recording and debug helpers](#recording-and-debug-helpers)
@@ -90,6 +91,20 @@ Everything else in the repo exists to make that beat land: the walk builds prese
 
 Replays are reused across roles with different captions where the physics is the same — that is a feature of the data format, not a shortcut (see [Adding a checkpoint](#adding-a-checkpoint-or-a-scene)).
 
+## Hands-on modes
+
+Five more shifts where the controls are the decision. There is no A/B/C: you drive, lift, signal, inspect or evacuate, and a mistake replays **your own run**. Every hands-on mode records its state each frame; on an incident the last few seconds play back from outside at 0.55×, with the real numbers in the banner (speed, load height, sway, ppm), then the consequence finishes and the rule appears.
+
+| Mode | You control | Wrong move replays… | Regulation |
+|---|---|---|---|
+| Tractor driver | W/S throttle and brake, A/D steer, H horn | your approach to the radar with your stopping distance drawn next to the 15 km/h one; the checker on the zebra; the box landing on your cab under a red RTG light | Permenaker 8/2020, UU 1/1970 |
+| RTG crane operator | W/S gantry, R/F hoist, Shift creep, SPACE twist-locks, H horn | hoisting on 3 of 4 locks; carrying 30 t over a checker who stepped out between stacks; landing too fast or off the chassis | Permenaker 8/2020 |
+| Signaller (banksman) | hold 1/4/2/3 to signal travel/away/lower/raise, SPACE all-stop, F wave someone off | signalling from inside the load path; not stopping for someone in the corridor; lowering with the driver beside the chassis | Permenaker 8/2020 |
+| HSE inspector | walk, look, F to flag; 90 s | every hazard you missed plays its consequence before the report (one decoy costs 5 s) | Permenaker 8/2010, 8/2020, 9/2016; UU 1/1970; PP 50/2012 |
+| Emergency: gas leak | walk; read the windsock; one A/B/C call | walking with the wind into the ammonia plume; running in to rescue; mustering at the downwind point | Permenaker 5/2018 (NAB 25 ppm), PP 50/2012 |
+
+The crane and signaller modes share one RTG model (`src/modes/cranesim.js`): gantry travel, hoist, a pendulum load driven by gantry acceleration and wind, twist-locks that only turn when the box is seated. The gas plume is a pure function of time, so its replay is rebuilt exactly.
+
 ## Screens
 
 | | |
@@ -126,8 +141,8 @@ Query parameters on `/play/` so you can jump to any moment for a screenshot or t
 
 | URL | Opens |
 |---|---|
-| `/play/?role=operator` | A role without the start screen (`checker`, `operator`, `lashing`) |
-| `/play/?at=2` | Checkpoint 2 of the role, decision open |
+| `/play/?role=operator` | A role without the start screen (`checker`, `operator`, `lashing`, or a hands-on mode: `driver`, `crane`, `signal`, `inspect`, `evac`) |
+| `/play/?at=2` | Checkpoint 2 of the role, decision open (hands-on modes: start at checkpoint 2) |
 | `/play/?at=2&replay=1` | …and plays its first wrong option's replay (`replay=2.2` starts at t=2.2 s) |
 | `/play/?at=1&action=1` | Checkpoint 1's action step |
 | `/play/?end=1` | The shift report with sample results |
@@ -147,7 +162,8 @@ play/index.html ── src/main.js ─┤
                                  ├── src/hazards.js                      (state machine: walk → prompt → replay → action → report)
                                  ├── src/replay.js                       (five scripted consequence scenes + caption overrides)
                                  ├── src/ui.js                           (mission panel, decision, action bar, report)
-                                 └── src/audio.js                        (WebAudio: wind, diesel, beeper, gulls, horn, impact)
+                                 ├── src/audio.js                        (WebAudio: wind, diesel, beeper, gulls, horn, impact, siren)
+                                 └── src/modes/                          (hands-on modes: base, ghost replay, drive, crane, signal, inspect, evac)
 ```
 
 | Piece | Responsibility |

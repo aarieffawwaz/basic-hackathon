@@ -45,5 +45,17 @@ export class PortAudio {
   impact() { if (!this.ctx) return; this.tone(60, 0.9, { type: 'sine', gain: 0.5, slideTo: 30 }); this.tone(200, 0.15, { type: 'square', gain: 0.15, slideTo: 80 }); }
   click() { this.tone(900, 0.06, { type: 'square', gain: 0.03 }); }
   success() { this.tone(660, 0.12, { type: 'triangle', gain: 0.06 }); setTimeout(() => this.tone(990, 0.2, { type: 'triangle', gain: 0.06 }), 110); }
+  // Plant alarm: a slow two-tone wail, on until siren(false).
+  siren(on) {
+    const ctx = this.ctx; if (!ctx) return;
+    if (!on) { if (this.sirenNodes) { for (const n of this.sirenNodes) n.stop(); this.sirenNodes = null; } return; }
+    if (this.sirenNodes) return;
+    const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = 640;
+    const lfo = ctx.createOscillator(); lfo.frequency.value = 0.45; const lg = ctx.createGain(); lg.gain.value = 170; lfo.connect(lg).connect(o.frequency);
+    const f = ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 900; f.Q.value = 0.8;
+    const g = ctx.createGain(); g.gain.value = 0.028;
+    o.connect(f).connect(g).connect(this.master); o.start(); lfo.start();
+    this.sirenNodes = [o, lfo];
+  }
   setEnabled(v) { this.enabled = v; if (this.master) this.master.gain.setTargetAtTime(v ? 0.6 : 0, this.ctx.currentTime, 0.05); }
 }

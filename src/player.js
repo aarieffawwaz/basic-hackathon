@@ -36,7 +36,7 @@ export class Player {
   toggleView() { this.setView(this.view === 'first' ? 'third' : 'first'); }
   setBodyVisible(v) { this.bodyAllowed = v; if (this.body) this.body.visible = v && this.view === 'third'; }
   get locked() { return document.pointerLockElement === this.dom; }
-  lock() { this.dom.requestPointerLock?.(); }
+  lock() { this.dom.requestPointerLock?.()?.catch?.(() => {}); }   // refused without a user gesture; the next click retries
   unlock() { if (this.locked) document.exitPointerLock(); }
 
   setPosition(x, z, yaw = 0) {

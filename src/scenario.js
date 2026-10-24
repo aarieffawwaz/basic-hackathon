@@ -1,3 +1,5 @@
+import { MODE_ROLES } from './modes/scenarios.js';
+
 // Five hazard checkpoints on a first shift at a container terminal.
 // Each hazard: where it triggers, the situation, the choices, the rule it teaches,
 // and which consequence replay plays when the choice is wrong.
@@ -228,20 +230,27 @@ const LASHING = [
 ];
 
 export const ROLES = [
-  { id: 'checker', name: { en: 'Yard checker', id: 'Checker lapangan' }, tag: { en: 'On foot · 5 checkpoints', id: 'Jalan kaki · 5 checkpoint' },
+  { id: 'checker', icon: 'ic-hat', name: { en: 'Yard checker', id: 'Checker lapangan' }, tag: { en: 'On foot · 5 checkpoints', id: 'Jalan kaki · 5 checkpoint' },
     blurb: { en: 'First day on foot in the container yard. Gate, lane, crane block, stacks, office.', id: 'Hari pertama jalan kaki di lapangan kontainer. Gerbang, jalur, blok crane, tumpukan, kantor.' },
     spawn: { x: 0, z: 48, yaw: 0 }, hazards: CHECKER },
-  { id: 'operator', name: { en: 'Reach stacker operator', id: 'Operator reach stacker' }, tag: { en: 'Heavy equipment · 3 checkpoints', id: 'Alat berat · 3 checkpoint' },
+  { id: 'operator', icon: 'ic-truck', name: { en: 'Reach stacker operator', id: 'Operator reach stacker' }, tag: { en: 'Heavy equipment · 3 checkpoints', id: 'Alat berat · 3 checkpoint' },
     blurb: { en: 'You drive the 45-tonne machine. Pre-start, blind spots, wind limits.', id: 'Kamu mengemudikan mesin 45 ton. Pre-start, blind spot, batas angin.' },
     spawn: { x: 0, z: 48, yaw: 0 }, hazards: OPERATOR },
-  { id: 'lashing', name: { en: 'Lashing crew', id: 'Kru lashing' }, tag: { en: 'Quay & vessel · 3 checkpoints', id: 'Dermaga & kapal · 3 checkpoint' },
+  { id: 'lashing', icon: 'ic-ship', name: { en: 'Lashing crew', id: 'Kru lashing' }, tag: { en: 'Quay & vessel · 3 checkpoints', id: 'Dermaga & kapal · 3 checkpoint' },
     blurb: { en: 'Ship side. Gangway, mooring lines, the top tier.', id: 'Sisi kapal. Gangway, tali tambat, tingkat atas.' },
     spawn: { x: 0, z: -52, yaw: 0 }, hazards: LASHING },
+  ...MODE_ROLES,
 ];
 export const HAZARDS = CHECKER;
 
 export const STRINGS = {
   roleTitle: { en: 'Pick your shift', id: 'Pilih shift-mu' },
+  groupWalk: { en: 'Walk the shift · decide A / B / C', id: 'Jalani shift · putuskan A / B / C' },
+  groupHands: { en: 'Hands-on · you are at the controls', id: 'Hands-on · kamu yang mengendalikan' },
+  groupNew: { en: 'NEW', id: 'BARU' },
+  tryAgain: { en: 'Try again', id: 'Coba lagi' },
+  yourRun: { en: 'YOUR RUN', id: 'REKAMANMU' },
+  replayTag: { en: 'REPLAY', id: 'REPLAY' },
   roleLead: { en: 'Three jobs, three sets of calls. Each one ends in a shift report.', id: 'Tiga pekerjaan, tiga rangkaian keputusan. Masing-masing berakhir dengan laporan shift.' },
   actionDone: { en: 'DONE', id: 'SELESAI' },
   actionMiss: { en: 'Too early / too late', id: 'Terlalu cepat / terlambat' },
@@ -253,8 +262,8 @@ export const STRINGS = {
   chooseKey: { en: 'Press 1 · 2 · 3 or click', id: 'Tekan 1 · 2 · 3 atau klik' },
   view: { en: 'Switch first / third person (V)', id: 'Ganti sudut pandang orang pertama / ketiga (V)' },
   startLead: {
-    en: 'Your first shift at a container terminal, in the browser. No headset. Walk the yard, make five calls a new worker makes every day. Get one wrong and the sim does not tell you — it shows you.',
-    id: 'Shift pertamamu di terminal kontainer, langsung di browser. Tanpa headset. Jalani lapangan, ambil lima keputusan yang dihadapi pekerja baru tiap hari. Kalau salah, sim tidak sekadar memberi tahu — ia memperlihatkannya.',
+    en: 'Your first shift at a container terminal, in the browser. No headset. Walk the yard and make the calls a new worker makes every day, or take the controls of a tractor, a crane, the signals. Get one wrong and the sim does not tell you — it shows you.',
+    id: 'Shift pertamamu di terminal kontainer, langsung di browser. Tanpa headset. Jalani lapangan dan ambil keputusan yang dihadapi pekerja baru tiap hari, atau pegang kendali tractor, crane, dan isyarat. Kalau salah, sim tidak sekadar memberi tahu — ia memperlihatkannya.',
   },
   startList: {
     en: ['WASD to walk, mouse to look, V for third person', 'Follow the yellow beacon', 'Decide at each checkpoint', 'Wrong call → consequence replay → the rule'],

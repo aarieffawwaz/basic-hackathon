@@ -25,8 +25,10 @@ export class UI {
     $('role-title').textContent = this.t(STRINGS.roleTitle);
     $('start-keys').innerHTML = STRINGS.startKeys[this.lang].map(([k, l]) => `<span>${k.split(' ').map((x) => `<kbd>${x}</kbd>`).join('')} ${l}</span>`).join('');
     $('start-fine').textContent = this.t(STRINGS.startFine);
-    const icons = ['ic-hat', 'ic-truck', 'ic-ship'];
-    $('roles').innerHTML = ROLES.map((r, i) => `<button class="role" data-i="${i}"><svg class="ic"><use href="#${icons[i]}"/></svg><div class="n">${this.t(r.name)}</div><div class="t">${this.t(r.tag)}</div><div class="b">${this.t(r.blurb)}</div><div class="go">${this.t(STRINGS.startBtn)} →</div></button>`).join('');
+    const card = (r) => `<button class="role${r.mode ? ' hands' : ''}" data-i="${ROLES.indexOf(r)}"><svg class="ic"><use href="#${r.icon}"/></svg><div class="n">${this.t(r.name)}</div><div class="t">${this.t(r.tag)}</div><div class="b">${this.t(r.blurb)}</div><div class="go">${this.t(STRINGS.startBtn)} →</div></button>`;
+    const walk = ROLES.filter((r) => !r.mode), hands = ROLES.filter((r) => r.mode);
+    $('roles').innerHTML = `<div class="group"><div class="gk">${this.t(STRINGS.groupWalk)}</div><div class="grid">${walk.map(card).join('')}</div></div>
+      <div class="group"><div class="gk">${this.t(STRINGS.groupHands)} <span class="new">${this.t(STRINGS.groupNew)}</span></div><div class="grid five">${hands.map(card).join('')}</div></div>`;
     $('roles').querySelectorAll('.role').forEach((b) => b.addEventListener('click', () => this.onRole?.(ROLES[Number(b.dataset.i)])));
   }
   showRoles() { this.hideEnd(); $('overlay-start').classList.remove('hidden'); $('hud').classList.add('hidden'); }
@@ -43,7 +45,16 @@ export class UI {
   }
   setDistance(d, elapsed) { $('distance').textContent = `${d.toFixed(0)} m ${this.t(STRINGS.distance)}`; $('timer').textContent = fmt(elapsed); }
   setHeading(yaw) { const px = ((yaw * 180 / Math.PI) % 360) / 90 * 120; const t = $('compass-track'); if (t) t.style.transform = `translateX(${px}px)`; }
-  setHint(kind) { $('hint').textContent = this.t(kind === 'click' ? STRINGS.hintClick : STRINGS.hint); }
+  setHint(kind) { $('hint').textContent = kind === 'click' ? this.t(STRINGS.hintClick) : kind === 'walk' ? this.t(STRINGS.hint) : this.t(kind); }
+  setObjectiveNote(text) { $('distance').textContent = text; }
+  setTimer(elapsed) { $('timer').textContent = fmt(elapsed); }
+  // Mode readout (speed, load, wind, exposure...). Empty string hides it.
+  setGauge(html) { const g = $('gauge'); g.classList.toggle('hidden', !html); if (html !== this._gauge) { g.innerHTML = html; this._gauge = html; } }
+  toast(h, ok, note) {
+    const el = $('toast'); clearTimeout(this._toastT);
+    el.innerHTML = `<span class="verdict ${ok ? 'ok' : 'bad'}">${this.t(ok ? STRINGS.passed : STRINGS.nearMiss)}</span><b>${this.t(h.title)}</b>${note ? `<span class="note">${note}</span>` : ''}<small>${h.rule?.name ?? ''}</small>`;
+    el.classList.remove('hidden'); this._toastT = setTimeout(() => el.classList.add('hidden'), 4200);
+  }
 
   showPrompt(h, disabled, onChoose) {
     this.decision.classList.remove('hidden');
@@ -56,14 +67,14 @@ export class UI {
       <div class="keys">${this.t(STRINGS.chooseKey)}</div></div>`;
     this.decision.querySelectorAll('.opt').forEach((b) => b.addEventListener('click', () => onChoose(Number(b.dataset.i))));
   }
-  showFeedback(h, correct, onNext) {
+  showFeedback(h, correct, onNext, label) {
     this.decision.classList.remove('hidden');
     this.decision.innerHTML = `<div class="box">
       <span class="verdict ${correct ? 'ok' : 'bad'}">${this.t(correct ? STRINGS.passed : STRINGS.nearMiss)}</span>
       <h2>${this.t(h.title)}</h2>
       <p class="why">${this.t(h.why)}</p>
       <div class="rule"><b>${h.rule.name}</b>${this.t(h.rule)}</div>
-      <div class="actions"><button class="primary" id="card-next">${this.t(correct ? STRINGS.cont : STRINGS.retry)}</button></div></div>`;
+      <div class="actions"><button class="primary" id="card-next">${label ?? this.t(correct ? STRINGS.cont : STRINGS.retry)}</button></div></div>`;
     $('card-next').addEventListener('click', onNext);
   }
   hideCard() { this.decision.classList.add('hidden'); }
@@ -79,7 +90,12 @@ export class UI {
   actionDone() { const m = this.action.querySelector('.msg'); if (m) m.innerHTML = `<span class="done">✓ ${this.t(STRINGS.actionDone)}</span>`; }
   hideAction() { this.action.classList.add('hidden'); }
 
-  replayBanner(show, caption = '') { $('replay-banner').classList.toggle('hidden', !show); $('replay-caption').textContent = caption; }
+  // own: the replay is the player's recorded run, not a scripted scene. tele: live telemetry chip.
+  replayBanner(show, caption = '', own = false, tele = '') {
+    $('replay-banner').classList.toggle('hidden', !show); $('replay-caption').textContent = caption;
+    $('replay-tag').textContent = this.t(own ? STRINGS.yourRun : STRINGS.replayTag);
+    const te = $('replay-tele'); te.textContent = tele || ''; te.classList.toggle('hidden', !tele);
+  }
   flash() { const f = $('flash'); f.classList.add('on'); setTimeout(() => f.classList.remove('on'), 160); }
 
   showEnd({ role, hazards, results, seconds }, onRestart, onRoles) {

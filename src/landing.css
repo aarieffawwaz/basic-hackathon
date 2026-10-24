@@ -97,7 +97,7 @@ a.ap:active { transform: translateY(0); }
 .track span { padding: 0 20px; border-right: 1px solid var(--line); }
 .track b { color: var(--accent); font-weight: 700; margin-right: 8px; }
 @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-@media (prefers-reduced-motion: reduce) { .track { animation: none; flex-wrap: wrap; white-space: normal; gap: 8px 0; padding: 10px 28px; } .track span:nth-child(n+6) { display: none; } }
+@media (prefers-reduced-motion: reduce) { .track { animation: none; flex-wrap: wrap; white-space: normal; gap: 8px 0; padding: 10px 28px; } .track span:nth-child(n+7) { display: none; } }
 
 /* ---- sections --------------------------------------------------------------- */
 section { position: relative; padding: var(--s24) 28px; max-width: 1180px; margin: 0 auto; }
@@ -177,3 +177,13 @@ footer > canvas { margin: var(--s8) auto var(--s8); }
 @media (prefers-reduced-transparency: reduce) {
   .nav.scrolled, .tag, .hero-step { backdrop-filter: none; background: var(--bg); }
 }
+
+.hands .sec-head .lead { margin-top: 4px; }
+.hands-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; }
+.hands-grid .role { grid-column: span 2; }
+.hands-grid .role.wide { grid-column: span 3; }
+.hands-grid .role p { min-height: 3em; }
+.role .keys { font: 500 12px/1.9 var(--mono); color: var(--muted); }
+.role .keys kbd { font-size: 11px; padding: 3px 5px; margin-right: 2px; }
+@media (max-width: 960px) { .hands-grid { grid-template-columns: 1fr 1fr; } .hands-grid .role, .hands-grid .role.wide { grid-column: span 1; } .hands-grid .role p { min-height: 0; } }
+@media (max-width: 560px) { .hands-grid { grid-template-columns: 1fr; } }

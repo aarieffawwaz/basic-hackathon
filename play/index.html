@@ -35,7 +35,9 @@
     </div>
 
     <div id="flash"></div>
-    <div id="replay-banner" class="hidden"><span class="tag">REPLAY</span><span id="replay-caption"></span></div>
+    <div id="replay-banner" class="hidden"><span class="tag" id="replay-tag">REPLAY</span><span id="replay-caption"></span><span class="tele hidden" id="replay-tele"></span></div>
+    <div id="toast" class="hidden"></div>
+    <div id="gauge" class="hidden"></div>
 
     <div id="decision" class="hidden"></div>
     <div id="action" class="hidden"></div>
@@ -51,6 +53,11 @@
           <symbol id="ic-hat" viewBox="0 0 24 24"><path d="M3 15h18v2H3zM5 14a7 7 0 0 1 14 0H5z" fill="currentColor"/><path d="M11 5h2v5h-2z" fill="currentColor"/></symbol>
           <symbol id="ic-truck" viewBox="0 0 24 24"><path d="M2 6h11v9H2zM13 9h5l3 3v3h-8z" fill="currentColor"/><circle cx="6" cy="17" r="2" fill="currentColor"/><circle cx="17" cy="17" r="2" fill="currentColor"/></symbol>
           <symbol id="ic-ship" viewBox="0 0 24 24"><path d="M3 14l2 5h14l2-5zM5 13V8h14v5zM11 4h2v4h-2z" fill="currentColor"/></symbol>
+          <symbol id="ic-wheel" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 3a7 7 0 0 1 6.9 6h-4.1a3 3 0 0 0-5.6 0H5.1A7 7 0 0 1 12 5zm-6.9 8h4.1a3 3 0 0 0 1.8 2.2v3.7A7 7 0 0 1 5.1 13zm7.8 5.9v-3.7a3 3 0 0 0 1.8-2.2h4.1a7 7 0 0 1-5.9 5.9z" fill="currentColor"/></symbol>
+          <symbol id="ic-crane" viewBox="0 0 24 24"><path d="M3 3h18v3H3zM4 6h2v15H4zM18 6h2v15h-2zM11 6h2v6h-2zM8 12h8v5H8z" fill="currentColor"/></symbol>
+          <symbol id="ic-hand" viewBox="0 0 24 24"><path d="M9 2h2v9h1V3h2v8h1V5h2v9a7 7 0 0 1-7 7H9a5 5 0 0 1-5-5v-4h2v3h1V4h2z" fill="currentColor"/></symbol>
+          <symbol id="ic-eye" viewBox="0 0 24 24"><path d="M12 5C6 5 2 12 2 12s4 7 10 7 10-7 10-7-4-7-10-7zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-2a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" fill="currentColor"/></symbol>
+          <symbol id="ic-alarm" viewBox="0 0 24 24"><path d="M12 2l10 18H2zM11 9v6h2V9zm0 7v2h2v-2z" fill="currentColor"/></symbol>
         </defs></svg>
         <div class="keys" id="start-keys"></div>
         <p class="fine" id="start-fine"></p>

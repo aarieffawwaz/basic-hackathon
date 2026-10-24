@@ -6,6 +6,7 @@ import { HazardRunner } from './hazards.js';
 import { UI } from './ui.js';
 import { PortAudio } from './audio.js';
 import { setupPost } from './post.js';
+import { createMode } from './modes/index.js';
 
 const app = document.getElementById('app');
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
@@ -27,13 +28,24 @@ const ui = new UI();
 const audio = new PortAudio();
 const runner = new HazardRunner({ camera, world, player, ui, audio });
 
-ui.onRole = (role) => { audio.start(); ui.hideStart(); runner.setRole(role); runner.begin(); player.lock(); };
-ui.onLang = () => { if (runner.role) runner.syncHud(); };
+// One controller owns the shift: the walk-and-decide runner, or a hands-on mode (src/modes).
+let active = runner;
+function startRole(role) {
+  if (active !== runner) active.dispose();
+  runner.state = 'idle'; ui.hideCard(); ui.hideAction(); ui.hideEnd();
+  world.paused = false; world.craneManual = false; world.setTrucksVisible(true);
+  player.setBodyVisible(true); player.enabled = false;
+  if (role.mode) { active = createMode(role, { camera, world, player, ui, audio }); active.begin(); }
+  else { active = runner; runner.setRole(role); runner.begin(); }
+  if (active.usesPlayer !== false) player.lock();
+}
+ui.onRole = (role) => { audio.start(); ui.hideStart(); startRole(role); };
+ui.onLang = () => { if (active.role) active.syncHud(); };
 ui.onSound = () => { audio.setEnabled(!audio.enabled); ui.setSound(audio.enabled); };
 ui.onView = () => player.toggleView();
 player.onView = (v) => ui.setView(v);
 ui.setView(player.view);
-renderer.domElement.addEventListener('click', () => { if (runner.state === 'walk' || runner.state === 'action') player.lock(); });
+renderer.domElement.addEventListener('click', () => { if (active === runner ? (runner.state === 'walk' || runner.state === 'action') : active.wantsLock()) player.lock(); });
 addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); post.setSize(innerWidth, innerHeight); });
 
 // Recording / debug helpers.
@@ -41,8 +53,10 @@ addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; cam
 //   ?at=N        jump to checkpoint N (1-based) and open it     ?replay=T  also play the first wrong option's replay from time T
 //   ?action=1    open checkpoint N's action step instead         ?end=1     show the shift report   ?shot=1  just skip the start screen
 const q = new URLSearchParams(location.search);
-if (q.has('at') || q.has('shot') || q.has('end') || q.has('role')) {
-  const role = ROLES.find((r) => r.id === q.get('role')) || ROLES[0];
+const qRole = ROLES.find((r) => r.id === q.get('role'));
+if (qRole?.mode) { ui.hideStart(); startRole(qRole); if (q.has('at')) active.jumpTo?.(Number(q.get('at')) - 1, q.has('replay')); }
+else if (q.has('at') || q.has('shot') || q.has('end') || q.has('role')) {
+  const role = qRole || ROLES[0];
   ui.hideStart(); runner.setRole(role); runner.begin();
   const n = Math.max(1, Math.min(role.hazards.length, Number(q.get('at') || 1))) - 1;
   const h = role.hazards[n];
@@ -59,10 +73,15 @@ if (q.has('at') || q.has('shot') || q.has('end') || q.has('role')) {
   if (q.has('end')) { runner.results = role.hazards.map((_, i) => (i % 2 ? 'near' : 'pass')); ui.showEnd({ role, hazards: role.hazards, results: runner.results, seconds: 212 }, () => runner.restart(), () => ui.showRoles()); }
 }
 
+// Dev only: step the active controller from the console (window.__sim.step(seconds)).
+if (import.meta.env.DEV) window.__sim = { get active() { return active; }, world, player, step(sec, dt = 1 / 60) { for (let t = 0; t < sec; t += dt) { world.update(dt); if (active.usesPlayer !== false) player.update(dt); active.update(dt); } } };
+
 const clock = new THREE.Clock();
 function frame() {
   const dt = Math.min(0.05, clock.getDelta());
-  world.update(dt); player.update(dt); runner.update(dt);
+  world.update(dt);
+  if (active.usesPlayer !== false) player.update(dt);
+  active.update(dt);
   world.setShadowCenter(camera.position.x, camera.position.z);
   ui.setHeading(player.yaw);
   post.render();
