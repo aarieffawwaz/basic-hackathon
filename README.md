@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/screenshots/replay-cross.jpg" alt="ShiftReplay: consequence replay at the truck lane" width="100%" />
+  <img src="public/screenshots/mode-driver.jpg" alt="ShiftReplay: driving the terminal tractor toward the 15 km/h radar" width="100%" />
 </p>
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="public/mark-dark.svg" /><img src="public/mark-light.svg" width="64" alt="" /></picture></p>
@@ -44,9 +44,11 @@ Browser-only 3D safety training (K3) for ports and yards. Make the call, watch t
 - [Architecture](#architecture)
 - [Adding a checkpoint or a scene](#adding-a-checkpoint-or-a-scene)
 - [How it was built](#how-it-was-built)
+  - [AI assistance](#ai-assistance)
 - [Third-party work](#third-party-work)
 - [Known limitations](#known-limitations)
 - [Documentation](#documentation)
+- [Team](#team)
 - [License](#license)
 
 ## Overview
@@ -247,6 +249,19 @@ Things that did not work the first time: npm 10.8 on Node 20 could not resolve V
 |---|---|
 | <img src="public/screenshots/history/v1-yard.jpg" alt="First build: the yard checker at the gate, flat lighting" width="100%" /> | <img src="public/screenshots/mode-crane.jpg" alt="Current build: RTG crane cab view with twist-lock and sway gauges" width="100%" /> |
 
+### AI assistance
+
+ShiftReplay was built with [Claude Code](https://claude.com/claude-code) as the coding agent, driven by the Devpost Learn skill pack. What came from the AI and what came from us:
+
+| The coding agent | The team |
+|---|---|
+| Interviewed us one question at a time (scope, PRD, spec) and wrote the planning docs from our answers | Picked the problem, the audience and the kernel; approved every planning doc before code |
+| Wrote nearly all of the code in `src/`, including the procedural textures and WebAudio sound | Played every build and decided what changed: three roles, action steps, "looks like Roblox", the five hands-on modes, plain-language copy (see *Iterations*) |
+| Ran the build and screenshot checks for each slice | Checked each slice in a real browser, chose and approved the CC0 assets, decided what was cut (VR, physics engine, model files) |
+| Drafted the README and the submission write-up | Researched and sourced the accident figures, regulations and market (Molca); recorded and edited the demo video; edited and fact-checked the write-up |
+
+The demo-video soundtrack was generated with Meta's MusicGen (see below). Nothing in the sim calls an AI service at runtime: no API key, no network dependency.
+
 ## Third-party work
 
 Everything in `src/` was written for this hackathon with Claude Code during the submission period. Incorporated work from others:
@@ -286,6 +301,13 @@ _Link to be added at submission._
 | [docs/HAZARD-FORMAT.md](docs/HAZARD-FORMAT.md) | Checkpoint / role / replay schema and how to extend |
 | [docs/DEMO-GUIDE.md](docs/DEMO-GUIDE.md) | Shot list and URL helpers for the 1 to 3 min video |
 | [docs/DEPLOY.md](docs/DEPLOY.md) | Cloudflare Pages and any static host |
+
+## Team
+
+| | Role |
+|---|---|
+| **Aarief Fawwaz** ([@aarieffawwaz](https://github.com/aarieffawwaz)) and **Alief Fauzan** ([@aliefauzan](https://github.com/aliefauzan)) | Scoping and planning with the skill pack, the sim (roles, replays, five hands-on modes, realism pass), plain-language copy and UX, Cloudflare deploy, README and submission, playtesting |
+| **Umar Muhdhor** ([@umarmuhdhor](https://github.com/umarmuhdhor)) | Planning, accident data, regulation and market research, demo video, visuals, playtesting, QA and feedback |
 
 ## License
 
