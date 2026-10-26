@@ -13,7 +13,8 @@ Browser-only 3D safety training (K3) for ports and yards. Make the call, watch t
   <img alt="Vite" src="https://img.shields.io/badge/Vite-8-646cff?style=flat-square" />
   <img alt="Deps" src="https://img.shields.io/badge/runtime%20deps-1-38c172?style=flat-square" />
   <img alt="Lang" src="https://img.shields.io/badge/EN%20%2F%20ID-bilingual-2a6fb0?style=flat-square" />
-  <img alt="Devpost" src="https://img.shields.io/badge/Devpost%20Learn-Build%20With%20AI%3A%20Basics-003e54?style=flat-square" />
+  <a href="https://learn-ai-basics.devpost.com"><img alt="Devpost Learn: Build With AI: Basics" src="https://img.shields.io/badge/Devpost%20Learn-Build%20With%20AI%3A%20Basics-003e54?style=flat-square" /></a>
+  <a href="https://nextspark-hacks.devpost.com"><img alt="NextSpark Hacks" src="https://img.shields.io/badge/Devpost-NextSpark%20Hacks-003e54?style=flat-square" /></a>
   <img alt="License" src="https://img.shields.io/badge/license-MIT-lightgrey?style=flat-square" />
 </p>
 
@@ -27,7 +28,7 @@ Browser-only 3D safety training (K3) for ports and yards. Make the call, watch t
   <a href="docs/ARCHITECTURE.md"><b>Architecture</b></a>
 </p>
 
-> Built for the **Build With AI: Basics** hackathon (Devpost Learn, Oct 2026) with Claude Code. Proof of concept, not certified training. See [Limitations](#known-limitations).
+> Built with Claude Code for two hackathons in Oct 2026: [**Build With AI: Basics**](https://learn-ai-basics.devpost.com) (Devpost Learn) and [**NextSpark Hacks**](https://nextspark-hacks.devpost.com). The first commit is from 23 Oct 2026, inside both submission periods. Proof of concept, not certified training. See [Limitations](#known-limitations).
 >
 > **Testing:** open [shiftreplay.pages.dev/play](https://shiftreplay.pages.dev/play/) in a desktop browser (Chrome, Edge, Firefox or Safari) with a keyboard and mouse. No login, no install, no API key. Phones and tablets get a notice instead of the sim; `?force=1` skips it.
 
@@ -219,7 +220,7 @@ A new replay is a function in `src/replay.js` returning the same shape as the ot
 
 ## How it was built
 
-Devpost Learn's workflow: **scope → PRD → spec → build → ship**, each a skill the coding agent runs. The planning files are the submission:
+Devpost Learn's workflow: **scope → PRD → spec → build → ship**, each a skill the coding agent runs. The planning files are part of the submission:
 
 | Doc | What it holds |
 |---|---|
@@ -264,7 +265,7 @@ The demo-video soundtrack was generated with Meta's MusicGen (see below). Nothin
 
 ## Third-party work
 
-Everything in `src/` was written for this hackathon with Claude Code during the submission period. Incorporated work from others:
+Everything in `src/` was written for these hackathons with Claude Code during their submission periods. Incorporated work from others:
 
 | What | Where | License |
 |---|---|---|
